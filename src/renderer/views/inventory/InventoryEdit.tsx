@@ -24,9 +24,9 @@ interface UserInputInterface {
   category: string;
   brand: string;
   description: string | null;
-  cost_price: number | null;
-  sale_price: number | null;
-  stock_quantity: number | null;
+  cost_price: number | string;
+  sale_price: number | string;
+  stock_quantity: number | string;
   enable_low_stock_notification: boolean;
   low_stock_level: number | string;
   taxes: {
@@ -74,10 +74,10 @@ export default function InventoryEdit() {
     name: '',
     category: '',
     brand: '',
-    description: null,
-    cost_price: null,
-    sale_price: null,
-    stock_quantity: null,
+    description: '',
+    cost_price: '',
+    sale_price: '',
+    stock_quantity: '',
     taxes: [{ name: '', percent: '', amount: '' }],
     enable_low_stock_notification: false,
     low_stock_level: '',
@@ -179,13 +179,13 @@ export default function InventoryEdit() {
       if (userInput.sale_price) {
         if (key === 'percent') {
           newTaxes[index].amount = calculateTaxAmount(
-            userInput.sale_price,
+            userInput.sale_price as number,
             parseInt(value || '0', 10),
           ) as unknown as string;
         }
         if (key === 'amount') {
           newTaxes[index].percent = calculateTaxPercent(
-            userInput.sale_price,
+            userInput.sale_price as number,
             parseFloat(value || '0'),
           ) as unknown as string;
         }
@@ -228,7 +228,21 @@ export default function InventoryEdit() {
 
   const handleEditProduct = () => {
     resetErrorMsg();
-    editProduct(`/products/${product.id}/`, userInput, false)
+    const payload = {
+      name: userInput.name,
+      category: userInput.category,
+      brand: userInput.brand,
+      description: userInput.description,
+      cost_price: userInput.cost_price,
+      sale_price: userInput.sale_price,
+      stock_quantity: userInput.stock_quantity,
+      enable_low_stock_notification: isLowLevelStock,
+      low_stock_level: !isLowLevelStock ? null : userInput.low_stock_level,
+      reorder_quantity: userInput.reorder_quantity,
+      additional_notes: userInput.additional_notes,
+      taxes: userInput.taxes,
+    };
+    editProduct(`/products/${product.id}/`, payload, false)
       .then((res) => {
         if (res.status === 400) {
           const firstError = Object.keys(res.data)[0];
@@ -278,6 +292,7 @@ export default function InventoryEdit() {
       } else {
         setIsTaxesInclude(false);
       }
+      setIsLowLevelStock(product.enable_low_stock_notification);
     }
 
     if (globalCategories.length > 0) {
@@ -578,10 +593,10 @@ export default function InventoryEdit() {
               <label className="switch">
                 <input
                   type="checkbox"
+                  checked={isLowLevelStock}
                   onChange={(event) => {
                     setIsLowLevelStock(event.target.checked);
                   }}
-                  checked={userInput.enable_low_stock_notification}
                 />
                 <span className="slider" />
               </label>

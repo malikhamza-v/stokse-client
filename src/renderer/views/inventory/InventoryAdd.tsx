@@ -17,6 +17,7 @@ import useBucket from '../../utils/hooks/useBucket';
 import {
   setCategories as setGlobalCategories,
   setBrands as setGlobalBrands,
+  setTaxes as setGlobalTaxes,
 } from '../../../store/slices/appData';
 import { useFetch } from '../../utils/hooks';
 import { AddSVG, DeleteSVG, ErrorSVG } from '../../utils/svg';
@@ -88,6 +89,7 @@ export default function InventoryAdd() {
   });
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [taxes, setTaxes] = useState([{ label: '', value: '' }]);
 
   const [delayForSetup, setSelayForSetup] = useState(true);
 
@@ -97,6 +99,7 @@ export default function InventoryAdd() {
     (state: any) => state.appData.categories,
   );
   const globalBrands = useSelector((state: any) => state.appData.brands);
+  const globalTaxes = useSelector((state: any) => state.appData.taxes);
 
   const dispatch = useDispatch();
 
@@ -104,6 +107,7 @@ export default function InventoryAdd() {
   const { loading: categoryFetchLoading, fetchData: categoriesFetch } =
     useFetch();
   const { loading: brandFetchLoading, fetchData: brandsFetch } = useFetch();
+  const { loading: taxFetchLoading, fetchData: taxesFetch } = useFetch();
   const { uploadImage } = useBucket();
 
   // [info]: helpers
@@ -138,11 +142,11 @@ export default function InventoryAdd() {
       setIsTaxesInclude(false);
       return;
     }
-    const taxes = [...userInput.taxes];
-    taxes.splice(index, 1);
+    const taxesCopy = [...userInput.taxes];
+    taxesCopy.splice(index, 1);
     setUserInput({
       ...userInput,
-      taxes,
+      taxes: taxesCopy,
     });
   };
 
@@ -166,6 +170,29 @@ export default function InventoryAdd() {
         if (res?.status === 200) {
           setBrands(res?.data);
           dispatch(setGlobalBrands(res?.data));
+        }
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
+  };
+
+  const fetchTaxes = () => {
+    taxesFetch('/tax/')
+      .then((res) => {
+        if (res?.status === 200) {
+          if (res?.data.length > 0) {
+            const modifiedTaxes = res?.data.map((tax: any) => {
+              return {
+                label: tax.name,
+                percent: tax.percent,
+              };
+            });
+
+            setTaxes(modifiedTaxes);
+            dispatch(setGlobalTaxes(modifiedTaxes));
+          }
         }
         return true;
       })
@@ -217,11 +244,16 @@ export default function InventoryAdd() {
   };
 
   const handleSelectDefaultTax = (selectedTax: any, index: number) => {
+    console.log('selected', selectedTax);
     const newTaxes = [...userInput.taxes];
 
     if (index >= 0 && index < newTaxes.length && selectedTax) {
       newTaxes[index].name = selectedTax.label;
-      newTaxes[index].percent = selectedTax.value;
+      newTaxes[index].percent = selectedTax.percent;
+      newTaxes[index].amount = calculateTaxAmount(
+        userInput.sale_price || 0,
+        selectedTax.percent,
+      ) as unknown as string;
     }
 
     setUserInput({
@@ -321,15 +353,17 @@ export default function InventoryAdd() {
     } else {
       fetchBrands();
     }
+
+    if (globalTaxes.length > 0) {
+      setTaxes(globalTaxes);
+      dispatch(setGlobalTaxes(globalTaxes));
+    } else {
+      fetchTaxes();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    // Function to calculate tax amount based on sale price and tax percent
-
-    // Function to calculate tax percent based on sale price and tax amount
-
-    // Update tax amount if sale price changes
     if (userInput.sale_price !== null) {
       const newTaxes = userInput.taxes.map((tax) => ({
         ...tax,
@@ -701,6 +735,7 @@ export default function InventoryAdd() {
                   <label className="switch">
                     <input
                       type="checkbox"
+                      checked={userInput.enable_low_stock_notification}
                       onChange={(event) => {
                         setIsLowLevelStock(event.target.checked);
                       }}
@@ -741,7 +776,7 @@ export default function InventoryAdd() {
                             >
                               <CreatableSelect
                                 isClearable
-                                options={taxOptions}
+                                options={taxes}
                                 className="inventory_add_tax"
                                 placeholder="Tax Name"
                                 value={{
