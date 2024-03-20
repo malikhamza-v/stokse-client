@@ -15,6 +15,7 @@ import Setting from './views/setting/Setting';
 import Categories from './views/setting/Categories';
 import Brands from './views/setting/Brands';
 import PaymentMethods from './views/setting/PaymentMethods';
+import Taxes from './views/setting/Taxes';
 
 export default function App() {
   return (
@@ -92,6 +93,14 @@ export default function App() {
               element={
                 <MainLayout>
                   <Brands />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/taxes"
+              element={
+                <MainLayout>
+                  <Taxes />
                 </MainLayout>
               }
             />

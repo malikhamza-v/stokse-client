@@ -19,6 +19,11 @@ function Setting() {
       description: 'Manage payment methods of your store.',
       link: '/payment-methods',
     },
+    {
+      label: 'Taxes',
+      description: 'Manage default taxes of your store.',
+      link: '/taxes',
+    },
   ];
   return (
     <div className="flex flex-col h-full w-full overflow-y-scroll">
@@ -56,7 +61,12 @@ function Setting() {
                   <div className="bg-white rounded-2xl shadow-sm py-6 grid grid-cols-2 gap-4">
                     <div className="col-span-2">
                       <div className="grid grid-cols-2 gap-4">
-                        <LabelInput errorMsg={null} label="Name" required>
+                        <LabelInput
+                          loading={false}
+                          errorMsg={null}
+                          label="Name"
+                          required
+                        >
                           <input
                             type="text"
                             id="name"
@@ -72,6 +82,7 @@ function Setting() {
                     </div>
                     <div className="col-span-2">
                       <LabelInput
+                        loading={false}
                         errorMsg={null}
                         label="Business Description"
                         required
@@ -90,6 +101,7 @@ function Setting() {
                     </div>
                     <div className="">
                       <LabelInput
+                        loading={false}
                         errorMsg={null}
                         label="Business Email"
                         required
@@ -108,6 +120,7 @@ function Setting() {
                     </div>
                     <div className="">
                       <LabelInput
+                        loading={false}
                         errorMsg={null}
                         label="Business Phone"
                         required
@@ -127,6 +140,7 @@ function Setting() {
 
                     <div className="col-span-2">
                       <LabelInput
+                        loading={false}
                         errorMsg={null}
                         label="Business Address"
                         required
