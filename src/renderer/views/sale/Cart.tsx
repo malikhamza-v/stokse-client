@@ -1,0 +1,675 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/label-has-associated-control */
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import CreatableSelect from 'react-select/creatable';
+import {
+  SecondaryButton,
+  PrimaryButton,
+} from '../../components/commonComponents/buttons';
+import { AddSVG, DeleteSVG, EditSVG, InfoSVG, MinusSVG } from '../../utils/svg';
+import { resetCart, setCart } from '../../../store/slices/appData';
+
+// import { colourOptions } from '../data';
+
+function Cart() {
+  // [info]: constant
+  const taxOptions = [
+    { value: 'chocolate', label: 'Chocolate' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'vanilla', label: 'Vanilla' },
+  ];
+
+  const cartItems = useSelector((state: any) => state.appData.cart.items);
+  const calculations = useSelector(
+    (state: any) => state.appData.cart.calculations,
+  );
+
+  const [discount, setDiscount] = useState<{
+    percent: number | string;
+    value: number | string;
+  }>({
+    percent: 0,
+    value: 0,
+  });
+  const [showCartItemEditModal, setShowCartItemEditModal] = useState(false);
+  const [isAdditionalTaxInclude, setIsAdditionalTaxInclude] = useState(false);
+  const [showOrderConfirmationModal, setShowOrderConfirmationModal] =
+    useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+
+  const dispatch = useDispatch();
+
+  // [info]: methods
+  const handleDiscount = (key: string, value: string) => {
+    if (key === 'percent') {
+      setDiscount({
+        percent: parseFloat(value) || '',
+        value: value
+          ? parseFloat(
+              ((selectedProduct.sale_price * parseFloat(value)) / 100)
+                .toFixed(2)
+                .toString(),
+            )
+          : 0,
+      });
+    } else {
+      setDiscount({
+        value: parseFloat(value) || '',
+        percent: parseFloat(value)
+          ? parseFloat(
+              ((parseFloat(value) / selectedProduct.sale_price) * 100)
+                .toFixed(2)
+                .toString(),
+            )
+          : 0,
+      });
+    }
+  };
+
+  const handleOpenOrderConfirmationModal = () => {
+    setShowOrderConfirmationModal(true);
+  };
+
+  const removeItemFromCart = (id: number) => {
+    const items = [...cartItems];
+    const indexToRemove = items.findIndex((item) => item.id === id);
+    if (indexToRemove !== -1) {
+      items.splice(indexToRemove, 1);
+    }
+    dispatch(
+      setCart({
+        items,
+      }),
+    );
+  };
+
+  const handleEditCartItem = (product: any) => {
+    setSelectedProduct(product);
+    setDiscount({
+      percent: product.percent || 0,
+      value: product.value || 0,
+    });
+    setShowCartItemEditModal(true);
+  };
+
+  const handleSaveCartItemEdit = () => {
+    const productIndex = cartItems.findIndex(
+      (item: any) => item.id === selectedProduct.id,
+    );
+    if (productIndex !== -1) {
+      const updatedCartItems = cartItems.map((item: any, index: number) => {
+        if (index === productIndex) {
+          if (item.qty > 0) {
+            const discountedPrice = (
+              parseFloat(item.sale_price) -
+              parseFloat(discount.value.toString() || '0')
+            ).toFixed(2);
+
+            return {
+              ...item,
+              discounted_price:
+                item.sale_price === discountedPrice && discountedPrice
+                  ? null
+                  : discountedPrice,
+              ...discount,
+            };
+          }
+        }
+        return item;
+      });
+
+      dispatch(
+        setCart({
+          items: updatedCartItems,
+        }),
+      );
+    }
+    setShowCartItemEditModal(false);
+  };
+
+  const increaseItemQty = (id: number) => {
+    const productIndex = cartItems.findIndex((item: any) => item.id === id);
+
+    if (productIndex !== -1) {
+      const updatedCartItems = cartItems.map((item: any, index: number) => {
+        if (index === productIndex) {
+          return { ...item, qty: item.qty + 1 };
+        }
+        return item;
+      });
+
+      dispatch(
+        setCart({
+          items: updatedCartItems,
+        }),
+      );
+    }
+  };
+
+  const descreaseItemQty = (id: number) => {
+    const productIndex = cartItems.findIndex((item: any) => item.id === id);
+    if (productIndex !== -1) {
+      const updatedCartItems = cartItems.map((item: any, index: number) => {
+        if (index === productIndex) {
+          if (item.qty > 1) {
+            return { ...item, qty: item.qty - 1 };
+          }
+        }
+        return item;
+      });
+
+      dispatch(
+        setCart({
+          items: updatedCartItems,
+        }),
+      );
+    }
+  };
+
+  const cancelCart = () => {
+    dispatch(resetCart());
+  };
+
+  // [info]: lifecycles
+
+  useEffect(() => {
+    const subTotal = cartItems.reduce((total: number, item: any) => {
+      let itemSubtotal;
+      if (item.discounted_price) {
+        itemSubtotal = parseFloat(item.discounted_price) * item.qty;
+      } else {
+        itemSubtotal = parseFloat(item.sale_price) * item.qty;
+      }
+      return total + itemSubtotal;
+    }, 0);
+
+    dispatch(
+      setCart({
+        calculations: { subTotal: parseFloat(subTotal || 0).toFixed(2) },
+      }),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cartItems]);
+
+  return (
+    <div className="border h-screen flex flex-col justify-between">
+      <p className="font-bold text-2xl px-12 pb-4 pt-8 border-b">Cart</p>
+      <div className="overflow-y-scroll h-full">
+        {cartItems.length > 0 ? (
+          cartItems.map((item: any, index: number) => {
+            return (
+              <div
+                key={`${index + 1}-${item.name}`}
+                className="border-b py-4 px-12 rounded-lg flex items-start justify-between relative cursor-pointer hover:bg-slate-50"
+              >
+                <div>
+                  <div className="flex flex-col gap-1 mb-2">
+                    <p className="font-medium text-md">{item.name}</p>
+                    <div>
+                      <p className="text-xs text-gray-400">
+                        <strong>Category:</strong> {item.category?.name}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-[2px]">
+                        <strong>Brand:</strong> {item.brand?.name}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center flex-wrap gap-2">
+                    <button
+                      type="button"
+                      className={`border border-blue-500 text-blue-500 rounded-full px-4 text-sm ${
+                        item.discounted_price && 'line-through'
+                      }`}
+                    >
+                      {item.sale_price} USD
+                    </button>
+                    {item.discounted_price && (
+                      <button
+                        type="button"
+                        className="border border-blue-500 text-blue-500 rounded-full px-4 text-sm"
+                      >
+                        {item.discounted_price} USD
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-col h-full bg-black">
+                  <div className="flex bg-white">
+                    <button
+                      type="button"
+                      className="border rounded-l px-2"
+                      onClick={() => descreaseItemQty(item.id)}
+                    >
+                      <MinusSVG />
+                    </button>
+                    <input
+                      type="number"
+                      className="w-10 outline-none border text-center"
+                      disabled
+                      value={item.qty}
+                    />
+                    <button
+                      type="button"
+                      className="border rounded-r px-2"
+                      onClick={() => increaseItemQty(item.id)}
+                    >
+                      <AddSVG />
+                    </button>
+                  </div>
+                  <div className="flex items-center flex-1 gap-2 absolute bottom-4 right-12">
+                    <button
+                      type="button"
+                      className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
+                      onClick={() => handleEditCartItem(item)}
+                    >
+                      <EditSVG />
+                    </button>
+
+                    <button
+                      type="button"
+                      className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
+                      onClick={() => removeItemFromCart(item.id)}
+                    >
+                      <DeleteSVG />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div className="py-4 px-12 rounded-lg flex gap-2 items-center justify-center text-gray-600">
+            <InfoSVG />
+            <p>Cart is empty</p>
+          </div>
+        )}
+      </div>
+      <div className="border-t px-8 py-4 border-gray-300 flex-1 flex-grow">
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between items-center">
+            <p className="text-gray-400 text-md">Item</p>
+            <p className="font-medium">{cartItems.length} (items)</p>
+          </div>
+          <div className="flex justify-between items-center">
+            <p className="text-gray-400 text-md">Subtotal</p>
+            <p className="font-medium">{calculations.subTotal} USD</p>
+          </div>
+          {/* <div className="flex justify-between items-center">
+            <p className="text-gray-400 text-md">Taxes</p>
+            <p className="font-medium">10.56 USD</p>
+          </div> */}
+          <div className="flex justify-between items-center mb-6 mt-4">
+            <p className="text-lg font-bold">Total</p>
+            <p className="font-medium">{calculations.subTotal} USD</p>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <PrimaryButton
+            label="Pay Now"
+            loading={false}
+            onClickAction={handleOpenOrderConfirmationModal}
+          />
+          <SecondaryButton
+            label="Cancel"
+            loading={false}
+            onClickAction={cancelCart}
+          />
+        </div>
+      </div>
+      {showCartItemEditModal && selectedProduct && (
+        <div className="flex items-center justify-center">
+          <div
+            className="fixed inset-0 transition-opacity h-full"
+            onClick={() => setShowCartItemEditModal(false)}
+          >
+            <div className="absolute inset-0 bg-black opacity-60" />
+          </div>
+          <div className="max-w-2xl my-10 bg-white rounded-xl fixed z-10 inset-0 overflow-y-auto flex flex-col mx-auto w-fit h-fit">
+            <div className="flex flex-col justify-center">
+              <div className="relative sm:max-w-xl sm:mx-auto">
+                <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
+                  <div className="max-w-md mx-auto">
+                    <div className="flex items-center space-x-5">
+                      <div className="p-4 bg-slate-200 rounded-full flex flex-shrink-0 justify-center items-center text-slate-500 text-2xl font-mono">
+                        <InfoSVG />
+                      </div>
+                      <div className="block pl-2 font-semibold text-xl self-start text-gray-700">
+                        <h2 className="leading-relaxed">Edit Cart Item</h2>
+                        <p className="text-sm text-gray-500 font-normal leading-relaxed">
+                          Modify product details, add discounts or additional
+                          notes.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="divide-y divide-gray-200">
+                      <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+                        <div className="flex flex-col">
+                          <label htmlFor="item_name" className="leading-loose">
+                            Item Name
+                          </label>
+                          <input
+                            type="text"
+                            id="item_name"
+                            className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                            placeholder="Item Name"
+                            value={selectedProduct.name}
+                            disabled
+                          />
+                        </div>
+                        <div className="flex gap-2 items-center">
+                          <div className="flex flex-col">
+                            <label className="leading-loose">Sale Price</label>
+                            <input
+                              type="number"
+                              className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                              placeholder="Sale Price"
+                              value={selectedProduct.sale_price}
+                              disabled
+                            />
+                          </div>
+
+                          <div className="flex flex-col">
+                            <label className="leading-loose">
+                              Available Stock
+                            </label>
+                            <input
+                              type="number"
+                              className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                              placeholder="Available Stock"
+                              value={selectedProduct.stock_quantity}
+                              disabled
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2 items-center">
+                          <div className="flex flex-col">
+                            <label className="leading-loose">
+                              Discount Percent
+                            </label>
+                            <input
+                              type="number"
+                              className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                              placeholder="Discount Percent"
+                              value={discount.percent}
+                              onChange={(e) =>
+                                handleDiscount('percent', e.target.value)
+                              }
+                            />
+                          </div>
+
+                          <div className="flex flex-col">
+                            <label className="leading-loose">
+                              Discount Value
+                            </label>
+                            <input
+                              type="number"
+                              className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                              placeholder="Discount Value"
+                              value={discount.value}
+                              onChange={(e) =>
+                                handleDiscount('value', e.target.value)
+                              }
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col">
+                          <label className="leading-loose">
+                            Additional Notes
+                          </label>
+                          <input
+                            type="text"
+                            className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                            placeholder="Add any personalized note for the item and customer"
+                          />
+                        </div>
+                      </div>
+                      <div className="pt-4 flex items-center space-x-4">
+                        <button
+                          type="button"
+                          className="flex justify-center items-center w-full text-gray-900 px-4 py-3 rounded-md focus:outline-none"
+                          onClick={() => setShowCartItemEditModal(false)}
+                        >
+                          <svg
+                            className="w-6 h-6 mr-3"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>{' '}
+                          Cancel
+                        </button>
+                        <button
+                          type="button"
+                          className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none"
+                          onClick={handleSaveCartItemEdit}
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showOrderConfirmationModal && (
+        <div className="flex items-center justify-center">
+          <div
+            className="fixed inset-0 transition-opacity h-full"
+            onClick={() => setShowOrderConfirmationModal(false)}
+          >
+            <div className="absolute inset-0 bg-black opacity-60" />
+          </div>
+          <div className="max-w-2xl my-10 bg-white rounded-xl fixed z-10 inset-0 overflow-y-scroll flex flex-col mx-auto w-fit h-[90%]">
+            <div className="flex flex-col justify-center">
+              <div className="relative sm:max-w-xl sm:mx-auto">
+                <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 rounded-3xl sm:p-10">
+                  <div className="max-w-md mx-auto">
+                    <div className="flex items-center space-x-5">
+                      <div className="block font-semibold text-xl self-start text-gray-700">
+                        <h2 className="leading-relaxed">Order Confirmation</h2>
+                        <p className="text-sm text-gray-500 font-normal leading-relaxed">
+                          Add taxes, customer detail and payment method for your
+                          order.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="my-4">
+                      <p>Order Detail</p>
+                      <div className="divide-y divide-gray-200">
+                        <div className="flex flex-col gap-2">
+                          <div className="flex justify-between items-center">
+                            <p className="text-gray-400 text-md">Item</p>
+                            <p className="font-medium">
+                              {cartItems.length} (items)
+                            </p>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <p className="text-gray-400 text-md">Subtotal</p>
+                            <p className="font-medium">
+                              {calculations.subTotal} USD
+                            </p>
+                          </div>
+
+                          <div className="flex justify-between items-center mb-6 mt-4">
+                            <p className="text-lg font-bold">Total</p>
+                            <p className="font-medium">
+                              {calculations.subTotal} USD
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mb-4">
+                      <div className="flex gap-4 justify-between items-center">
+                        <p>Include Additional Tax</p>
+                        <label className="switch">
+                          <input
+                            type="checkbox"
+                            onChange={(event) => {
+                              setIsAdditionalTaxInclude(event.target.checked);
+                            }}
+                          />
+                          <span className="slider" />
+                        </label>
+                      </div>
+                    </div>
+                    <div className="py-2 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+                      {isAdditionalTaxInclude && (
+                        <>
+                          <CreatableSelect isClearable options={taxOptions} />
+                          {/* <div className="flex flex-col">
+                            <label className="leading-loose">Tax Name</label>
+                            <input
+                              type="text"
+                              className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                              placeholder="Tax Name"
+                              // value={discount.percent}
+                              // onChange={(e) =>
+                              //   handleDiscount('percent', e.target.value)
+                              // }
+                            />
+                          </div> */}
+                          <div className="flex gap-2 items-center">
+                            <div className="flex flex-col">
+                              <label className="leading-loose">
+                                Tax Percent
+                              </label>
+                              <input
+                                type="number"
+                                className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                                placeholder="Tax Percent"
+                                // value={discount.percent}
+                                // onChange={(e) =>
+                                //   handleDiscount('percent', e.target.value)
+                                // }
+                              />
+                            </div>
+
+                            <div className="flex flex-col">
+                              <label className="leading-loose">
+                                Tax Amount
+                              </label>
+                              <input
+                                type="number"
+                                className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                                placeholder="Tax Amount"
+                                // value={discount.value}
+                                onChange={(e) =>
+                                  handleDiscount('value', e.target.value)
+                                }
+                              />
+                            </div>
+                          </div>
+                        </>
+                      )}
+
+                      <div className="flex gap-2 items-center">
+                        <div className="flex flex-col">
+                          <label className="leading-loose">Customer Name</label>
+                          <input
+                            type="number"
+                            className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                            placeholder="Customer Name"
+                            // value={discount.percent}
+                            // onChange={(e) =>
+                            //   handleDiscount('percent', e.target.value)
+                            // }
+                          />
+                        </div>
+
+                        <div className="flex flex-col">
+                          <label className="leading-loose">
+                            Customer Phone
+                          </label>
+                          <input
+                            type="number"
+                            className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                            placeholder="Customer Phone (Optional)"
+                            // value={discount.value}
+                            onChange={(e) =>
+                              handleDiscount('value', e.target.value)
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="flex flex-col">
+                        <label className="leading-loose">Customer Email</label>
+                        <input
+                          type="email"
+                          className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                          placeholder="Customer Email"
+                          // value={discount.value}
+                          onChange={(e) =>
+                            handleDiscount('value', e.target.value)
+                          }
+                        />
+                      </div>
+
+                      <div className="flex flex-col">
+                        <label className="leading-loose">
+                          Additional Notes
+                        </label>
+                        <input
+                          type="text"
+                          className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                          placeholder="Add any personalized note for the item and customer"
+                        />
+                      </div>
+                    </div>
+                    <div className="pt-4 flex items-center space-x-4">
+                      <button
+                        type="button"
+                        className="flex justify-center items-center w-full text-gray-900 px-4 py-3 rounded-md focus:outline-none"
+                        onClick={() => setShowCartItemEditModal(false)}
+                      >
+                        <svg
+                          className="w-6 h-6 mr-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>{' '}
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none"
+                        onClick={handleSaveCartItemEdit}
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Cart;
