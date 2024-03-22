@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { LabelInput, Toast } from '../components/commonComponents';
 import useCreate from '../utils/hooks/useCreate';
+import { ArrowLongRight } from '../utils/svg';
 
 function Signin() {
   const [userInput, setUserInput] = useState({ email: '', password: '' });
@@ -68,7 +69,12 @@ function Signin() {
 
           <div className="mt-10">
             <div>
-              <LabelInput label="Email" errorMsg={errorMsg.email} required>
+              <LabelInput
+                label="Email"
+                errorMsg={errorMsg.email}
+                required
+                loading={false}
+              >
                 <input
                   type="email"
                   id="email"
@@ -84,6 +90,7 @@ function Signin() {
                 label="Password"
                 errorMsg={errorMsg.password}
                 required
+                loading={false}
               >
                 <input
                   type="password"
@@ -95,6 +102,13 @@ function Signin() {
                 />
               </LabelInput>
             </div>
+            <button
+              type="button"
+              className="flex items-center gap-2 justify-end ml-auto my-4 text-blue-600"
+            >
+              <p>Ready to join? Sign up here!</p>
+              <ArrowLongRight />
+            </button>
 
             <div className="my-10">
               <button
