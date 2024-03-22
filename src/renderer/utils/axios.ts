@@ -12,8 +12,6 @@ api.interceptors.request.use(async function (config) {
     localStorage.getItem('token') || null
   }`;
 
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
   return config;
 });
 

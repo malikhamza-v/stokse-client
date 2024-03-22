@@ -8,8 +8,18 @@ import {
   SecondaryButton,
   PrimaryButton,
 } from '../../components/commonComponents/buttons';
-import { AddSVG, DeleteSVG, EditSVG, InfoSVG, MinusSVG } from '../../utils/svg';
+import {
+  AddSVG,
+  ArrowLeft,
+  ArrowLongLeft,
+  CloseSvg,
+  DeleteSVG,
+  EditSVG,
+  InfoSVG,
+  MinusSVG,
+} from '../../utils/svg';
 import { resetCart, setCart } from '../../../store/slices/appData';
+import { LabelInput } from '../../components/commonComponents';
 
 // import { colourOptions } from '../data';
 
@@ -34,9 +44,16 @@ function Cart() {
     value: 0,
   });
   const [showCartItemEditModal, setShowCartItemEditModal] = useState(false);
+  const [userInput, setUserInput] = useState({
+    taxes: [{ name: '', percent: '', amount: '' }],
+  });
+  const [errorMsg, setErrorMsg] = useState({});
+  const [taxes, setTaxes] = useState([{ label: '', value: '' }]);
+
   const [isAdditionalTaxInclude, setIsAdditionalTaxInclude] = useState(false);
   const [showOrderConfirmationModal, setShowOrderConfirmationModal] =
     useState(false);
+  const [orderConfirmationState, setOrderConfirmationState] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   const dispatch = useDispatch();
@@ -103,7 +120,7 @@ function Cart() {
         if (index === productIndex) {
           if (item.qty > 0) {
             const discountedPrice = (
-              parseFloat(item.sale_price) -
+              parseFloat(item.total_price) -
               parseFloat(discount.value.toString() || '0')
             ).toFixed(2);
 
@@ -148,6 +165,33 @@ function Cart() {
     }
   };
 
+  const handleAddTax = () => {
+    setUserInput({
+      ...userInput,
+      taxes: [
+        ...userInput.taxes,
+        {
+          name: '',
+          percent: '',
+          amount: '',
+        },
+      ],
+    });
+  };
+
+  const handleRemoveTax = (index: number) => {
+    if (userInput.taxes.length === 1 && index === 0) {
+      setIsAdditionalTaxInclude(false);
+      return;
+    }
+    const taxesCopy = [...userInput.taxes];
+    taxesCopy.splice(index, 1);
+    setUserInput({
+      ...userInput,
+      taxes: taxesCopy,
+    });
+  };
+
   const descreaseItemQty = (id: number) => {
     const productIndex = cartItems.findIndex((item: any) => item.id === id);
     if (productIndex !== -1) {
@@ -180,14 +224,31 @@ function Cart() {
       if (item.discounted_price) {
         itemSubtotal = parseFloat(item.discounted_price) * item.qty;
       } else {
-        itemSubtotal = parseFloat(item.sale_price) * item.qty;
+        itemSubtotal = parseFloat(item.total_price) * item.qty;
       }
       return total + itemSubtotal;
     }, 0);
 
+    const calculateTotalTax = () => {
+      let totalTax = 0;
+      cartItems.forEach((product: any) => {
+        product.taxes.forEach((tax: any) => {
+          totalTax += parseFloat((tax.amount * product.qty).toString());
+        });
+      });
+      return totalTax;
+    };
+
+    const calculatedSubTotal = parseFloat(subTotal || 0).toFixed(2);
+    const calculatedItemTax = calculateTotalTax();
+
     dispatch(
       setCart({
-        calculations: { subTotal: parseFloat(subTotal || 0).toFixed(2) },
+        calculations: {
+          subTotal: calculatedSubTotal,
+          item_tax: calculatedItemTax,
+          total: calculatedSubTotal,
+        },
       }),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -223,7 +284,7 @@ function Cart() {
                         item.discounted_price && 'line-through'
                       }`}
                     >
-                      {item.sale_price} USD
+                      {item.total_price} USD
                     </button>
                     {item.discounted_price && (
                       <button
@@ -296,13 +357,13 @@ function Cart() {
             <p className="text-gray-400 text-md">Subtotal</p>
             <p className="font-medium">{calculations.subTotal} USD</p>
           </div>
-          {/* <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center">
             <p className="text-gray-400 text-md">Taxes</p>
-            <p className="font-medium">10.56 USD</p>
-          </div> */}
+            <p className="font-extralight">{calculations.item_tax} USD</p>
+          </div>
           <div className="flex justify-between items-center mb-6 mt-4">
             <p className="text-lg font-bold">Total</p>
-            <p className="font-medium">{calculations.subTotal} USD</p>
+            <p className="font-medium">{calculations.total} USD</p>
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -474,11 +535,11 @@ function Cart() {
           >
             <div className="absolute inset-0 bg-black opacity-60" />
           </div>
-          <div className="max-w-2xl my-10 bg-white rounded-xl fixed z-10 inset-0 overflow-y-scroll flex flex-col mx-auto w-fit h-[90%]">
-            <div className="flex flex-col justify-center">
-              <div className="relative sm:max-w-xl sm:mx-auto">
-                <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 rounded-3xl sm:p-10">
-                  <div className="max-w-md mx-auto">
+          <div className="max-w-2xl my-10 bg-white rounded-xl fixed z-10 inset-0 overflow-y-scroll flex flex-col mx-auto w-fit h-fit max-h-[90%]">
+            <div className="flex flex-col justify-center h-fit">
+              <div className="relative sm:max-w-xl sm:mx-auto h-full">
+                <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 rounded-3xl sm:p-10 h-full">
+                  <div className="max-w-md mx-auto flex flex-col h-full">
                     <div className="flex items-center space-x-5">
                       <div className="block font-semibold text-xl self-start text-gray-700">
                         <h2 className="leading-relaxed">Order Confirmation</h2>
@@ -488,10 +549,10 @@ function Cart() {
                         </p>
                       </div>
                     </div>
-                    <div className="my-4">
+                    <div className="mt-4 mb-6">
                       <p>Order Detail</p>
                       <div className="divide-y divide-gray-200">
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-2 border-b">
                           <div className="flex justify-between items-center">
                             <p className="text-gray-400 text-md">Item</p>
                             <p className="font-medium">
@@ -505,6 +566,13 @@ function Cart() {
                             </p>
                           </div>
 
+                          <div className="flex justify-between items-center">
+                            <p className="text-gray-400 text-md">Taxes</p>
+                            <p className="font-extralight">
+                              {calculations.item_tax} USD
+                            </p>
+                          </div>
+
                           <div className="flex justify-between items-center mb-6 mt-4">
                             <p className="text-lg font-bold">Total</p>
                             <p className="font-medium">
@@ -514,113 +582,252 @@ function Cart() {
                         </div>
                       </div>
                     </div>
-                    <div className="mb-4">
-                      <div className="flex gap-4 justify-between items-center">
-                        <p>Include Additional Tax</p>
-                        <label className="switch">
-                          <input
-                            type="checkbox"
-                            onChange={(event) => {
-                              setIsAdditionalTaxInclude(event.target.checked);
-                            }}
-                          />
-                          <span className="slider" />
-                        </label>
-                      </div>
-                    </div>
-                    <div className="py-2 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                      {isAdditionalTaxInclude && (
-                        <>
-                          <CreatableSelect isClearable options={taxOptions} />
-                          {/* <div className="flex flex-col">
-                            <label className="leading-loose">Tax Name</label>
-                            <input
-                              type="text"
-                              className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                              placeholder="Tax Name"
-                              // value={discount.percent}
-                              // onChange={(e) =>
-                              //   handleDiscount('percent', e.target.value)
-                              // }
-                            />
-                          </div> */}
-                          <div className="flex gap-2 items-center">
-                            <div className="flex flex-col">
-                              <label className="leading-loose">
-                                Tax Percent
+                    <div className=" text-base leading-6 text-gray-700 sm:text-lg sm:leading-7 flex flex-col flex-grow flex-auto h-full">
+                      {orderConfirmationState === 1 && (
+                        <div>
+                          <div className="mb-4">
+                            <div className="flex gap-4 justify-between items-center">
+                              <p>Include Additional Tax</p>
+                              <label className="switch">
+                                <input
+                                  type="checkbox"
+                                  checked={isAdditionalTaxInclude}
+                                  onChange={(event) => {
+                                    setIsAdditionalTaxInclude(
+                                      event.target.checked,
+                                    );
+                                  }}
+                                />
+                                <span className="slider" />
                               </label>
+                            </div>
+                          </div>
+                          {isAdditionalTaxInclude &&
+                            userInput.taxes.map((tax: any, index) => (
+                              <div
+                                className="py-4 space-y-4 text-base"
+                                key={`${tax.name}-${index + 1}`}
+                              >
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="flex-1">
+                                    <LabelInput
+                                      required
+                                      label="Tax Name"
+                                      loading={false}
+                                      errorMsg={
+                                        errorMsg[`taxes_name[${index}]`]
+                                      }
+                                    >
+                                      <CreatableSelect
+                                        isClearable
+                                        options={taxes}
+                                        className=""
+                                        placeholder="Tax Name"
+                                        value={{
+                                          value: '',
+                                          label: userInput.taxes[index].name,
+                                        }}
+                                        onChange={(selectedTax) =>
+                                          handleSelectDefaultTax(
+                                            selectedTax,
+                                            index,
+                                          )
+                                        }
+                                        onCreateOption={(name) =>
+                                          handleUserInputTax(
+                                            'name',
+                                            name,
+                                            index,
+                                          )
+                                        }
+                                      />
+                                    </LabelInput>
+                                  </div>
+                                  <div
+                                    className="mt-8 cursor-pointer"
+                                    onClick={() => handleRemoveTax(index)}
+                                  >
+                                    <DeleteSVG />
+                                  </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                  <div>
+                                    <LabelInput
+                                      required
+                                      label="Tax Percent (%)"
+                                      loading={false}
+                                      errorMsg={
+                                        errorMsg[`taxes_percent[${index}]`]
+                                      }
+                                    >
+                                      <input
+                                        type="number"
+                                        id="tax_percent"
+                                        className="bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                        placeholder="Tax Percent"
+                                        required
+                                        value={userInput.taxes[index].percent}
+                                        onChange={(e) =>
+                                          handleUserInputTax(
+                                            'percent',
+                                            e.target.value,
+                                            index,
+                                          )
+                                        }
+                                      />
+                                    </LabelInput>
+                                  </div>
+
+                                  <div>
+                                    <LabelInput
+                                      required
+                                      label="Tax Amount"
+                                      loading={false}
+                                      errorMsg={
+                                        errorMsg[`taxes_amount[${index}]`]
+                                      }
+                                    >
+                                      <input
+                                        type="number"
+                                        id="tax_amount"
+                                        className="bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                        placeholder="Tax Amount"
+                                        required
+                                        value={userInput.taxes[index].amount}
+                                        onChange={(e) =>
+                                          handleUserInputTax(
+                                            'amount',
+                                            e.target.value,
+                                            index,
+                                          )
+                                        }
+                                      />
+                                    </LabelInput>
+                                  </div>
+                                </div>
+                                <button
+                                  type="button"
+                                  className="text-blue-600 flex items-center gap-2 ml-auto"
+                                  onClick={handleAddTax}
+                                >
+                                  <AddSVG />
+                                  <p>Add another</p>
+                                </button>
+                              </div>
+                            ))}
+                        </div>
+                      )}
+                      {orderConfirmationState === 2 && (
+                        <div className="text-base flex flex-col gap-2">
+                          <p className="font-bold my-4">Customer Detail:</p>
+                          <div className="flex gap-2 items-center">
+                            <LabelInput
+                              label="Customer Name"
+                              errorMsg={null}
+                              loading={false}
+                              required={false}
+                            >
                               <input
                                 type="number"
-                                className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                                placeholder="Tax Percent"
+                                className="p-2.5 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                                placeholder="Customer Name"
                                 // value={discount.percent}
                                 // onChange={(e) =>
                                 //   handleDiscount('percent', e.target.value)
                                 // }
                               />
-                            </div>
+                            </LabelInput>
 
-                            <div className="flex flex-col">
-                              <label className="leading-loose">
-                                Tax Amount
-                              </label>
+                            <LabelInput
+                              label="Customer Phone"
+                              errorMsg={null}
+                              loading={false}
+                              required={false}
+                            >
                               <input
                                 type="number"
-                                className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                                placeholder="Tax Amount"
-                                // value={discount.value}
-                                onChange={(e) =>
-                                  handleDiscount('value', e.target.value)
-                                }
+                                className="p-2.5 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                                placeholder="Customer Phone"
+                                // value={discount.percent}
+                                // onChange={(e) =>
+                                //   handleDiscount('percent', e.target.value)
+                                // }
                               />
-                            </div>
+                            </LabelInput>
                           </div>
-                        </>
+                          <LabelInput
+                            label="Customer Email"
+                            errorMsg={null}
+                            loading={false}
+                            required={false}
+                          >
+                            <input
+                              type="number"
+                              className="p-2.5 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                              placeholder="Customer Email"
+                              // value={discount.percent}
+                              // onChange={(e) =>
+                              //   handleDiscount('percent', e.target.value)
+                              // }
+                            />
+                          </LabelInput>
+
+                          <p className="text-gray-500 text-sm">
+                            * This information is required for sending invoice
+                            to customer email.
+                          </p>
+                        </div>
                       )}
 
-                      <div className="flex gap-2 items-center">
-                        <div className="flex flex-col">
-                          <label className="leading-loose">Customer Name</label>
-                          <input
-                            type="number"
-                            className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                            placeholder="Customer Name"
-                            // value={discount.percent}
-                            // onChange={(e) =>
-                            //   handleDiscount('percent', e.target.value)
-                            // }
-                          />
+                      {orderConfirmationState === 3 && (
+                        <div className="text-base">
+                          <p className="font-bold my-4">Collect Payment:</p>
+                          <div className="text-base !font-thin flex flex-col gap-2">
+                            <LabelInput
+                              required
+                              label="Collected Amount"
+                              loading={false}
+                              errorMsg={null}
+                            >
+                              <input
+                                type="number"
+                                className="p-2.5 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                                placeholder="Amount"
+                                // value={discount.percent}
+                                // onChange={(e) =>
+                                //   handleDiscount('percent', e.target.value)
+                                // }
+                              />
+                            </LabelInput>
+                            <LabelInput
+                              required
+                              label="Payment Method"
+                              loading={false}
+                              errorMsg={errorMsg[`taxes_name[8]`]}
+                            >
+                              <CreatableSelect
+                                isClearable
+                                options={taxes}
+                                className=""
+                                placeholder="Tax Name"
+                                value={{
+                                  value: '',
+                                  label: userInput.taxes[0].name,
+                                }}
+                                onChange={(selectedTax) =>
+                                  handleSelectDefaultTax(selectedTax, 0)
+                                }
+                                onCreateOption={(name) =>
+                                  handleUserInputTax('name', name, 0)
+                                }
+                              />
+                            </LabelInput>
+                          </div>
                         </div>
+                      )}
 
-                        <div className="flex flex-col">
-                          <label className="leading-loose">
-                            Customer Phone
-                          </label>
-                          <input
-                            type="number"
-                            className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                            placeholder="Customer Phone (Optional)"
-                            // value={discount.value}
-                            onChange={(e) =>
-                              handleDiscount('value', e.target.value)
-                            }
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col">
-                        <label className="leading-loose">Customer Email</label>
-                        <input
-                          type="email"
-                          className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                          placeholder="Customer Email"
-                          // value={discount.value}
-                          onChange={(e) =>
-                            handleDiscount('value', e.target.value)
-                          }
-                        />
-                      </div>
-
-                      <div className="flex flex-col">
+                      {/* <div className="flex flex-col">
                         <label className="leading-loose">
                           Additional Notes
                         </label>
@@ -629,36 +836,35 @@ function Cart() {
                           className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                           placeholder="Add any personalized note for the item and customer"
                         />
-                      </div>
+                      </div> */}
                     </div>
                     <div className="pt-4 flex items-center space-x-4">
                       <button
                         type="button"
-                        className="flex justify-center items-center w-full text-gray-900 px-4 py-3 rounded-md focus:outline-none"
-                        onClick={() => setShowCartItemEditModal(false)}
+                        className="flex gap-2 border justify-center items-center w-full text-gray-900 px-4 py-3 rounded-md focus:outline-none"
+                        onClick={() =>
+                          orderConfirmationState === 1
+                            ? setShowOrderConfirmationModal(false)
+                            : setOrderConfirmationState(
+                                orderConfirmationState - 1,
+                              )
+                        }
                       >
-                        <svg
-                          className="w-6 h-6 mr-3"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>{' '}
-                        Cancel
+                        {orderConfirmationState === 1 ? (
+                          <CloseSvg />
+                        ) : (
+                          <ArrowLongLeft />
+                        )}
+                        {orderConfirmationState === 1 ? 'Cancel' : 'Back'}
                       </button>
                       <button
                         type="button"
                         className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none"
-                        onClick={handleSaveCartItemEdit}
+                        onClick={() =>
+                          setOrderConfirmationState(orderConfirmationState + 1)
+                        }
                       >
-                        Save
+                        Next
                       </button>
                     </div>
                   </div>

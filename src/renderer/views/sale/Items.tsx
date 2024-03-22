@@ -293,7 +293,7 @@ function Items() {
                           type="button"
                           className="border border-black text-gray-600 font-medium rounded-full px-4 text-sm"
                         >
-                          {product.sale_price} USD
+                          {product.total_price} USD
                         </button>
                       </div>
                     </div>
