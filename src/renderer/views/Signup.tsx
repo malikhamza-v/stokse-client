@@ -6,7 +6,7 @@ import { LabelInput, Toast } from '../components/commonComponents';
 import useCreate from '../utils/hooks/useCreate';
 import { ArrowLongRight } from '../utils/svg';
 
-function Signin() {
+function Signup() {
   const [userInput, setUserInput] = useState({ email: '', password: '' });
   const [errorMsg, setErrorMsg] = useState<{
     email: string | null;
@@ -63,14 +63,16 @@ function Signin() {
       <div className="h-screen w-1/2 bg-white text-black">
         <div className="mx-auto flex h-full w-2/3 flex-col justify-center  xl:w-1/2">
           <div>
-            <p className="text-3xl font-bold text-blue-600">Welcome Back</p>
-            <p>Enter your email and password to sign in</p>
+            <p className="text-3xl font-bold text-blue-600">
+              Ready to register!
+            </p>
+            <p>Enter your signup code sent to your email</p>
           </div>
 
           <div className="mt-10">
             <div>
               <LabelInput
-                label="Email"
+                label="Sign Up Code"
                 errorMsg={errorMsg.email}
                 required
                 loading={false}
@@ -79,13 +81,13 @@ function Signin() {
                   type="email"
                   id="email"
                   className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                  placeholder="Enter email"
+                  placeholder="Enter code"
                   value={userInput.email}
                   onChange={(e) => handleInput(e, 'email')}
                 />
               </LabelInput>
             </div>
-            <div className="mt-4">
+            {/* <div className="mt-4">
               <LabelInput
                 label="Password"
                 errorMsg={errorMsg.password}
@@ -101,7 +103,7 @@ function Signin() {
                   onChange={(e) => handleInput(e, 'password')}
                 />
               </LabelInput>
-            </div>
+            </div> */}
 
             <div className="my-10">
               <button
@@ -119,14 +121,14 @@ function Signin() {
                     <div className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:-.5s]" />
                   </div>
                 )}
-                {loginLoading ? 'Loading' : 'Login'}
+                {loginLoading ? 'Loading' : 'Verify'}
               </button>
-              <Link to="/sign-up">
+              <Link to="/sign-in">
                 <button
                   type="button"
                   className="flex items-center gap-2 justify-end ml-auto my-4 text-blue-600"
                 >
-                  <p>Ready to join? Sign up here!</p>
+                  <p>Back to login</p>
                   <ArrowLongRight />
                 </button>
               </Link>
@@ -146,4 +148,4 @@ function Signin() {
   );
 }
 
-export default Signin;
+export default Signup;

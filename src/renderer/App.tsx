@@ -16,6 +16,7 @@ import Categories from './views/setting/Categories';
 import Brands from './views/setting/Brands';
 import PaymentMethods from './views/setting/PaymentMethods';
 import Taxes from './views/setting/Taxes';
+import Signup from './views/Signup';
 
 export default function App() {
   return (
@@ -23,6 +24,8 @@ export default function App() {
       <Router>
         <Routes>
           <Route path="/sign-in" element={<Signin />} />
+          <Route path="/sign-up" element={<Signup />} />
+
           <Route element={<PrivateRoute />}>
             <Route
               path="/"
