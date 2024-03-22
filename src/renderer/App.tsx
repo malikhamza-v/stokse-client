@@ -17,6 +17,7 @@ import Brands from './views/setting/Brands';
 import PaymentMethods from './views/setting/PaymentMethods';
 import Taxes from './views/setting/Taxes';
 import Signup from './views/Signup';
+import Business from './views/setup/Business';
 
 export default function App() {
   return (
@@ -27,6 +28,8 @@ export default function App() {
           <Route path="/sign-up" element={<Signup />} />
 
           <Route element={<PrivateRoute />}>
+            <Route path="/setup/business" element={<Business />} />
+
             <Route
               path="/"
               element={
