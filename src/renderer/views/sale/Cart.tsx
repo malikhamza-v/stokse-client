@@ -219,38 +219,43 @@ function Cart() {
   // [info]: lifecycles
 
   useEffect(() => {
-    const subTotal = cartItems.reduce((total: number, item: any) => {
-      let itemSubtotal;
-      if (item.discounted_price) {
-        itemSubtotal = parseFloat(item.discounted_price) * item.qty;
-      } else {
-        itemSubtotal = parseFloat(item.total_price) * item.qty;
-      }
-      return total + itemSubtotal;
-    }, 0);
+    if (cartItems.length > 0) {
+      const subTotal = cartItems.reduce((total: number, item: any) => {
+        let itemSubtotal;
+        if (item.discounted_price) {
+          itemSubtotal = parseFloat(item.discounted_price) * item.qty;
+        } else {
+          itemSubtotal = parseFloat(item.total_price) * item.qty;
+        }
+        return total + itemSubtotal;
+      }, 0);
 
-    const calculateTotalTax = () => {
-      let totalTax = 0;
-      cartItems.forEach((product: any) => {
-        product.taxes.forEach((tax: any) => {
-          totalTax += parseFloat((tax.amount * product.qty).toString());
+      const calculateTotalTax = () => {
+        let totalTax = 0;
+        cartItems.forEach((product: any) => {
+          if (product.taxes) {
+            product.taxes.forEach((tax: any) => {
+              totalTax += parseFloat((tax.amount * product.qty).toString());
+            });
+          }
         });
-      });
-      return totalTax;
-    };
+        return totalTax;
+      };
 
-    const calculatedSubTotal = parseFloat(subTotal || 0).toFixed(2);
-    const calculatedItemTax = calculateTotalTax();
+      const calculatedSubTotal = parseFloat(subTotal || 0).toFixed(2);
+      const calculatedItemTax = calculateTotalTax();
 
-    dispatch(
-      setCart({
-        calculations: {
-          subTotal: calculatedSubTotal,
-          item_tax: calculatedItemTax,
-          total: calculatedSubTotal,
-        },
-      }),
-    );
+      dispatch(
+        setCart({
+          calculations: {
+            subTotal: calculatedSubTotal,
+            item_tax: calculatedItemTax,
+            total: calculatedSubTotal,
+          },
+        }),
+      );
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartItems]);
 

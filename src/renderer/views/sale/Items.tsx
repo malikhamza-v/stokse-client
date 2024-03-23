@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AddSVG, EditSVG, SearchSVG } from '../../utils/svg';
+import { AddSVG, EditSVG, ErrorSVG, SearchSVG } from '../../utils/svg';
 import {
   setCart,
   setProducts as setGlobalProducts,
@@ -251,17 +251,21 @@ function Items() {
       )}
       {/* [info]: Items */}
       <div className="px-16 flex-grow overflow-y-auto" ref={itemContainer}>
-        <div className="grid grid-cols-4 gap-4 ">
-          {fetchLoading
-            ? [...Array(8).keys()].map((skeleton) => (
-                <div key={skeleton} className="w-full ">
-                  <div
-                    className="w-full h-64 bg-gray-200 rounded-lg animate-pulse"
-                    style={{ animationDelay: '0.2s' }}
-                  />
-                </div>
-              ))
-            : paginatedProducts.data.map((product: any) => (
+        {fetchLoading ? (
+          <div className="grid grid-cols-4 gap-4 ">
+            {[...Array(8).keys()].map((skeleton) => (
+              <div key={skeleton} className="w-full ">
+                <div
+                  className="w-full h-64 bg-gray-200 rounded-lg animate-pulse"
+                  style={{ animationDelay: '0.2s' }}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-4 gap-4">
+            {paginatedProducts.data.length > 0 ? (
+              paginatedProducts.data.map((product: any) => (
                 <div
                   key={product.id}
                   className="bg-white border hover:bg-neutral-100 duration-300 p-4 rounded-lg flex flex-col justify-between cursor-pointer"
@@ -314,8 +318,17 @@ function Items() {
                     </button>
                   </div>
                 </div>
-              ))}
-        </div>
+              ))
+            ) : (
+              <div className="border flex items-center justify-center w-full col-span-4 gap-2 p-4 rounded-lg mb-2">
+                <ErrorSVG />
+                <h2 className="font-medium text-gray-800  ">
+                  No Product in your inventory
+                </h2>
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <div className="px-16 pb-8 mt-4 sm:flex sm:items-center sm:justify-between ">
         <div className="text-sm text-gray-500 ">

@@ -287,7 +287,7 @@ export default function InventoryEdit() {
         reorder_quantity: parseFloat(product.reorder_quantity || 0),
         additional_notes: product.additional_notes || '',
       });
-      if (product.taxes.length > 0) {
+      if (product.taxes && product.taxes.length > 0) {
         setIsTaxesInclude(true);
       } else {
         setIsTaxesInclude(false);

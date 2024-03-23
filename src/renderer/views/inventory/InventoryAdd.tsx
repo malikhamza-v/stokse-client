@@ -13,7 +13,7 @@ import {
 } from '../../components/commonComponents/buttons';
 import { LabelInput } from '../../components/commonComponents';
 import useCreate from '../../utils/hooks/useCreate';
-import useBucket from '../../utils/hooks/useBucket';
+// import useBucket from '../../utils/hooks/useBucket';
 import {
   setCategories as setGlobalCategories,
   setBrands as setGlobalBrands,
@@ -54,12 +54,6 @@ interface ErrorMsgInterface {
 }
 
 export default function InventoryAdd() {
-  const taxOptions = [
-    { value: '10', label: 'GST' },
-    { value: '18', label: 'PST' },
-    { value: '19', label: 'FDP' },
-  ];
-
   const [isLowLevelStock, setIsLowLevelStock] = useState(false);
   const [isTaxesInclude, setIsTaxesInclude] = useState(false);
   const [errorMsg, setErrorMsg] = useState<ErrorMsgInterface>({
@@ -108,7 +102,7 @@ export default function InventoryAdd() {
     useFetch();
   const { loading: brandFetchLoading, fetchData: brandsFetch } = useFetch();
   const { loading: taxFetchLoading, fetchData: taxesFetch } = useFetch();
-  const { uploadImage } = useBucket();
+  // const { uploadImage } = useBucket();
 
   // [info]: helpers
   const resetErrorMsg = () => {
@@ -305,14 +299,7 @@ export default function InventoryAdd() {
             fontSize: 12,
             displayValue: false,
           });
-          const canvas: any = document.getElementById('barcode');
-          if (canvas) {
-            canvas.toBlob(async (blob: any) => {
-              if (blob) {
-                await uploadImage(blob, res.data.id, res.data.name);
-              }
-            }, 'image/png');
-          }
+
           navigate('/inventory');
         }
         return true;

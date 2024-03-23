@@ -17,7 +17,12 @@ import Brands from './views/setting/Brands';
 import PaymentMethods from './views/setting/PaymentMethods';
 import Taxes from './views/setting/Taxes';
 import Signup from './views/Signup';
-import Business from './views/setup/Business';
+import {
+  Brand,
+  Category,
+  Business,
+  PaymentMethod as SetupPaymentMethod,
+} from './views/setup';
 
 export default function App() {
   return (
@@ -29,7 +34,12 @@ export default function App() {
 
           <Route element={<PrivateRoute />}>
             <Route path="/setup/business" element={<Business />} />
-
+            <Route path="/setup/business/category" element={<Category />} />
+            <Route path="/setup/business/brand" element={<Brand />} />
+            <Route
+              path="/setup/business/payment-method"
+              element={<SetupPaymentMethod />}
+            />
             <Route
               path="/"
               element={
