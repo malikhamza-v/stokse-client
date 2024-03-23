@@ -238,7 +238,6 @@ export default function InventoryAdd() {
   };
 
   const handleSelectDefaultTax = (selectedTax: any, index: number) => {
-    console.log('selected', selectedTax);
     const newTaxes = [...userInput.taxes];
 
     if (index >= 0 && index < newTaxes.length && selectedTax) {

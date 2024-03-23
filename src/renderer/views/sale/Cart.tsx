@@ -10,7 +10,6 @@ import {
 } from '../../components/commonComponents/buttons';
 import {
   AddSVG,
-  ArrowLeft,
   ArrowLongLeft,
   CloseSvg,
   DeleteSVG,
@@ -18,8 +17,15 @@ import {
   InfoSVG,
   MinusSVG,
 } from '../../utils/svg';
-import { resetCart, setCart } from '../../../store/slices/appData';
-import { LabelInput } from '../../components/commonComponents';
+import {
+  resetCart,
+  setCart,
+  setTaxes as setGlobalTaxes,
+} from '../../../store/slices/appData';
+import { LabelInput, Toast } from '../../components/commonComponents';
+import { useFetch } from '../../utils/hooks';
+import { noTaxOptions } from '../../utils/constant';
+import { toast } from 'react-toastify';
 
 // import { colourOptions } from '../data';
 
@@ -35,6 +41,7 @@ function Cart() {
   const calculations = useSelector(
     (state: any) => state.appData.cart.calculations,
   );
+  const globalTaxes = useSelector((state: any) => state.appData.taxes);
 
   const [discount, setDiscount] = useState<{
     percent: number | string;
@@ -55,6 +62,8 @@ function Cart() {
     useState(false);
   const [orderConfirmationState, setOrderConfirmationState] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+
+  const { loading: taxFetchLoading, fetchData: taxesFetch } = useFetch();
 
   const dispatch = useDispatch();
 
@@ -86,6 +95,10 @@ function Cart() {
   };
 
   const handleOpenOrderConfirmationModal = () => {
+    if (cartItems.length <= 0) {
+      toast.error('Your cart is empty');
+      return;
+    }
     setShowOrderConfirmationModal(true);
   };
 
@@ -144,6 +157,14 @@ function Cart() {
       );
     }
     setShowCartItemEditModal(false);
+  };
+
+  const calculateTaxAmount = (salePrice: number, taxPercent: number) => {
+    return (salePrice * taxPercent) / 100;
+  };
+
+  const calculateTaxPercent = (salePrice: number, taxAmount: number) => {
+    return (taxAmount / salePrice) * 100;
   };
 
   const increaseItemQty = (id: number) => {
@@ -212,6 +233,74 @@ function Cart() {
     }
   };
 
+  const handleSelectDefaultTax = (selectedTax: any, index: number) => {
+    const newTaxes = [...userInput.taxes];
+
+    if (index >= 0 && index < newTaxes.length && selectedTax) {
+      newTaxes[index].name = selectedTax.label;
+      newTaxes[index].percent = selectedTax.percent;
+      newTaxes[index].amount = calculateTaxAmount(
+        userInput.sale_price || 0,
+        selectedTax.percent,
+      ) as unknown as string;
+    }
+
+    setUserInput({
+      ...userInput,
+      taxes: newTaxes,
+    });
+  };
+
+  const fetchTaxes = () => {
+    taxesFetch('/tax/')
+      .then((res) => {
+        if (res?.status === 200) {
+          if (res?.data.length > 0) {
+            const modifiedTaxes = res?.data.map((tax: any) => {
+              return {
+                label: tax.name,
+                percent: tax.percent,
+              };
+            });
+
+            setTaxes(modifiedTaxes);
+            dispatch(setGlobalTaxes(modifiedTaxes));
+          }
+        }
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
+  };
+
+  const handleUserInputTax = (key: string, value: string, index: number) => {
+    const newTaxes = [...userInput.taxes];
+
+    if (index >= 0 && index < newTaxes.length) {
+      newTaxes[index][key] = value;
+      if (calculations.subTotal) {
+        if (key === 'percent') {
+          newTaxes[index].amount = calculateTaxAmount(
+            calculations.subTotal,
+            parseInt(value || '0', 10),
+          ) as unknown as string;
+        }
+        if (key === 'amount') {
+          newTaxes[index].percent = calculateTaxPercent(
+            calculations.subTotal,
+            parseFloat(value || '0'),
+          ) as unknown as string;
+        }
+      }
+    }
+
+    setUserInput({
+      ...userInput,
+      taxes: newTaxes,
+    });
+  };
+
   const cancelCart = () => {
     dispatch(resetCart());
   };
@@ -258,6 +347,16 @@ function Cart() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartItems]);
+
+  useEffect(() => {
+    if (globalTaxes.length > 0) {
+      setTaxes(globalTaxes);
+      dispatch(setGlobalTaxes(globalTaxes));
+    } else {
+      fetchTaxes();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="border h-screen flex flex-col justify-between">
@@ -619,13 +718,15 @@ function Cart() {
                                       required
                                       label="Tax Name"
                                       loading={false}
-                                      errorMsg={
-                                        errorMsg[`taxes_name[${index}]`]
-                                      }
+                                      errorMsg={null}
                                     >
                                       <CreatableSelect
                                         isClearable
-                                        options={taxes}
+                                        options={
+                                          taxes[0].value.length > 0
+                                            ? taxes
+                                            : noTaxOptions
+                                        }
                                         className=""
                                         placeholder="Tax Name"
                                         value={{
@@ -879,6 +980,7 @@ function Cart() {
           </div>
         </div>
       )}
+      <Toast />
     </div>
   );
 }

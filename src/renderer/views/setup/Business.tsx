@@ -142,10 +142,6 @@ function Business() {
     }
   };
 
-  useEffect(() => {
-    console.log(errorMsg);
-  }, [errorMsg]);
-
   return (
     <div className="h-screen container mx-auto">
       <div className="px-16 py-8 h-full">

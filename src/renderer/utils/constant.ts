@@ -28,4 +28,17 @@ const Navbar = [
   },
 ];
 
-export default Navbar;
+const noTaxOptions: readonly {
+  value: string;
+  label: string;
+  color: string;
+  isDisabled: boolean;
+}[] = [
+  {
+    value: 'No Tax Found',
+    label: 'No Tax Found',
+    isDisabled: true,
+  },
+];
+
+export { noTaxOptions, Navbar };

@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { SettingSVG } from '../../../utils/svg';
-import Navbar from '../../../utils/constant';
+import { Navbar } from '../../../utils/constant';
 
 function SideBar() {
   const [toolTip, setToolTip] = useState('');
