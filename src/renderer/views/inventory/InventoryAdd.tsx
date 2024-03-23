@@ -18,9 +18,11 @@ import {
   setCategories as setGlobalCategories,
   setBrands as setGlobalBrands,
   setTaxes as setGlobalTaxes,
+  setProducts,
 } from '../../../store/slices/appData';
 import { useFetch } from '../../utils/hooks';
 import { AddSVG, DeleteSVG, ErrorSVG } from '../../utils/svg';
+import { noTaxOptions } from '../../utils/constant';
 
 interface UserInputInterface {
   name: string;
@@ -94,6 +96,7 @@ export default function InventoryAdd() {
   );
   const globalBrands = useSelector((state: any) => state.appData.brands);
   const globalTaxes = useSelector((state: any) => state.appData.taxes);
+  const products = useSelector((state: any) => state.appData.products);
 
   const dispatch = useDispatch();
 
@@ -104,7 +107,15 @@ export default function InventoryAdd() {
   const { loading: taxFetchLoading, fetchData: taxesFetch } = useFetch();
   // const { uploadImage } = useBucket();
 
-  // [info]: helpers
+  // [info]: methods
+  const calculateTaxAmount = (salePrice: number, taxPercent: number) => {
+    return (salePrice * taxPercent) / 100;
+  };
+
+  const calculateTaxPercent = (salePrice: number, taxAmount: number) => {
+    return (taxAmount / salePrice) * 100;
+  };
+
   const resetErrorMsg = () => {
     setErrorMsg({
       name: null,
@@ -196,18 +207,28 @@ export default function InventoryAdd() {
   };
 
   const handleUserInput = (key: string, value: string) => {
+    if (key === 'sale_price') {
+      if (value !== null) {
+        const newTaxes = userInput.taxes.map((tax) => ({
+          ...tax,
+          amount: calculateTaxAmount(
+            value as unknown as number,
+            parseInt(tax.percent || '0', 10),
+          ) as unknown as string,
+        }));
+
+        setUserInput({
+          ...userInput,
+          taxes: newTaxes,
+          [key]: value as unknown as number,
+        });
+      }
+      return;
+    }
     setUserInput({
       ...userInput,
       [key]: value,
     });
-  };
-
-  const calculateTaxAmount = (salePrice: number, taxPercent: number) => {
-    return (salePrice * taxPercent) / 100;
-  };
-
-  const calculateTaxPercent = (salePrice: number, taxAmount: number) => {
-    return (taxAmount / salePrice) * 100;
   };
 
   const handleUserInputTax = (key: string, value: string, index: number) => {
@@ -255,6 +276,10 @@ export default function InventoryAdd() {
     });
   };
 
+  const handleCreateProductClient = (product: any) => {
+    dispatch(setProducts([...products, product]));
+  };
+
   const handleCreateProduct = () => {
     setCProductLoading(true);
     resetErrorMsg();
@@ -298,6 +323,8 @@ export default function InventoryAdd() {
             fontSize: 12,
             displayValue: false,
           });
+
+          handleCreateProductClient(res.data);
 
           navigate('/inventory');
         }
@@ -348,60 +375,6 @@ export default function InventoryAdd() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (userInput.sale_price !== null) {
-      const newTaxes = userInput.taxes.map((tax) => ({
-        ...tax,
-        amount: calculateTaxAmount(
-          userInput.sale_price as number,
-          parseInt(tax.percent || '0', 10),
-        ) as unknown as string,
-      }));
-
-      setUserInput((prevState) => ({
-        ...prevState,
-        taxes: newTaxes,
-      }));
-    }
-
-    // Update tax amount if tax percent changes
-    // if (
-    //   userInput.taxes.some((tax) => tax.percent !== '' && tax.amount === '')
-    // ) {
-    //   const newTaxes = userInput.taxes.map((tax) => ({
-    //     ...tax,
-    //     amount: calculateTaxAmount(
-    //       userInput.sale_price as number,
-    //       parseInt(tax.percent, 10),
-    //     ) as unknown as string,
-    //   }));
-
-    //   setUserInput((prevState) => ({
-    //     ...prevState,
-    //     taxes: newTaxes,
-    //   }));
-    // }
-
-    // Update tax percent if tax amount changes
-    // if (
-    //   userInput.taxes.some((tax) => tax.amount !== '' && tax.percent === '')
-    // ) {
-    //   const newTaxes = userInput.taxes.map((tax) => ({
-    //     ...tax,
-    //     percent: calculateTaxPercent(
-    //       userInput.sale_price as number,
-    //       parseInt(tax.amount, 10),
-    //     ) as unknown as string,
-    //   }));
-
-    //   setUserInput((prevState) => ({
-    //     ...prevState,
-    //     taxes: newTaxes,
-    //   }));
-    // }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userInput.sale_price]);
 
   return (
     <div className=" flex flex-col gap-4 px-10 py-10 h-full w-full bg-slate-50 overflow-y-scroll">
@@ -721,7 +694,7 @@ export default function InventoryAdd() {
                   <label className="switch">
                     <input
                       type="checkbox"
-                      checked={userInput.enable_low_stock_notification}
+                      checked={isLowLevelStock}
                       onChange={(event) => {
                         setIsLowLevelStock(event.target.checked);
                       }}
@@ -757,12 +730,12 @@ export default function InventoryAdd() {
                             <LabelInput
                               required
                               label="Tax Name"
-                              loading={false}
+                              loading={taxFetchLoading}
                               errorMsg={errorMsg[`taxes_name[${index}]`]}
                             >
                               <CreatableSelect
                                 isClearable
-                                options={taxes}
+                                options={taxes[0].value ? taxes : noTaxOptions}
                                 className="inventory_add_tax"
                                 placeholder="Tax Name"
                                 value={{
@@ -791,7 +764,7 @@ export default function InventoryAdd() {
                             <LabelInput
                               required
                               label="Tax Percent (%)"
-                              loading={false}
+                              loading={taxFetchLoading}
                               errorMsg={errorMsg[`taxes_percent[${index}]`]}
                             >
                               <input
@@ -816,7 +789,7 @@ export default function InventoryAdd() {
                             <LabelInput
                               required
                               label="Tax Amount"
-                              loading={false}
+                              loading={taxFetchLoading}
                               errorMsg={errorMsg[`taxes_amount[${index}]`]}
                             >
                               <input
