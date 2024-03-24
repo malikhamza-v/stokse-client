@@ -4,6 +4,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
+import { toast } from 'react-toastify';
 import {
   SecondaryButton,
   PrimaryButton,
@@ -25,17 +26,11 @@ import {
 import { LabelInput, Toast } from '../../components/commonComponents';
 import { useFetch } from '../../utils/hooks';
 import { noTaxOptions } from '../../utils/constant';
-import { toast } from 'react-toastify';
 
 // import { colourOptions } from '../data';
 
 function Cart() {
   // [info]: constant
-  const taxOptions = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' },
-  ];
 
   const cartItems = useSelector((state: any) => state.appData.cart.items);
   const calculations = useSelector(
@@ -328,7 +323,7 @@ function Cart() {
             });
           }
         });
-        return totalTax;
+        return parseFloat(totalTax.toString()).toFixed(2);
       };
 
       const calculatedSubTotal = parseFloat(subTotal || 0).toFixed(2);
@@ -339,7 +334,9 @@ function Cart() {
           calculations: {
             subTotal: calculatedSubTotal,
             item_tax: calculatedItemTax,
-            total: calculatedSubTotal,
+            total: (
+              parseFloat(calculatedSubTotal) + parseFloat(calculatedItemTax)
+            ).toFixed(2),
           },
         }),
       );

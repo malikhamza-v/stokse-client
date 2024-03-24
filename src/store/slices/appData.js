@@ -11,6 +11,8 @@ const appData = createSlice({
       items: [],
       calculations: {
         subTotal: null,
+        item_tax: null,
+        total: null,
       },
     },
     categories: [],
