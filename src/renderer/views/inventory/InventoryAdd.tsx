@@ -23,6 +23,11 @@ import {
 import { useFetch } from '../../utils/hooks';
 import { AddSVG, DeleteSVG, ErrorSVG } from '../../utils/svg';
 import { noTaxOptions } from '../../utils/constant';
+import {
+  calculateTaxAmount,
+  calculateTaxPercent,
+  getTotalPrice,
+} from '../../utils/methods';
 
 interface UserInputInterface {
   name: string;
@@ -105,16 +110,8 @@ export default function InventoryAdd() {
     useFetch();
   const { loading: brandFetchLoading, fetchData: brandsFetch } = useFetch();
   const { loading: taxFetchLoading, fetchData: taxesFetch } = useFetch();
-  // const { uploadImage } = useBucket();
 
   // [info]: methods
-  const calculateTaxAmount = (salePrice: number, taxPercent: number) => {
-    return (salePrice * taxPercent) / 100;
-  };
-
-  const calculateTaxPercent = (salePrice: number, taxAmount: number) => {
-    return (taxAmount / salePrice) * 100;
-  };
 
   const resetErrorMsg = () => {
     setErrorMsg({
@@ -277,7 +274,10 @@ export default function InventoryAdd() {
   };
 
   const handleCreateProductClient = (product: any) => {
-    dispatch(setProducts([...products, product]));
+    // eslint-disable-next-line camelcase
+    const total_price = getTotalPrice({ ...product });
+    // eslint-disable-next-line camelcase
+    dispatch(setProducts([...products, { ...product, total_price }]));
   };
 
   const handleCreateProduct = () => {
