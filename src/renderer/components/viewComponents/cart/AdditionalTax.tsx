@@ -38,8 +38,41 @@ function AdditionalTax() {
   const calculations = useSelector(
     (state: any) => state.appData.cart.calculations,
   );
+  const cartTaxes = useSelector(
+    (state: any) => state.appData.cart.calculations.order_tax,
+  );
 
   //   [info]: methods
+  const handleTaxIncludeToggle = (event: {
+    target: { checked: boolean | ((prevState: boolean) => boolean) };
+  }) => {
+    if (!event.target.checked) {
+      setUserInput([
+        {
+          name: '',
+          percent: '',
+          amount: '',
+        },
+      ]);
+      dispatch(
+        setCart({
+          calculations: {
+            ...calculations,
+            total: (parseFloat(calculations.subTotal) + 0).toFixed(2),
+          },
+        }),
+      );
+
+      dispatch(
+        setOrderLevelTaxes({
+          total: 0,
+          taxes: [],
+        }),
+      );
+    }
+    setIsAdditionalTaxInclude(event.target.checked);
+  };
+
   const handleSelectDefaultTax = (selectedTax: any, index: number) => {
     const newTaxes = [...userInput];
 
@@ -63,6 +96,12 @@ function AdditionalTax() {
     const taxesCopy = [...userInput];
     taxesCopy.splice(index, 1);
     setUserInput(taxesCopy);
+    dispatch(
+      setOrderLevelTaxes({
+        total: calculateTotalTaxAmount(taxesCopy),
+        taxes: taxesCopy,
+      }),
+    );
   };
 
   const handleAddTax = () => {
@@ -135,7 +174,7 @@ function AdditionalTax() {
             });
 
             setTaxes(modifiedTaxes);
-            dispatch(setGlobalTaxes(modifiedTaxes));
+            dispatch(setGlobalTaxes(res.data));
           }
         }
         return true;
@@ -154,6 +193,10 @@ function AdditionalTax() {
       fetchTaxes();
     }
 
+    if (cartTaxes?.taxes.length > 0) {
+      setIsAdditionalTaxInclude(true);
+      setUserInput(cartTaxes?.taxes);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -165,9 +208,7 @@ function AdditionalTax() {
             <input
               type="checkbox"
               checked={isAdditionalTaxInclude}
-              onChange={(event) => {
-                setIsAdditionalTaxInclude(event.target.checked);
-              }}
+              onChange={handleTaxIncludeToggle}
             />
             <span className="slider" />
           </label>
