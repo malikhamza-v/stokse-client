@@ -3,7 +3,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import CreatableSelect from 'react-select/creatable';
 import { toast } from 'react-toastify';
 import {
   SecondaryButton,
@@ -18,26 +17,19 @@ import {
   InfoSVG,
   MinusSVG,
 } from '../../utils/svg';
-import {
-  resetCart,
-  setCart,
-  setTaxes as setGlobalTaxes,
-} from '../../../store/slices/appData';
-import { LabelInput, Toast } from '../../components/commonComponents';
-import { useFetch } from '../../utils/hooks';
-import { noTaxOptions } from '../../utils/constant';
+import { resetCart, setCart } from '../../../store/slices/appData';
+import { Toast } from '../../components/commonComponents';
+import { useCreate } from '../../utils/hooks';
 
-// import { colourOptions } from '../data';
+import {
+  AdditionalTax,
+  CartDetail,
+  CustomerDetail,
+  PaymentCollection,
+} from '../../components/viewComponents/cart';
 
 function Cart() {
-  // [info]: constant
-
-  const cartItems = useSelector((state: any) => state.appData.cart.items);
-  const calculations = useSelector(
-    (state: any) => state.appData.cart.calculations,
-  );
-  const globalTaxes = useSelector((state: any) => state.appData.taxes);
-
+  // [info]: states
   const [discount, setDiscount] = useState<{
     percent: number | string;
     value: number | string;
@@ -46,21 +38,19 @@ function Cart() {
     value: 0,
   });
   const [showCartItemEditModal, setShowCartItemEditModal] = useState(false);
-  const [userInput, setUserInput] = useState({
-    taxes: [{ name: '', percent: '', amount: '' }],
-  });
-  const [errorMsg, setErrorMsg] = useState({});
-  const [taxes, setTaxes] = useState([{ label: '', value: '' }]);
-
-  const [isAdditionalTaxInclude, setIsAdditionalTaxInclude] = useState(false);
   const [showOrderConfirmationModal, setShowOrderConfirmationModal] =
     useState(false);
   const [orderConfirmationState, setOrderConfirmationState] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
-  const { loading: taxFetchLoading, fetchData: taxesFetch } = useFetch();
-
+  // [info]: hooks
   const dispatch = useDispatch();
+
+  const cartItems = useSelector((state: any) => state.appData.cart.items);
+  const calculations = useSelector(
+    (state: any) => state.appData.cart.calculations,
+  );
+  const { loading: cOrderLoading, createData: orderCreate } = useCreate();
 
   // [info]: methods
   const handleDiscount = (key: string, value: string) => {
@@ -154,14 +144,6 @@ function Cart() {
     setShowCartItemEditModal(false);
   };
 
-  const calculateTaxAmount = (salePrice: number, taxPercent: number) => {
-    return (salePrice * taxPercent) / 100;
-  };
-
-  const calculateTaxPercent = (salePrice: number, taxAmount: number) => {
-    return (taxAmount / salePrice) * 100;
-  };
-
   const increaseItemQty = (id: number) => {
     const productIndex = cartItems.findIndex((item: any) => item.id === id);
 
@@ -181,31 +163,24 @@ function Cart() {
     }
   };
 
-  const handleAddTax = () => {
-    setUserInput({
-      ...userInput,
-      taxes: [
-        ...userInput.taxes,
-        {
-          name: '',
-          percent: '',
-          amount: '',
-        },
-      ],
-    });
-  };
-
-  const handleRemoveTax = (index: number) => {
-    if (userInput.taxes.length === 1 && index === 0) {
-      setIsAdditionalTaxInclude(false);
+  const handleNext = () => {
+    if (orderConfirmationState === 3) {
+      const payload = {
+        items: cartItems,
+        sub_total: calculations.subTotal,
+        order_discount: 0,
+        tip: 0,
+        tax: calculations.order_tax?.taxes || [],
+        total: calculations.total,
+        payment_methods: calculations.payment?.methods || [],
+        payment_status: 'Completed',
+      };
+      // orderCreate('/orders/', payload, false).then((res) => {
+      //   console.log('res', res);
+      // });
       return;
     }
-    const taxesCopy = [...userInput.taxes];
-    taxesCopy.splice(index, 1);
-    setUserInput({
-      ...userInput,
-      taxes: taxesCopy,
-    });
+    setOrderConfirmationState(orderConfirmationState + 1);
   };
 
   const descreaseItemQty = (id: number) => {
@@ -226,74 +201,6 @@ function Cart() {
         }),
       );
     }
-  };
-
-  const handleSelectDefaultTax = (selectedTax: any, index: number) => {
-    const newTaxes = [...userInput.taxes];
-
-    if (index >= 0 && index < newTaxes.length && selectedTax) {
-      newTaxes[index].name = selectedTax.label;
-      newTaxes[index].percent = selectedTax.percent;
-      newTaxes[index].amount = calculateTaxAmount(
-        userInput.sale_price || 0,
-        selectedTax.percent,
-      ) as unknown as string;
-    }
-
-    setUserInput({
-      ...userInput,
-      taxes: newTaxes,
-    });
-  };
-
-  const fetchTaxes = () => {
-    taxesFetch('/tax/')
-      .then((res) => {
-        if (res?.status === 200) {
-          if (res?.data.length > 0) {
-            const modifiedTaxes = res?.data.map((tax: any) => {
-              return {
-                label: tax.name,
-                percent: tax.percent,
-              };
-            });
-
-            setTaxes(modifiedTaxes);
-            dispatch(setGlobalTaxes(modifiedTaxes));
-          }
-        }
-        return true;
-      })
-      .catch(() => {
-        return false;
-      });
-  };
-
-  const handleUserInputTax = (key: string, value: string, index: number) => {
-    const newTaxes = [...userInput.taxes];
-
-    if (index >= 0 && index < newTaxes.length) {
-      newTaxes[index][key] = value;
-      if (calculations.subTotal) {
-        if (key === 'percent') {
-          newTaxes[index].amount = calculateTaxAmount(
-            calculations.subTotal,
-            parseInt(value || '0', 10),
-          ) as unknown as string;
-        }
-        if (key === 'amount') {
-          newTaxes[index].percent = calculateTaxPercent(
-            calculations.subTotal,
-            parseFloat(value || '0'),
-          ) as unknown as string;
-        }
-      }
-    }
-
-    setUserInput({
-      ...userInput,
-      taxes: newTaxes,
-    });
   };
 
   const cancelCart = () => {
@@ -334,8 +241,10 @@ function Cart() {
           calculations: {
             subTotal: calculatedSubTotal,
             item_tax: calculatedItemTax,
+            // [info]: subTotal already contain the taxes
             total: (
-              parseFloat(calculatedSubTotal) + parseFloat(calculatedItemTax)
+              parseFloat(calculatedSubTotal) +
+              parseFloat(calculations.order_tax?.total || 0)
             ).toFixed(2),
           },
         }),
@@ -344,16 +253,6 @@ function Cart() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartItems]);
-
-  useEffect(() => {
-    if (globalTaxes.length > 0) {
-      setTaxes(globalTaxes);
-      dispatch(setGlobalTaxes(globalTaxes));
-    } else {
-      fetchTaxes();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div className="border h-screen flex flex-col justify-between">
@@ -455,13 +354,10 @@ function Cart() {
             <p className="font-medium">{cartItems.length} (items)</p>
           </div>
           <div className="flex justify-between items-center">
-            <p className="text-gray-400 text-md">Subtotal</p>
+            <p className="text-gray-400 text-md">Subtotal (incl. taxes)</p>
             <p className="font-medium">{calculations.subTotal} USD</p>
           </div>
-          <div className="flex justify-between items-center">
-            <p className="text-gray-400 text-md">Taxes</p>
-            <p className="font-extralight">{calculations.item_tax} USD</p>
-          </div>
+
           <div className="flex justify-between items-center mb-6 mt-4">
             <p className="text-lg font-bold">Total</p>
             <p className="font-medium">{calculations.total} USD</p>
@@ -650,296 +546,12 @@ function Cart() {
                         </p>
                       </div>
                     </div>
-                    <div className="mt-4 mb-6">
-                      <p>Order Detail</p>
-                      <div className="divide-y divide-gray-200">
-                        <div className="flex flex-col gap-2 border-b">
-                          <div className="flex justify-between items-center">
-                            <p className="text-gray-400 text-md">Item</p>
-                            <p className="font-medium">
-                              {cartItems.length} (items)
-                            </p>
-                          </div>
-                          <div className="flex justify-between items-center">
-                            <p className="text-gray-400 text-md">Subtotal</p>
-                            <p className="font-medium">
-                              {calculations.subTotal} USD
-                            </p>
-                          </div>
-
-                          <div className="flex justify-between items-center">
-                            <p className="text-gray-400 text-md">Taxes</p>
-                            <p className="font-extralight">
-                              {calculations.item_tax} USD
-                            </p>
-                          </div>
-
-                          <div className="flex justify-between items-center mb-6 mt-4">
-                            <p className="text-lg font-bold">Total</p>
-                            <p className="font-medium">
-                              {calculations.subTotal} USD
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <CartDetail />
                     <div className=" text-base leading-6 text-gray-700 sm:text-lg sm:leading-7 flex flex-col flex-grow flex-auto h-full">
-                      {orderConfirmationState === 1 && (
-                        <div>
-                          <div className="mb-4">
-                            <div className="flex gap-4 justify-between items-center">
-                              <p>Include Additional Tax</p>
-                              <label className="switch">
-                                <input
-                                  type="checkbox"
-                                  checked={isAdditionalTaxInclude}
-                                  onChange={(event) => {
-                                    setIsAdditionalTaxInclude(
-                                      event.target.checked,
-                                    );
-                                  }}
-                                />
-                                <span className="slider" />
-                              </label>
-                            </div>
-                          </div>
-                          {isAdditionalTaxInclude &&
-                            userInput.taxes.map((tax: any, index) => (
-                              <div
-                                className="py-4 space-y-4 text-base"
-                                key={`${tax.name}-${index + 1}`}
-                              >
-                                <div className="flex items-center justify-between gap-2">
-                                  <div className="flex-1">
-                                    <LabelInput
-                                      required
-                                      label="Tax Name"
-                                      loading={false}
-                                      errorMsg={null}
-                                    >
-                                      <CreatableSelect
-                                        isClearable
-                                        options={
-                                          taxes[0].value.length > 0
-                                            ? taxes
-                                            : noTaxOptions
-                                        }
-                                        className=""
-                                        placeholder="Tax Name"
-                                        value={{
-                                          value: '',
-                                          label: userInput.taxes[index].name,
-                                        }}
-                                        onChange={(selectedTax) =>
-                                          handleSelectDefaultTax(
-                                            selectedTax,
-                                            index,
-                                          )
-                                        }
-                                        onCreateOption={(name) =>
-                                          handleUserInputTax(
-                                            'name',
-                                            name,
-                                            index,
-                                          )
-                                        }
-                                      />
-                                    </LabelInput>
-                                  </div>
-                                  <div
-                                    className="mt-8 cursor-pointer"
-                                    onClick={() => handleRemoveTax(index)}
-                                  >
-                                    <DeleteSVG />
-                                  </div>
-                                </div>
+                      {orderConfirmationState === 1 && <AdditionalTax />}
+                      {orderConfirmationState === 2 && <CustomerDetail />}
 
-                                <div className="grid grid-cols-2 gap-4">
-                                  <div>
-                                    <LabelInput
-                                      required
-                                      label="Tax Percent (%)"
-                                      loading={false}
-                                      errorMsg={
-                                        errorMsg[`taxes_percent[${index}]`]
-                                      }
-                                    >
-                                      <input
-                                        type="number"
-                                        id="tax_percent"
-                                        className="bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                        placeholder="Tax Percent"
-                                        required
-                                        value={userInput.taxes[index].percent}
-                                        onChange={(e) =>
-                                          handleUserInputTax(
-                                            'percent',
-                                            e.target.value,
-                                            index,
-                                          )
-                                        }
-                                      />
-                                    </LabelInput>
-                                  </div>
-
-                                  <div>
-                                    <LabelInput
-                                      required
-                                      label="Tax Amount"
-                                      loading={false}
-                                      errorMsg={
-                                        errorMsg[`taxes_amount[${index}]`]
-                                      }
-                                    >
-                                      <input
-                                        type="number"
-                                        id="tax_amount"
-                                        className="bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                        placeholder="Tax Amount"
-                                        required
-                                        value={userInput.taxes[index].amount}
-                                        onChange={(e) =>
-                                          handleUserInputTax(
-                                            'amount',
-                                            e.target.value,
-                                            index,
-                                          )
-                                        }
-                                      />
-                                    </LabelInput>
-                                  </div>
-                                </div>
-                                <button
-                                  type="button"
-                                  className="text-blue-600 flex items-center gap-2 ml-auto"
-                                  onClick={handleAddTax}
-                                >
-                                  <AddSVG />
-                                  <p>Add another</p>
-                                </button>
-                              </div>
-                            ))}
-                        </div>
-                      )}
-                      {orderConfirmationState === 2 && (
-                        <div className="text-base flex flex-col gap-2">
-                          <p className="font-bold my-4">Customer Detail:</p>
-                          <div className="flex gap-2 items-center">
-                            <LabelInput
-                              label="Customer Name"
-                              errorMsg={null}
-                              loading={false}
-                              required={false}
-                            >
-                              <input
-                                type="number"
-                                className="p-2.5 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                                placeholder="Customer Name"
-                                // value={discount.percent}
-                                // onChange={(e) =>
-                                //   handleDiscount('percent', e.target.value)
-                                // }
-                              />
-                            </LabelInput>
-
-                            <LabelInput
-                              label="Customer Phone"
-                              errorMsg={null}
-                              loading={false}
-                              required={false}
-                            >
-                              <input
-                                type="number"
-                                className="p-2.5 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                                placeholder="Customer Phone"
-                                // value={discount.percent}
-                                // onChange={(e) =>
-                                //   handleDiscount('percent', e.target.value)
-                                // }
-                              />
-                            </LabelInput>
-                          </div>
-                          <LabelInput
-                            label="Customer Email"
-                            errorMsg={null}
-                            loading={false}
-                            required={false}
-                          >
-                            <input
-                              type="number"
-                              className="p-2.5 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                              placeholder="Customer Email"
-                              // value={discount.percent}
-                              // onChange={(e) =>
-                              //   handleDiscount('percent', e.target.value)
-                              // }
-                            />
-                          </LabelInput>
-
-                          <p className="text-gray-500 text-sm">
-                            * This information is required for sending invoice
-                            to customer email.
-                          </p>
-                        </div>
-                      )}
-
-                      {orderConfirmationState === 3 && (
-                        <div className="text-base">
-                          <p className="font-bold my-4">Collect Payment:</p>
-                          <div className="text-base !font-thin flex flex-col gap-2">
-                            <LabelInput
-                              required
-                              label="Collected Amount"
-                              loading={false}
-                              errorMsg={null}
-                            >
-                              <input
-                                type="number"
-                                className="p-2.5 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                                placeholder="Amount"
-                                // value={discount.percent}
-                                // onChange={(e) =>
-                                //   handleDiscount('percent', e.target.value)
-                                // }
-                              />
-                            </LabelInput>
-                            <LabelInput
-                              required
-                              label="Payment Method"
-                              loading={false}
-                              errorMsg={errorMsg[`taxes_name[8]`]}
-                            >
-                              <CreatableSelect
-                                isClearable
-                                options={taxes}
-                                className=""
-                                placeholder="Tax Name"
-                                value={{
-                                  value: '',
-                                  label: userInput.taxes[0].name,
-                                }}
-                                onChange={(selectedTax) =>
-                                  handleSelectDefaultTax(selectedTax, 0)
-                                }
-                                onCreateOption={(name) =>
-                                  handleUserInputTax('name', name, 0)
-                                }
-                              />
-                            </LabelInput>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* <div className="flex flex-col">
-                        <label className="leading-loose">
-                          Additional Notes
-                        </label>
-                        <input
-                          type="text"
-                          className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                          placeholder="Add any personalized note for the item and customer"
-                        />
-                      </div> */}
+                      {orderConfirmationState === 3 && <PaymentCollection />}
                     </div>
                     <div className="pt-4 flex items-center space-x-4">
                       <button
@@ -963,9 +575,7 @@ function Cart() {
                       <button
                         type="button"
                         className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none"
-                        onClick={() =>
-                          setOrderConfirmationState(orderConfirmationState + 1)
-                        }
+                        onClick={handleNext}
                       >
                         Next
                       </button>

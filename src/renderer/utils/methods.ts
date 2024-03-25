@@ -11,11 +11,37 @@ const getTotalPrice = (product: any): number => {
 };
 
 const calculateTaxAmount = (salePrice: number, taxPercent: number) => {
-  return (salePrice * taxPercent) / 100;
+  return ((salePrice * taxPercent) / 100).toFixed(2);
 };
 
 const calculateTaxPercent = (salePrice: number, taxAmount: number) => {
-  return (taxAmount / salePrice) * 100;
+  return ((taxAmount / salePrice) * 100).toFixed(2);
 };
 
-export { getTotalPrice, calculateTaxAmount, calculateTaxPercent };
+const calculateTotalTaxAmount = (
+  taxes: { name: string; amount: string; percent: string }[],
+) => {
+  const totalAmount = taxes.reduce((accumulator, tax) => {
+    if (
+      !tax ||
+      typeof tax !== 'object' ||
+      !('amount' in tax) ||
+      !('percent' in tax)
+    ) {
+      throw new Error('Invalid tax object found in the array.');
+    }
+
+    const amount = parseFloat(tax.amount || '0');
+
+    return accumulator + amount;
+  }, 0);
+
+  return totalAmount.toFixed(2); // Return total amount with two decimal places
+};
+
+export {
+  getTotalPrice,
+  calculateTaxAmount,
+  calculateTaxPercent,
+  calculateTotalTaxAmount,
+};

@@ -9,10 +9,19 @@ const appData = createSlice({
     store: null,
     cart: {
       items: [],
+      customer: { name: '', phone: '', email: '' },
       calculations: {
+        payment: {
+          total: null,
+          methods: [],
+        },
         subTotal: null,
         item_tax: null,
         total: null,
+        order_tax: {
+          total: null,
+          taxes: [],
+        },
       },
     },
     categories: [],
@@ -36,6 +45,18 @@ const appData = createSlice({
     setCart: (state, action) => {
       state.cart = { ...state.cart, ...action.payload };
     },
+    setCustomer: (state, action) => {
+      state.cart.customer = action.payload;
+    },
+    setPayment: (state, action) => {
+      state.cart.calculations.payment = action.payload;
+    },
+    setOrderLevelTaxes: (state, action) => {
+      state.cart.calculations.order_tax = {
+        total: action.payload.total,
+        taxes: action.payload.taxes,
+      };
+    },
     setCategories: (state, action) => {
       state.categories = action.payload;
     },
@@ -52,9 +73,17 @@ const appData = createSlice({
       state.cart = {
         items: [],
         calculations: {
+          payment: {
+            total: null,
+            methods: [],
+          },
           subTotal: null,
           item_tax: null,
           total: null,
+          order_tax: {
+            total: null,
+            taxes: [],
+          },
         },
       };
     },
@@ -67,6 +96,9 @@ export const {
   setUser,
   setStore,
   setCart,
+  setOrderLevelTaxes,
+  setPayment,
+  setCustomer,
   setCategories,
   setBrands,
   setTaxes,
