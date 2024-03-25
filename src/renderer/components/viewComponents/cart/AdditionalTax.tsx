@@ -203,9 +203,12 @@ function AdditionalTax() {
     <div>
       <div className="mb-4">
         <div className="flex gap-4 justify-between items-center">
-          <p>Include Additional Tax</p>
+          <label htmlFor="include_additional_tax">
+            <p className="font-bold my-4 text-base">Include Additional Tax</p>
+          </label>
           <label className="switch">
             <input
+              id="include_additional_tax"
               type="checkbox"
               checked={isAdditionalTaxInclude}
               onChange={handleTaxIncludeToggle}

@@ -8,7 +8,7 @@ function CartDetail() {
   );
 
   return (
-    <div className="mt-4 mb-6">
+    <div className="mt-4 mb-2">
       <p>Order Detail</p>
       <div className="divide-y divide-gray-200">
         <div className="flex flex-col gap-2 border-b">
