@@ -12,6 +12,7 @@ const appData = createSlice({
       customer: { name: '', phone: '', email: '' },
       calculations: {
         payment: {
+          balance: null,
           total: null,
           methods: [],
         },
@@ -72,8 +73,10 @@ const appData = createSlice({
     resetCart: (state) => {
       state.cart = {
         items: [],
+        customer: { name: '', phone: '', email: '' },
         calculations: {
           payment: {
+            balance: null,
             total: null,
             methods: [],
           },

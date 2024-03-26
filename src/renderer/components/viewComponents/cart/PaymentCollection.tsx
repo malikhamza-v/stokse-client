@@ -5,10 +5,14 @@ import { SingleValue } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { useDispatch, useSelector } from 'react-redux';
 import { LabelInput } from '../../commonComponents';
-import { setPaymentMethods as setGlobalPaymentMethod } from '../../../../store/slices/appData';
+import {
+  setPaymentMethods as setGlobalPaymentMethod,
+  setPayment,
+} from '../../../../store/slices/appData';
 import { useFetch } from '../../../utils/hooks';
 import { noTaxOptions } from '../../../utils/constant';
 import { AddSVG, DeleteSVG } from '../../../utils/svg';
+import { calculateTotalPaymentAmount } from '../../../utils/methods';
 
 function PaymentCollection() {
   // [info]: states
@@ -37,6 +41,12 @@ function PaymentCollection() {
     const methodsCopy = [...userInput];
     methodsCopy.splice(index, 1);
     setUserInput(methodsCopy);
+    dispatch(
+      setPayment({
+        total: calculateTotalPaymentAmount(methodsCopy),
+        methods: methodsCopy,
+      }),
+    );
   };
 
   const handleSelectDefaultMethod = (
@@ -46,10 +56,18 @@ function PaymentCollection() {
     const newMethods = [...userInput];
 
     if (index >= 0 && index < newMethods.length && selectedMethod) {
-      newMethods[index].method = selectedMethod.value;
+      newMethods[index] = {
+        ...newMethods[index],
+        method: selectedMethod.value,
+      };
     }
-
     setUserInput(newMethods);
+    dispatch(
+      setPayment({
+        total: calculateTotalPaymentAmount(newMethods),
+        methods: newMethods,
+      }),
+    );
   };
 
   const handleUserInput = (key: string, value: string, index: number) => {
@@ -63,6 +81,13 @@ function PaymentCollection() {
     }
 
     setUserInput(newMethods);
+
+    dispatch(
+      setPayment({
+        total: calculateTotalPaymentAmount(newMethods),
+        methods: newMethods,
+      }),
+    );
   };
 
   const handleAddMethod = () => {
@@ -86,7 +111,6 @@ function PaymentCollection() {
             };
           });
           setPaymentMethods(methods);
-          dispatch(setGlobalPaymentMethod(res?.data));
         }
         return true;
       })

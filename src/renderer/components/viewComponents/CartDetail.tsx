@@ -1,11 +1,32 @@
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPayment } from '../../../store/slices/appData';
 
 function CartDetail() {
+  // [info]: state
+  const [balance, setBalance] = useState(0);
   // [info]: hooks
+  const dispatch = useDispatch();
   const cartItems = useSelector((state: any) => state.appData.cart.items);
   const calculations = useSelector(
     (state: any) => state.appData.cart.calculations,
   );
+
+  useEffect(() => {
+    if (calculations.total && calculations.payment?.total) {
+      const calculatedBalance = (
+        calculations.total - calculations.payment.total
+      ).toFixed(2);
+      dispatch(
+        setPayment({
+          ...calculations.payment,
+          balance: calculatedBalance as unknown as number,
+        }),
+      );
+      setBalance(calculatedBalance as unknown as number);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [calculations.total, calculations.payment?.total]);
 
   return (
     <div className="mt-4 mb-2">
@@ -40,10 +61,41 @@ function CartDetail() {
             </div>
           )}
 
-          <div className="flex justify-between items-center mb-6 mt-4">
+          <div className="flex justify-between items-center mb-2 mt-4">
             <p className="text-lg font-bold">Total</p>
             <p className="font-medium">{calculations.total} USD</p>
           </div>
+
+          {calculations.payment?.methods?.length > 0 && (
+            <div className="flex flex-col justify-between ">
+              <p className="my-1">Paid By</p>
+              {calculations.payment?.methods.map(
+                (method: any, index: number) => (
+                  <div
+                    key={`${method.method}-${index + 1}`}
+                    className="flex items-center mb-2 justify-between"
+                  >
+                    <p className="text-gray-400 text-sm">
+                      {method.method || 'Others'}
+                    </p>
+                    <p className="font-extralight text-sm">
+                      {(parseFloat(method.amount) || 0).toFixed(2)} USD
+                    </p>
+                  </div>
+                ),
+              )}
+            </div>
+          )}
+          {calculations.total && calculations?.payment?.total && (
+            <div className="flex justify-between items-center my-2">
+              <p className="text-lg font-bold">
+                {balance > 0 ? 'Balance' : 'Change'}
+              </p>
+              <p className="font-medium">
+                {balance > 0 ? balance : balance * -1} USD
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

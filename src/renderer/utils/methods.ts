@@ -1,4 +1,4 @@
-const getTotalPrice = (product: any): number => {
+export const getTotalPrice = (product: any): number => {
   if (product.taxes === null) {
     return product.sale_price.toFixed(2);
   }
@@ -10,15 +10,23 @@ const getTotalPrice = (product: any): number => {
   return totalPrice.toFixed(2);
 };
 
-const calculateTaxAmount = (salePrice: number, taxPercent: number) => {
+export const calculateTaxAmount = (salePrice: number, taxPercent: number) => {
   return ((salePrice * taxPercent) / 100).toFixed(2);
 };
 
-const calculateTaxPercent = (salePrice: number, taxAmount: number) => {
+export const calculateTaxPercent = (salePrice: number, taxAmount: number) => {
   return ((taxAmount / salePrice) * 100).toFixed(2);
 };
 
-const calculateTotalTaxAmount = (
+export const calculateTotalPaymentAmount = (methods: any) => {
+  const totalAmount = methods.reduce(
+    (total: number, method: any) => total + (parseFloat(method.amount) || 0),
+    0,
+  );
+  return totalAmount.toFixed(2);
+};
+
+export const calculateTotalTaxAmount = (
   taxes: { name: string; amount: string; percent: string }[],
 ) => {
   const totalAmount = taxes.reduce((accumulator, tax) => {
@@ -37,11 +45,4 @@ const calculateTotalTaxAmount = (
   }, 0);
 
   return totalAmount.toFixed(2); // Return total amount with two decimal places
-};
-
-export {
-  getTotalPrice,
-  calculateTaxAmount,
-  calculateTaxPercent,
-  calculateTotalTaxAmount,
 };

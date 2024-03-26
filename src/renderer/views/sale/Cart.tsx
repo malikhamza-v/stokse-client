@@ -165,6 +165,10 @@ function Cart() {
 
   const handleNext = () => {
     if (orderConfirmationState === 3) {
+      if (calculations.total - calculations.payment.total > 0) {
+        toast.error('Cart has remaining balance!');
+        return;
+      }
       const payload = {
         items: cartItems,
         sub_total: calculations.subTotal,
@@ -173,11 +177,20 @@ function Cart() {
         tax: calculations.order_tax?.taxes || [],
         total: calculations.total,
         payment_methods: calculations.payment?.methods || [],
-        payment_status: 'Completed',
+        payment_status: 'completed',
       };
-      // orderCreate('/orders/', payload, false).then((res) => {
-      //   console.log('res', res);
-      // });
+      orderCreate('/orders/', payload, false)
+        .then((res) => {
+          if (res.status === 200) {
+            toast.success('Order created successfully!');
+            setShowOrderConfirmationModal(false);
+            dispatch(resetCart());
+          }
+          return true;
+        })
+        .catch(() => {
+          return false;
+        });
       return;
     }
     setOrderConfirmationState(orderConfirmationState + 1);
@@ -574,10 +587,21 @@ function Cart() {
                       </button>
                       <button
                         type="button"
-                        className="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none"
+                        className={`bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none ${
+                          cOrderLoading && 'opacity-50'
+                        }`}
                         onClick={handleNext}
                       >
-                        Next
+                        <div className="flex items-center justify-center gap-2">
+                          {cOrderLoading && (
+                            <div className="flex flex-row gap-1">
+                              <div className="w-2 h-2 rounded-full bg-white animate-bounce" />
+                              <div className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:-.3s]" />
+                              <div className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:-.5s]" />
+                            </div>
+                          )}
+                          {cOrderLoading ? 'Loading' : 'Next'}
+                        </div>
                       </button>
                     </div>
                   </div>
