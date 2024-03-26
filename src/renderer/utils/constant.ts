@@ -24,7 +24,7 @@ const Navbar = [
   {
     label: 'Catalogue',
     icon: TableSVG,
-    link: '/',
+    link: '/catalogue',
   },
 ];
 

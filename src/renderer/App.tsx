@@ -23,6 +23,7 @@ import {
   Business,
   PaymentMethod as SetupPaymentMethod,
 } from './views/setup';
+import Catalogue from './views/catalogue/Catalogue';
 
 export default function App() {
   return (
@@ -77,6 +78,14 @@ export default function App() {
               element={
                 <MainLayout>
                   <InventoryEdit />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/catalogue/"
+              element={
+                <MainLayout>
+                  <Catalogue />
                 </MainLayout>
               }
             />
