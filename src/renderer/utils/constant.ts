@@ -7,7 +7,7 @@ const Navbar = [
     link: '/',
   },
   {
-    label: 'Customer',
+    label: 'Employees',
     icon: ProfileSVG,
     link: '/customer',
   },
@@ -37,6 +37,7 @@ const noTaxOptions: readonly {
   {
     value: 'No Tax Found',
     label: 'No Tax Found',
+    color: '#000',
     isDisabled: true,
   },
 ];

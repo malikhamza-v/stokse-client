@@ -244,7 +244,7 @@ export default function Inventory() {
       <div className="sm:flex sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-x-3">
-            <h2 className="text-lg font-medium text-gray-800">Products</h2>
+            <h2 className="text-gray-800 font-bold text-2xl">Products</h2>
 
             <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full  ">
               {filteredProducts?.length} products
@@ -285,7 +285,7 @@ export default function Inventory() {
               </defs>
             </svg>
 
-            <span>Import</span>
+            <span>Export</span>
           </button>
           <Link to="/inventory/add">
             <button
