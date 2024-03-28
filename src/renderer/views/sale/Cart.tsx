@@ -183,8 +183,8 @@ function Cart() {
         .then((res) => {
           if (res.status === 200) {
             toast.success('Order created successfully!');
-            setShowOrderConfirmationModal(false);
-            dispatch(resetCart());
+            // setShowOrderConfirmationModal(false);
+            // dispatch(resetCart());
           }
           return true;
         })
