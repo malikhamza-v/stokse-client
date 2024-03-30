@@ -50,6 +50,8 @@ function Cart() {
   const calculations = useSelector(
     (state: any) => state.appData.cart.calculations,
   );
+  const customer = useSelector((state: any) => state.appData.cart.customer);
+
   const { loading: cOrderLoading, createData: orderCreate } = useCreate();
 
   // [info]: methods
@@ -178,6 +180,9 @@ function Cart() {
         total: calculations.total,
         payment_methods: calculations.payment?.methods || [],
         payment_status: 'completed',
+        customer_email: customer.email,
+        customer_name: customer.name,
+        customer_phone: customer.phone,
       };
       orderCreate('/orders/', payload, false)
         .then((res) => {

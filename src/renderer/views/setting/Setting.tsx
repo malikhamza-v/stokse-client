@@ -7,22 +7,22 @@ function Setting() {
     {
       label: 'Categories',
       description: 'Manage categories of your products.',
-      link: '/categories',
+      link: '/setting/categories',
     },
     {
       label: 'Brands',
       description: 'Manage brands of your products.',
-      link: '/brands',
+      link: '/setting/brands',
     },
     {
       label: 'Payment Methods',
       description: 'Manage payment methods of your store.',
-      link: '/payment-methods',
+      link: '/setting/payment-methods',
     },
     {
       label: 'Taxes',
       description: 'Manage default taxes of your store.',
-      link: '/taxes',
+      link: '/setting/taxes',
     },
   ];
   return (

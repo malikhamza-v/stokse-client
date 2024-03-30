@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { LabelInput } from '../../commonComponents';
+import { setCustomer } from '../../../../store/slices/appData';
 
 function CustomerDetail() {
   // [info]: states
@@ -9,12 +11,21 @@ function CustomerDetail() {
     email: '',
   });
 
+  // [info]: hooks
+  const dispatch = useDispatch();
+
   //   [info]: methods
   const handleUserInput = (key: string, value: string) => {
     setUserInput({
       ...userInput,
       [key]: value,
     });
+    dispatch(
+      setCustomer({
+        ...userInput,
+        [key]: value,
+      }),
+    );
   };
   return (
     <div className="text-base flex flex-col gap-2">

@@ -4,7 +4,7 @@ import MainLayout from './components/layout';
 import Dashboard from './views/Dashboard';
 import './App.css';
 import Inventory from './views/inventory/Inventory';
-import Customers from './views/Customers';
+import { CustomerEdit, Customers } from './views/customer';
 import InventoryAdd from './views/inventory/InventoryAdd';
 import Signin from './views/Signin';
 import PrivateRoute from './utils/PrivateRoute';
@@ -50,12 +50,8 @@ export default function App() {
               }
             />
             <Route
-              path="/customer"
-              element={
-                <MainLayout>
-                  <Customers />
-                </MainLayout>
-              }
+              path="/employees"
+              element={<MainLayout>{/* <Customers /> */}</MainLayout>}
             />
             <Route
               path="/inventory"
@@ -89,6 +85,24 @@ export default function App() {
                 </MainLayout>
               }
             />
+            {/* [info]: customers */}
+            <Route
+              path="/customers/"
+              element={
+                <MainLayout>
+                  <Customers />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/customers/edit/:id"
+              element={
+                <MainLayout>
+                  <CustomerEdit />
+                </MainLayout>
+              }
+            />
+
             <Route
               path="/sale"
               element={
@@ -97,6 +111,7 @@ export default function App() {
                 </MainLayout>
               }
             />
+            {/* [info]: Setting */}
             <Route
               path="/setting"
               element={
@@ -106,7 +121,7 @@ export default function App() {
               }
             />
             <Route
-              path="/categories"
+              path="/setting/categories"
               element={
                 <MainLayout>
                   <Categories />
@@ -114,7 +129,7 @@ export default function App() {
               }
             />
             <Route
-              path="/brands"
+              path="/setting/brands"
               element={
                 <MainLayout>
                   <Brands />
@@ -122,7 +137,7 @@ export default function App() {
               }
             />
             <Route
-              path="/taxes"
+              path="/setting/taxes"
               element={
                 <MainLayout>
                   <Taxes />
@@ -130,7 +145,7 @@ export default function App() {
               }
             />
             <Route
-              path="/payment-methods"
+              path="/setting/payment-methods"
               element={
                 <MainLayout>
                   <PaymentMethods />

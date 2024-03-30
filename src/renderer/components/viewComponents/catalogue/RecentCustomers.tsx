@@ -3,6 +3,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-nested-ternary */
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useFetch } from '../../../utils/hooks';
 import { ArrowLongRight, EditSVG, ErrorSVG, ViewSVG } from '../../../utils/svg';
 
@@ -252,16 +253,17 @@ function RecentCustomers() {
         </div>
       </div>
       <div className="w-fit ml-auto my-4">
-        <button
-          type="button"
-          className="border px-4 py-2 border-gray-500 rounded-lg font-medium hover:scale-105 duration-300"
-        >
-          <div className="flex items-center gap-2">
-            See All
-            <ArrowLongRight />
-          </div>
-        </button>
-        {/* <SecondaryButton label="See all" loading={false} onClickAction={null} /> */}
+        <Link to="/customers">
+          <button
+            type="button"
+            className="border px-4 py-2 border-gray-500 rounded-lg font-medium hover:scale-105 duration-300"
+          >
+            <div className="flex items-center gap-2">
+              See All
+              <ArrowLongRight />
+            </div>
+          </button>
+        </Link>
       </div>
     </div>
   );

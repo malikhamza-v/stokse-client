@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-export default function Customers() {
+export default function Employees() {
   return (
     <section className="container p-10 mx-auto">
       <div className="sm:flex sm:items-center sm:justify-between">
