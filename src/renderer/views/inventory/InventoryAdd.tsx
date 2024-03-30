@@ -399,7 +399,7 @@ export default function InventoryAdd() {
             <div className="flex items-center gap-4">
               <div className="w-fit">
                 {categories.length <= 0 && (
-                  <Link to="/categories">
+                  <Link to="/setting/categories">
                     <button
                       type="button"
                       className="flex items-center justify-center w-1/2 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-500 rounded-lg shrink-0 sm:w-auto gap-x-2 hover:bg-blue-600"
@@ -414,7 +414,7 @@ export default function InventoryAdd() {
               </div>
               <div className="w-fit">
                 {brands.length <= 0 && (
-                  <Link to="/brands">
+                  <Link to="/setting/brands">
                     <button
                       type="button"
                       className="flex items-center justify-center w-1/2 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-500 rounded-lg shrink-0 sm:w-auto gap-x-2 hover:bg-blue-600"
@@ -507,7 +507,7 @@ export default function InventoryAdd() {
                       </select>
                     </div>
                   </LabelInput>
-                  <Link to="/categories">
+                  <Link to="/setting/categories">
                     <button
                       type="button"
                       className="text-sm text-violet-400 flex items-center gap-1 mt-2 ml-auto hover:text-black duration-300"
@@ -564,7 +564,7 @@ export default function InventoryAdd() {
                       </select>
                     </div>
                   </LabelInput>
-                  <Link to="/brands">
+                  <Link to="/setting/brands">
                     <button
                       type="button"
                       className="text-sm text-violet-400 flex items-center gap-1 mt-2 ml-auto hover:text-black duration-300"

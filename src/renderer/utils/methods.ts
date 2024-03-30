@@ -1,13 +1,13 @@
 export const getTotalPrice = (product: any): number => {
   if (product.taxes === null) {
-    return product.sale_price.toFixed(2);
+    return parseFloat(product.sale_price).toFixed(2) as unknown as number;
   }
   const totalTaxAmount = product.taxes.reduce(
     (total: number, tax: any) => total + (tax.amount || 0),
     0,
   );
   const totalPrice = product.sale_price + totalTaxAmount;
-  return totalPrice.toFixed(2);
+  return parseFloat(totalPrice).toFixed(2) as unknown as number;
 };
 
 export const calculateTaxAmount = (salePrice: number, taxPercent: number) => {

@@ -24,6 +24,7 @@ import {
   PaymentMethod as SetupPaymentMethod,
 } from './views/setup';
 import Catalogue from './views/catalogue/Catalogue';
+import Orders from './views/orders/Orders';
 
 export default function App() {
   return (
@@ -99,6 +100,16 @@ export default function App() {
               element={
                 <MainLayout>
                   <CustomerEdit />
+                </MainLayout>
+              }
+            />
+
+            {/* [info]: orders */}
+            <Route
+              path="/orders/"
+              element={
+                <MainLayout>
+                  <Orders />
                 </MainLayout>
               }
             />

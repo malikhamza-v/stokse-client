@@ -5,6 +5,7 @@ import { PrimaryButton } from '../../components/commonComponents/buttons';
 import { CameraSVG, FingerRight } from '../../utils/svg';
 import { useCreate } from '../../utils/hooks';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 function Business() {
   const [isUploadImageHover, setIsUploadImageHover] = useState(false);
@@ -54,6 +55,7 @@ function Business() {
   const { createData: createEmployee } = useCreate();
 
   const user = useSelector((state: any) => state.appData.user);
+  const navigate = useNavigate();
 
   const handleUserInput = (key: string, value: string) => {
     setErrorMsg({ ...errorMsg, [key]: null });
@@ -123,7 +125,7 @@ function Business() {
       if (res.status === 200) {
         const employeePayload = {
           role: 'Admin',
-          user: user.id,
+          user: user?.id,
           store: res.data.id,
           is_admin: true,
         };
@@ -135,6 +137,7 @@ function Business() {
         );
         if (employeeRes.status === 200) {
           localStorage.setItem('token', employeeRes.data.token);
+          navigate('/setup/business/category');
         }
       }
     } finally {

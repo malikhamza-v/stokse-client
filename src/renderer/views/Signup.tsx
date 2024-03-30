@@ -5,6 +5,8 @@ import { toast } from 'react-toastify';
 import { LabelInput, Toast } from '../components/commonComponents';
 import useCreate from '../utils/hooks/useCreate';
 import { ArrowLongRight } from '../utils/svg';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../store/slices/appData';
 
 function Signup() {
   const [userInput, setUserInput] = useState({
@@ -36,6 +38,7 @@ function Signup() {
   const { loading: registerLoading, createData: register } = useCreate();
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   //   [info]: methods
   const handleInput = (e: ChangeEvent<HTMLInputElement>, type: string) => {
@@ -147,6 +150,7 @@ function Signup() {
         } else if (res.status === 200) {
           localStorage.setItem('token', res.data.token);
           localStorage.setItem('user', JSON.stringify(res.data.user));
+          dispatch(setUser(res.data.user));
           navigate('/setup/business');
         }
         return true;

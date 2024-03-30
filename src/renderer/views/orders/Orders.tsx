@@ -18,11 +18,11 @@ import {
 import useRemove from '../../utils/hooks/useRemove';
 import { Toast } from '../../components/commonComponents';
 import { setEditProduct } from '../../../store/slices/appData';
-import useCreate from '../../utils/hooks/useCreate';
+import { formatTimestamp } from '../../utils/methods';
 
 /* eslint-disable jsx-a11y/control-has-associated-label */
-export default function Customers() {
-  let currentUrl = '/customers/';
+export default function Orders() {
+  let currentUrl = '/orders/';
   const tableBody = useRef<HTMLTableSectionElement>(null);
   const [products, setProducts] = useState<any>([]);
   const [userInput, setUserInput] = useState({
@@ -36,7 +36,6 @@ export default function Customers() {
   const [selectedFilteredBtn, setSelectedFilteredBtn] = useState<string | null>(
     null,
   );
-  const [errorMsg, setErrorMsg] = useState({ upload: null });
 
   const { loading: fetchLoading, fetchData: productsFetch } = useFetch();
   const { loading: rProductLoading, removeData: removeProduct } = useRemove();
@@ -188,15 +187,15 @@ export default function Customers() {
       <div className="sm:flex sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-x-3">
-            <h2 className="text-gray-800 font-bold text-2xl">Customers</h2>
+            <h2 className="text-gray-800 font-bold text-2xl">Orders</h2>
 
             <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full  ">
-              {products?.count} customers
+              {products?.count} orders
             </span>
           </div>
 
           <p className="mt-1 text-sm text-gray-500 ">
-            These are the products in your store.
+            These are the orders of your store.
           </p>
         </div>
 
@@ -230,7 +229,7 @@ export default function Customers() {
 
             <span>Export</span>
           </button>
-          <Link to="/inventory/add">
+          <Link to="/sale">
             <button
               type="button"
               className="flex items-center justify-center w-1/2 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-500 rounded-lg shrink-0 sm:w-auto gap-x-2 hover:bg-blue-600"
@@ -239,7 +238,7 @@ export default function Customers() {
                 <AddSVG />
               </div>
 
-              <span>Add customer</span>
+              <span>Add order</span>
             </button>
           </Link>
         </div>
@@ -264,7 +263,7 @@ export default function Customers() {
             } sm:text-sm`}
             onClick={() => handleFilter('known')}
           >
-            Known
+            Completed
           </button>
 
           <button
@@ -274,21 +273,18 @@ export default function Customers() {
             } sm:text-sm`}
             onClick={() => handleFilter('walk-in')}
           >
-            Walk-In
+            Cancelled
           </button>
-        </div>
 
-        <div className="relative flex items-center mt-4 md:mt-0">
-          <span className="absolute">
-            <SearchSVG />
-          </span>
-
-          <input
-            type="text"
-            placeholder="Search by email"
-            className="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-            onChange={handleSearch}
-          />
+          <button
+            type="button"
+            className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 ${
+              userInput.filter === 'walk-in' && 'bg-gray-100'
+            } sm:text-sm`}
+            onClick={() => handleFilter('walk-in')}
+          >
+            Refunded
+          </button>
         </div>
       </div>
 
@@ -315,28 +311,28 @@ export default function Customers() {
                       scope="col"
                       className="py-3.5 px-10 text-sm font-normal text-left text-gray-500 w-[20%]"
                     >
-                      Name
+                      Status
                     </th>
 
                     <th
                       scope="col"
                       className="py-3.5 pl-4 pr-8 text-sm font-normal text-left rtl:text-right text-gray-500 w-[20%] "
                     >
-                      No. of orders
+                      Sold Products
                     </th>
 
                     <th
                       scope="col"
                       className="py-3.5 px-3 text-sm font-normal text-left rtl:text-right text-gray-500 w-[20%] "
                     >
-                      Email
+                      Payment Methods
                     </th>
 
                     <th
                       scope="col"
                       className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 w-[10%]"
                     >
-                      Phone
+                      Date
                     </th>
 
                     <th scope="col" className="relative py-3.5 px-4 w-full">
@@ -414,7 +410,7 @@ export default function Customers() {
                             <td className="py-4 px-4 text-sm font-medium w-[20%]">
                               <div className="py-1 text-sm font-normal rounded-full text-emerald-500 bg-emerald-100/60 w-32 text-center">
                                 <p className="text-sm text-wrap  font-normal text-gray-600 capitalize">
-                                  <span>{customer.name || 'Walk-In'}</span>
+                                  <span>{customer.payment_status}</span>
                                 </p>
                               </div>
                             </td>
@@ -422,25 +418,29 @@ export default function Customers() {
                               <div>
                                 <h4 className="text-gray-700 ">
                                   <span>
-                                    {customer.total_orders}{' '}
-                                    {customer.total_orders > 1
-                                      ? 'orders'
-                                      : 'order'}{' '}
-                                    placed
+                                    {customer.items.length} products sold
                                   </span>
                                 </h4>
                               </div>
                             </td>
                             <td className="px-4 py-4 text-sm w-[20%]">
                               <div className="flex items-center">
-                                <p className="text-gray-500 mt-2">
-                                  {customer.email || 'NONE'}
-                                </p>
+                                <ul className="text-gray-500 list-none flex items-center gap-2">
+                                  {customer.payment_methods.map(
+                                    (method: any) => {
+                                      return (
+                                        <li className="font-bold px-2 border rounded">
+                                          {method.method}
+                                        </li>
+                                      );
+                                    },
+                                  )}
+                                </ul>
                               </div>
                             </td>
 
                             <td className="px-4 py-4 text-sm whitespace-nowrap w-[10%]">
-                              <div>{customer.phone || 'NONE'}</div>
+                              <div>{formatTimestamp(customer.created_at)}</div>
                             </td>
 
                             <td className="px-4 py-4 text-sm whitespace-nowrap">
@@ -461,14 +461,6 @@ export default function Customers() {
                                     <EditSVG />
                                   </button>
                                 </Link>
-
-                                <button
-                                  type="button"
-                                  className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
-                                  onClick={() => handleCustomerEdit(customer)}
-                                >
-                                  <DeleteSVG />
-                                </button>
                               </div>
                             </td>
                           </tr>
@@ -484,7 +476,7 @@ export default function Customers() {
                         <div className="flex items-center justify-center gap-2 my-2">
                           <ErrorSVG />
                           <h2 className="font-medium text-gray-800  ">
-                            No Customer Found
+                            No Order Found
                           </h2>
                         </div>
                       </td>
