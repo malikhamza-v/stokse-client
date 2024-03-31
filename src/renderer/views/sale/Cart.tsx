@@ -126,11 +126,14 @@ function Cart() {
 
             return {
               ...item,
-              discounted_price:
-                item.sale_price === discountedPrice && discountedPrice
-                  ? null
-                  : discountedPrice,
-              ...discount,
+              discount: {
+                discounted_price:
+                  item.sale_price === discountedPrice && discountedPrice
+                    ? null
+                    : discountedPrice,
+                percent: discount.percent || null,
+                amount: discount.value || null,
+              },
             };
           }
         }
@@ -167,10 +170,11 @@ function Cart() {
 
   const handleNext = () => {
     if (orderConfirmationState === 3) {
-      if (calculations.total - calculations.payment.total > 0) {
+      if (calculations.total - (calculations.payment?.total || 0) > 0) {
         toast.error('Cart has remaining balance!');
         return;
       }
+
       const payload = {
         items: cartItems,
         sub_total: calculations.subTotal,
@@ -231,8 +235,8 @@ function Cart() {
     if (cartItems.length > 0) {
       const subTotal = cartItems.reduce((total: number, item: any) => {
         let itemSubtotal;
-        if (item.discounted_price) {
-          itemSubtotal = parseFloat(item.discounted_price) * item.qty;
+        if (item.discount.discounted_price) {
+          itemSubtotal = parseFloat(item.discount.discounted_price) * item.qty;
         } else {
           itemSubtotal = parseFloat(item.total_price) * item.qty;
         }
@@ -299,17 +303,17 @@ function Cart() {
                     <button
                       type="button"
                       className={`border border-blue-500 text-blue-500 rounded-full px-4 text-sm ${
-                        item.discounted_price && 'line-through'
+                        item.discount.discounted_price && 'line-through'
                       }`}
                     >
                       {item.total_price} USD
                     </button>
-                    {item.discounted_price && (
+                    {item.discount.discounted_price && (
                       <button
                         type="button"
                         className="border border-blue-500 text-blue-500 rounded-full px-4 text-sm"
                       >
-                        {item.discounted_price} USD
+                        {item.discount.discounted_price} USD
                       </button>
                     )}
                   </div>

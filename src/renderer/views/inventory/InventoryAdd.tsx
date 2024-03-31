@@ -13,7 +13,6 @@ import {
 } from '../../components/commonComponents/buttons';
 import { LabelInput } from '../../components/commonComponents';
 import useCreate from '../../utils/hooks/useCreate';
-// import useBucket from '../../utils/hooks/useBucket';
 import {
   setCategories as setGlobalCategories,
   setBrands as setGlobalBrands,

@@ -120,7 +120,15 @@ function Items() {
     if (existingProductIndex !== -1) {
       const updatedCartItems = cartItems.map((item: any, index: number) => {
         if (index === existingProductIndex) {
-          return { ...item, qty: item.qty + 1 };
+          return {
+            ...item,
+            qty: item.qty + 1,
+            discount: {
+              discounted_price: null,
+              percent: null,
+              amount: null,
+            },
+          };
         }
         return item;
       });
@@ -136,7 +144,18 @@ function Items() {
 
     dispatch(
       setCart({
-        items: [...cartItems, { ...product, qty: 1 }],
+        items: [
+          ...cartItems,
+          {
+            ...product,
+            qty: 1,
+            discount: {
+              discounted_price: null,
+              percent: null,
+              amount: null,
+            },
+          },
+        ],
       }),
     );
   };

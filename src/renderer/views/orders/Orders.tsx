@@ -87,32 +87,6 @@ export default function Orders() {
     fetchProducts(currentUrl);
   };
 
-  function debounce<T extends (...args: any[]) => void>(
-    func: T,
-    delay: number,
-  ): (...args: Parameters<T>) => void {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    return function debouncedFunction(this: any, ...args: Parameters<T>) {
-      const context = this;
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        func.apply(context, args);
-      }, delay);
-    };
-  }
-
-  const debouncedHandleSearch = debounce((value: string, filter: string) => {
-    setUserInput({ ...userInput, email: value });
-
-    constructUrl(value, filter);
-    fetchProducts(currentUrl);
-  }, 1000);
-
-  const handleSearch = (event: { target: { value: any } }) => {
-    const { value } = event.target;
-    debouncedHandleSearch(value, userInput.filter);
-  };
-
   const handlePagination = (direction: string) => {
     if (tableBody.current) {
       tableBody.current.scrollTo({
@@ -452,7 +426,7 @@ export default function Orders() {
                                 >
                                   <ViewSVG />
                                 </button>
-                                <Link to={`/customers/edit/${customer.id}`}>
+                                <Link to={`/order/edit/${customer.id}`}>
                                   <button
                                     type="button"
                                     className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"

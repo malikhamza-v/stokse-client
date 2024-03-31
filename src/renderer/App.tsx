@@ -25,6 +25,7 @@ import {
 } from './views/setup';
 import Catalogue from './views/catalogue/Catalogue';
 import Orders from './views/orders/Orders';
+import OrderEdit from './views/orders/OrderEdit';
 
 export default function App() {
   return (
@@ -96,7 +97,7 @@ export default function App() {
               }
             />
             <Route
-              path="/customers/edit/:id"
+              path="/customer/edit/:id"
               element={
                 <MainLayout>
                   <CustomerEdit />
@@ -110,6 +111,15 @@ export default function App() {
               element={
                 <MainLayout>
                   <Orders />
+                </MainLayout>
+              }
+            />
+
+            <Route
+              path="/order/edit/:id"
+              element={
+                <MainLayout>
+                  <OrderEdit />
                 </MainLayout>
               }
             />

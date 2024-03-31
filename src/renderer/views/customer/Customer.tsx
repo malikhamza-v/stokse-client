@@ -452,7 +452,7 @@ export default function Customers() {
                                 >
                                   <ViewSVG />
                                 </button>
-                                <Link to={`/customers/edit/${customer.id}`}>
+                                <Link to={`/customer/edit/${customer.id}`}>
                                   <button
                                     type="button"
                                     className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
