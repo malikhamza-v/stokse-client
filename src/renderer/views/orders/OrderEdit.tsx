@@ -272,10 +272,10 @@ function OrderEdit() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white block h-[450px] divide-y divide-gray-200 overflow-y-scroll">
+              <tbody className="bg-white block divide-y divide-gray-200 overflow-y-scroll">
                 {orderFetchLoading ? (
                   <>
-                    {[...Array(7).keys()].map((index) => (
+                    {[...Array(3).keys()].map((index) => (
                       <tr className="table w-full" key={index}>
                         <td className="px-4 py-4 text-sm font-medium whitespace-pre-wrap w-[10%]">
                           <div>
@@ -293,7 +293,7 @@ function OrderEdit() {
                             style={{ animationDelay: '0.2s' }}
                           />
                         </td>
-                        <td className="py-4 pl-4 pr-8 text-sm w-[20%]">
+                        <td className="py-4 pl-4 pr-8 text-sm w-[15%]">
                           <div className="flex flex-col gap-2">
                             <div
                               className="h-2 bg-gray-300 rounded-2xl animate-pulse"
@@ -301,7 +301,7 @@ function OrderEdit() {
                             />
                           </div>
                         </td>
-                        <td className="px-4 py-4 text-sm w-[20%]">
+                        <td className="px-4 py-4 text-sm w-[15%]">
                           <div
                             className="h-2 bg-gray-300 rounded-2xl animate-pulse"
                             style={{ animationDelay: '0.2s' }}
@@ -315,7 +315,7 @@ function OrderEdit() {
                           />
                         </td>
 
-                        <td className="px-4 py-4 text-sm whitespace-nowrap">
+                        <td className="px-4 py-4 text-sm whitespace-nowrap w-[10%]">
                           <div
                             className="h-2 bg-gray-300 rounded-2xl animate-pulse"
                             style={{ animationDelay: '0.2s' }}
@@ -337,33 +337,43 @@ function OrderEdit() {
                         </td>
 
                         <td className="py-4 text-sm font-medium w-[20%]">
-                          <div className="py-1 text-sm font-normal rounded-full  w-32 text-center">
+                          <div className="py-1 px-3 text-sm font-normal rounded-full w-32">
                             <p className="text-sm text-wrap font-normal text-gray-600 capitalize">
                               <span>{item.name}</span>
                             </p>
                           </div>
                         </td>
 
-                        <td className="py-4 pl-2 text-sm w-[15%]">
+                        <td className="py-4 pl-4 pr-8 text-sm w-[15%]">
                           <div>
                             <h4 className="text-gray-700 ">
-                              <span>{item.sale_price}</span>
+                              <span>
+                                {parseFloat(item?.sale_price).toFixed(2) ||
+                                  (0).toFixed(2)}
+                              </span>
                             </h4>
                           </div>
                         </td>
-                        <td className="py-4 text-sm w-[20%]">
+                        <td className="py-4 px-3 text-sm w-[15%]">
                           <div className="flex items-center">
-                            <span>{item.total_tax_amount}</span>
+                            <span>
+                              {parseFloat(item?.total_tax_amount).toFixed(2) ||
+                                (0).toFixed(2)}
+                            </span>
                           </div>
                         </td>
 
-                        <td className="px-4 py-4 text-sm whitespace-nowrap w-[10%]">
-                          {/* <div>{formatTimestamp(question.created_at)}</div> */}
+                        <td className="px-3 py-3.5 text-sm whitespace-nowrap w-[20%]">
+                          <div>{item?.discount?.amount || (0).toFixed(2)}</div>
                         </td>
 
-                        <td>
-                          {/* <p className="question-content">{question}</p> */}
-                          {/* {isOpen ? <ArrowLeft /> : <ArrowRight />} */}
+                        <td className="w-[10%] px-4 py-3.5">
+                          <div className="flex items-center">
+                            <span>
+                              {parseFloat(item?.total_price).toFixed(2) ||
+                                (0).toFixed(2)}
+                            </span>
+                          </div>
                         </td>
                       </tr>
                     );
@@ -385,63 +395,6 @@ function OrderEdit() {
                 )}
               </tbody>
             </table>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex bg-slate-100 rounded-3xl border border-gray-400">
-        <div className="w-2/5 p-8">
-          <span className="text-xl font-semibold block">Additional Info</span>
-          <span className="text-gray-600">
-            Edit additional info of your product
-          </span>
-        </div>
-        <div className="w-3/5 p-8">
-          <div className="bg-white rounded-2xl shadow-sm border border-pink-500 p-6">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="">
-                <LabelInput
-                  errorMsg={null}
-                  label="Reorder Quantity"
-                  loading={false}
-                  required={false}
-                >
-                  <input
-                    type="number"
-                    id="reorder_quantity"
-                    className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                    placeholder="Reorder Quantity"
-                    required
-                    onChange={(e) =>
-                      handleUserInput('reorder_quantity', e.target.value)
-                    }
-                    // value={userInput.reorder_quantity}
-                  />
-                </LabelInput>
-              </div>
-
-              <div className="pb-6 pt-2 col-span-2">
-                <LabelInput
-                  errorMsg={null}
-                  label="Additional Note"
-                  loading={false}
-                  required={false}
-                >
-                  <div className="mx-auto">
-                    <textarea
-                      id="additional_notes"
-                      rows={2}
-                      className="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 resize-none"
-                      placeholder="Additional Note"
-                      onChange={(e) =>
-                        handleUserInput('additional_notes', e.target.value)
-                      }
-                      //   value={userInput.additional_notes}
-                    />
-                  </div>
-                </LabelInput>
-              </div>
-            </div>
           </div>
         </div>
       </div>
