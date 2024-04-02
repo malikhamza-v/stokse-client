@@ -25,6 +25,18 @@ function Setting() {
       link: '/setting/taxes',
     },
   ];
+
+  const { ipcRenderer } = window as any;
+
+  const updateMessage = () => {
+    console.log('message logged in view');
+  };
+
+  const checkForUpdate = () => {
+    console.log('check');
+    ipcRenderer.send('check-for-updates');
+    // bridge.updateMessage(updateMessage);
+  };
   return (
     <div className="flex flex-col h-full w-full overflow-y-scroll">
       {/* <div className="px-16 pt-16 flex items-center justify-between">
@@ -182,6 +194,18 @@ function Setting() {
                   </div>
                 </Link>
               ))}
+              <div
+                onClick={checkForUpdate}
+                className="border p-4 rounded-xl flex items-center justify-between cursor-pointer hover:bg-slate-50"
+              >
+                <div>
+                  <p className="font-bold">Check for updates</p>
+                  <p className="text-gray-600">
+                    Always update your app to latest version.
+                  </p>
+                </div>
+                <ArrowRight />
+              </div>
             </div>
           </div>
         </div>

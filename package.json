@@ -1,37 +1,12 @@
 {
-  "description": "A foundation for scalable desktop apps",
-  "keywords": [
-    "electron",
-    "boilerplate",
-    "react",
-    "typescript",
-    "ts",
-    "sass",
-    "webpack",
-    "hot",
-    "reload"
-  ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
-  "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
-  },
+  "version": "1.1.0",
+  "description": "Seamless POS solution for growing businesses",
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "Malik Hamza",
+    "email": "malikhamza.v@gmail.com",
+    "url": "https://malikhamza.me"
   },
-  "contributors": [
-    {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
-    }
-  ],
   "main": "./src/main/main.ts",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
@@ -47,8 +22,9 @@
     "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
     "test": "jest",
-    "dist": "electron-builder"
+    "dist": "electron-builder -p always --win"
   },
+  "repository": "https://github.com/malikhamza-v/POS-Ventory-Builds",
   "browserslist": [],
   "prettier": {
     "singleQuote": true,
@@ -104,7 +80,7 @@
     "electron-debug": "^3.2.0",
     "electron-dl": "^3.5.2",
     "electron-log": "^4.4.8",
-    "electron-updater": "^6.1.4",
+    "electron-updater": "^6.1.8",
     "jsbarcode": "^3.11.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -184,8 +160,8 @@
     "webpack-merge": "^5.9.0"
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "POS Ventory",
+    "appId": "posventory.com",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
@@ -194,44 +170,14 @@
       "package.json"
     ],
     "afterSign": ".erb/scripts/notarize.js",
-    "mac": {
-      "target": {
-        "target": "default",
-        "arch": [
-          "arm64",
-          "x64"
-        ]
-      },
-      "type": "distribution",
-      "hardenedRuntime": true,
-      "entitlements": "assets/entitlements.mac.plist",
-      "entitlementsInherit": "assets/entitlements.mac.plist",
-      "gatekeeperAssess": false
-    },
-    "dmg": {
-      "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    },
     "win": {
       "target": [
         "nsis"
-      ]
-    },
-    "linux": {
-      "target": [
-        "deb"
       ],
-      "category": "Development"
+      "publish": {
+        "provider": "github",
+        "releaseType": "release"
+      }
     },
     "directories": {
       "app": "release/app",
@@ -243,12 +189,9 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate"
+      "owner": "malikhamza-v",
+      "repo": "POS-Victory-Builds"
     }
-  },
-  "collective": {
-    "url": "https://opencollective.com/electron-react-boilerplate-594"
   },
   "devEngines": {
     "node": ">=14.x",

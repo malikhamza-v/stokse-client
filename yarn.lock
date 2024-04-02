@@ -4440,10 +4440,10 @@ buffer@^5.5.0:
     base64-js "^1.3.1"
     ieee754 "^1.1.13"
 
-builder-util-runtime@9.2.1:
-  version "9.2.1"
-  resolved "https://registry.npmjs.org/builder-util-runtime/-/builder-util-runtime-9.2.1.tgz"
-  integrity sha512-2rLv/uQD2x+dJ0J3xtsmI12AlRyk7p45TEbE/6o/fbb633e/S3pPgm+ct+JHsoY7r39dKHnGEFk/AASRFdnXmA==
+builder-util-runtime@9.2.3:
+  version "9.2.3"
+  resolved "https://registry.npmjs.org/builder-util-runtime/-/builder-util-runtime-9.2.3.tgz"
+  integrity sha512-FGhkqXdFFZ5dNC4C+yuQB9ak311rpGAw+/ASz8ZdxwODCv1GGMWgLDeofRkdi0F3VCHQEWy/aXcJQozx2nOPiw==
   dependencies:
     debug "^4.3.4"
     sax "^1.2.4"
@@ -5678,12 +5678,12 @@ electron-to-chromium@^1.4.668:
   resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.687.tgz"
   integrity sha512-Ic85cOuXSP6h7KM0AIJ2hpJ98Bo4hyTUjc4yjMbkvD+8yTxEhfK9+8exT2KKYsSjnCn2tGsKVSZwE7ZgTORQCw==
 
-electron-updater@^6.1.4:
-  version "6.1.4"
-  resolved "https://registry.npmjs.org/electron-updater/-/electron-updater-6.1.4.tgz"
-  integrity sha512-yYAJc6RQjjV4WtInZVn+ZcLyXRhbVXoomKEfUUwDqIk5s2wxzLhWaor7lrNgxODyODhipjg4SVPMhJHi5EnsCA==
+electron-updater@^6.1.8:
+  version "6.1.8"
+  resolved "https://registry.npmjs.org/electron-updater/-/electron-updater-6.1.8.tgz"
+  integrity sha512-hhOTfaFAd6wRHAfUaBhnAOYc+ymSGCWJLtFkw4xJqOvtpHmIdNHnXDV9m1MHC+A6q08Abx4Ykgyz/R5DGKNAMQ==
   dependencies:
-    builder-util-runtime "9.2.1"
+    builder-util-runtime "9.2.3"
     fs-extra "^10.1.0"
     js-yaml "^4.1.0"
     lazy-val "^1.0.5"

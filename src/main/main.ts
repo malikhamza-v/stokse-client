@@ -16,11 +16,16 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
+// AutoUpdater Configurations
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = true;
+
 class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
+    autoUpdater.checkForUpdates();
+    console.log('checking for update');
   }
 }
 
@@ -110,6 +115,13 @@ const createWindow = async () => {
     }
   });
 
+  ipcMain.on('check-for-updates', async () => {
+    console.log('checking for update');
+    new AppUpdater();
+
+    // this.window.webContents.send('updateMessage', message);
+  });
+
   mainWindow.on('ready-to-show', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
@@ -120,6 +132,11 @@ const createWindow = async () => {
       mainWindow.show();
     }
   });
+
+  // function showUpdatePrompt(message) {
+  //   console.log('show mesage trapped');
+  //   console.log(message);
+  // }
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -136,7 +153,6 @@ const createWindow = async () => {
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
-  new AppUpdater();
 };
 
 /**
