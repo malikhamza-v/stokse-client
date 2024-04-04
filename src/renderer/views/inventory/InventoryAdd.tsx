@@ -187,7 +187,7 @@ export default function InventoryAdd() {
             const modifiedTaxes = res?.data.map((tax: any) => {
               return {
                 label: tax.name,
-                percent: tax.percent,
+                value: tax.percent,
               };
             });
 

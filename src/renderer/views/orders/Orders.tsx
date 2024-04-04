@@ -403,7 +403,10 @@ export default function Orders() {
                                   {customer.payment_methods.map(
                                     (method: any) => {
                                       return (
-                                        <li className="font-bold px-2 border rounded">
+                                        <li
+                                          key={method.method}
+                                          className="font-bold px-2 border rounded"
+                                        >
                                           {method.method}
                                         </li>
                                       );
@@ -430,7 +433,6 @@ export default function Orders() {
                                   <button
                                     type="button"
                                     className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
-                                    // onClick={() => handleProductForEdit(product)}
                                   >
                                     <EditSVG />
                                   </button>

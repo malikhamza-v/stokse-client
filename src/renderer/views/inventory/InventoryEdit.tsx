@@ -15,6 +15,7 @@ import useEdit from '../../utils/hooks/useEdit';
 import {
   setCategories as setGlobalCategories,
   setBrands as setGlobalBrands,
+  setProducts,
 } from '../../../store/slices/appData';
 import { useFetch } from '../../utils/hooks';
 import { AddSVG, DeleteSVG } from '../../utils/svg';
@@ -97,6 +98,7 @@ export default function InventoryEdit() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const product = useSelector((state: any) => state.appData.editProduct);
+  const globalProducts = useSelector((state: any) => state.appData.products);
 
   const { loading: categoryFetchLoading, fetchData: categoriesFetch } =
     useFetch();
@@ -261,6 +263,13 @@ export default function InventoryEdit() {
           setErrorMsg(res.data);
         }
         if (res.status === 200) {
+          const newProducts = globalProducts.map((singleGlobalProduct: any) => {
+            if (singleGlobalProduct.id === res.data.id) {
+              return res.data;
+            }
+            return singleGlobalProduct;
+          });
+          dispatch(setProducts(newProducts));
           navigate('/inventory');
         }
         return true;

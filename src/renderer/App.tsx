@@ -53,7 +53,11 @@ export default function App() {
             />
             <Route
               path="/employees"
-              element={<MainLayout>{/* <Customers /> */}</MainLayout>}
+              element={
+                <MainLayout>
+                  <p>Employees</p>
+                </MainLayout>
+              }
             />
             <Route
               path="/inventory"

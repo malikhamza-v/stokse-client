@@ -1,28 +1,27 @@
 /* eslint-disable no-nested-ternary */
 import { useEffect, useState } from 'react';
-import { LabelInput } from '../../components/commonComponents';
+import { useParams } from 'react-router-dom';
 import {
   BackButton,
   PrimaryButton,
 } from '../../components/commonComponents/buttons';
 import { useFetch } from '../../utils/hooks';
-import { AddSVG, DeleteSVG, ErrorSVG } from '../../utils/svg';
-import { useParams } from 'react-router-dom';
+import { ErrorSVG } from '../../utils/svg';
+import { formatTimestamp } from '../../utils/methods';
 
 function OrderEdit() {
   // [info]: state
-  const [order, setOrder] = useState(null);
+  const [order, setOrder] = useState<any>(null);
 
   // [info]: hooks
   const { loading: orderFetchLoading, fetchData: orderFetch } = useFetch();
-  let params = useParams();
+  const params = useParams();
 
   //   [info]: methods
   const fetchOrder = (id: number) => {
     orderFetch(`/order/${id}/`)
       .then((res) => {
         if (res?.status === 200) {
-          console.log('res', res);
           setOrder(res.data);
         }
         return true;
@@ -55,158 +54,34 @@ function OrderEdit() {
         </div>
         <div className="w-3/5 p-8">
           <div className="bg-white rounded-2xl shadow-sm border border-pink-500 p-6">
-            <div className="pb-6">
-              <LabelInput
-                errorMsg={null}
-                label="Order ID"
-                loading={false}
-                required={false}
-              >
-                <input
-                  type="text"
-                  id="name"
-                  className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4 pointer-events-none"
-                  placeholder="Order ID"
-                  required
-                  //   value={product.product_id}
-                  disabled
-                />
-              </LabelInput>
-            </div>
-            <div className="pb-6">
-              <LabelInput
-                // errorMsg={errorMsg.name}
-                loading={false}
-                label="Name"
-                required
-              >
-                <input
-                  type="text"
-                  id="name"
-                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                  placeholder="Product Name"
-                  required
-                  //   value={userInput.name}
-                  onChange={(e) => handleUserInput('name', e.target.value)}
-                />
-              </LabelInput>
-            </div>
-            <div className="pb-6">
-              <LabelInput
-                errorMsg={null}
-                label="Product Category"
-                loading={false}
-                required
-              >
-                <div className="relative group rounded-full overflow-hidden before:absolute w-full bg-white border border-gray-300">
-                  <svg
-                    y="0"
-                    xmlns="http://www.w3.org/2000/svg"
-                    x="0"
-                    width="100"
-                    viewBox="0 0 100 100"
-                    preserveAspectRatio="xMidYMid meet"
-                    height="100"
-                    className="w-8 h-8 absolute right-2 -rotate-45 stroke-pink-300 top-1/2 -translate-y-1/2 group-hover:rotate-0 duration-300"
-                  >
-                    <path
-                      strokeWidth="4"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      fill="none"
-                      d="M60.7,53.6,50,64.3m0,0L39.3,53.6M50,64.3V35.7m0,46.4A32.1,32.1,0,1,1,82.1,50,32.1,32.1,0,0,1,50,82.1Z"
-                      className="svg-stroke-primary"
-                    />
-                  </svg>
-                  <select
-                    onChange={(e) =>
-                      handleUserInput('category', e.target.value)
-                    }
-                    // value={userInput.category}
-                    className="appearance-none hover:placeholder-shown:bg-emerald-500 relative text-pink-400 bg-transparent ring-0 outline-none  placeholder-violet-700 text-sm font-bold rounded-full p-4 focus:ring-violet-500 focus:border-violet-500 block w-full"
-                    id="category"
-                  >
-                    <option value={undefined} disabled>
-                      Select Product Category
-                    </option>
+            <div className="flex flex-col gap-4 text-gray-500">
+              <div className="font-medium flex items-center justify-between">
+                <p>Order ID</p>
+                <div className="py-1 text-sm font-normal rounded-full text-emerald-500 bg-emerald-100/60 w-32 text-center">
+                  <p className="text-sm text-wrap  font-normal text-gray-600 capitalize">
+                    {/* [todo] */}
+                    <span>OR-{order?.id}</span>
+                  </p>
+                </div>
+              </div>
 
-                    {/* {categories.map(
-                      (category: { id: number; name: string }) => (
-                        <option key={category.id} value={category.id}>
-                          {category.name}
-                        </option>
-                      ),
-                    )} */}
-                  </select>
+              <div className="font-medium flex items-center justify-between">
+                <p>Order Status</p>
+                <div className="py-1 text-sm font-normal rounded-full text-emerald-500 bg-emerald-100/60 w-32 text-center">
+                  <p className="text-sm text-wrap  font-normal text-gray-600 capitalize">
+                    <span>{order?.payment_status}</span>
+                  </p>
                 </div>
-              </LabelInput>
-            </div>
-            <div className="pb-6">
-              <LabelInput
-                errorMsg={null}
-                loading={false}
-                label="Product Brand"
-                required
-              >
-                <div className="relative group rounded-full overflow-hidden before:absolute w-full bg-white border border-gray-300">
-                  <svg
-                    y="0"
-                    xmlns="http://www.w3.org/2000/svg"
-                    x="0"
-                    width="100"
-                    viewBox="0 0 100 100"
-                    preserveAspectRatio="xMidYMid meet"
-                    height="100"
-                    className="w-8 h-8 absolute right-2 -rotate-45 stroke-pink-300 top-1/2 -translate-y-1/2 group-hover:rotate-0 duration-300"
-                  >
-                    <path
-                      strokeWidth="4"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      fill="none"
-                      d="M60.7,53.6,50,64.3m0,0L39.3,53.6M50,64.3V35.7m0,46.4A32.1,32.1,0,1,1,82.1,50,32.1,32.1,0,0,1,50,82.1Z"
-                      className="svg-stroke-primary"
-                    />
-                  </svg>
-                  <select
-                    // value={userInput.brand}
-                    onChange={(e) => handleUserInput('brand', e.target.value)}
-                    className="appearance-none hover:placeholder-shown:bg-emerald-500 relative text-pink-400 bg-transparent ring-0 outline-none  placeholder-violet-700 text-sm font-bold rounded-full p-4 focus:ring-violet-500 focus:border-violet-500 block w-full"
-                    id="brand"
-                  >
-                    <option value={undefined} disabled>
-                      Select Product Brand
-                    </option>
-                    {/* {brands.map((brand: { id: number; name: string }) => (
-                      <option key={brand.id} value={brand.id}>
-                        {brand.name}
-                      </option>
-                    ))} */}
-                  </select>
-                </div>
-              </LabelInput>
-            </div>
+              </div>
 
-            <div className="pb-6">
-              <LabelInput
-                errorMsg={null}
-                loading={false}
-                label="Product Description"
-                required={false}
-              >
-                <div className="mx-auto">
-                  <textarea
-                    // value={userInput.description || ''}
-                    id="message"
-                    rows={4}
-                    className="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 resize-none"
-                    placeholder="Product description"
-                    onChange={(e) =>
-                      handleUserInput('description', e.target.value)
-                    }
-                  />
+              <div className="font-medium flex items-center justify-between">
+                <p>Date</p>
+                <div className="py-1 text-sm font-normal rounded-full text-emerald-500 bg-emerald-100/60 w-32 text-center">
+                  <p className="text-sm text-wrap font-normal text-gray-600 capitalize">
+                    <span>{formatTimestamp(order?.created_at)}</span>
+                  </p>
                 </div>
-              </LabelInput>
+              </div>
             </div>
           </div>
         </div>
@@ -395,6 +270,16 @@ function OrderEdit() {
                 )}
               </tbody>
             </table>
+            <div>
+              <div>
+                <p>Subtotal:</p>
+                <p>{order?.sub_total}</p>
+              </div>
+              <div>
+                <p>Total:</p>
+                <p>{order?.total}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

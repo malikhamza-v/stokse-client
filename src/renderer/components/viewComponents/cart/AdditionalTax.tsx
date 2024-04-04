@@ -78,18 +78,60 @@ function AdditionalTax() {
 
     if (index >= 0 && index < newTaxes.length && selectedTax) {
       newTaxes[index].name = selectedTax.label;
-      newTaxes[index].percent = selectedTax.percent;
+      newTaxes[index].percent = selectedTax.value;
       newTaxes[index].amount = calculateTaxAmount(
         calculations.subTotal || 0,
-        selectedTax.percent,
+        selectedTax.value,
       ) as unknown as string;
     }
+
+    dispatch(
+      setCart({
+        calculations: {
+          ...calculations,
+          total: (
+            parseFloat(calculations.subTotal) +
+            parseFloat(calculateTotalTaxAmount(newTaxes))
+          ).toFixed(2),
+        },
+      }),
+    );
+
+    dispatch(
+      setOrderLevelTaxes({
+        total: calculateTotalTaxAmount(newTaxes),
+        taxes: newTaxes,
+      }),
+    );
 
     setUserInput(newTaxes);
   };
 
   const handleRemoveTax = (index: number) => {
     if (userInput.length === 1 && index === 0) {
+      setUserInput([
+        {
+          name: '',
+          percent: '',
+          amount: '',
+        },
+      ]);
+      dispatch(
+        setCart({
+          calculations: {
+            ...calculations,
+            total: (parseFloat(calculations.subTotal) + 0).toFixed(2),
+          },
+        }),
+      );
+
+      dispatch(
+        setOrderLevelTaxes({
+          total: 0,
+          taxes: [],
+        }),
+      );
+
       setIsAdditionalTaxInclude(false);
       return;
     }
@@ -169,7 +211,7 @@ function AdditionalTax() {
             const modifiedTaxes = res?.data.map((tax: any) => {
               return {
                 label: tax.name,
-                percent: tax.percent,
+                value: tax.percent,
               };
             });
 
@@ -233,7 +275,7 @@ function AdditionalTax() {
                 >
                   <CreatableSelect
                     isClearable
-                    options={taxes[0].value.length > 0 ? taxes : noTaxOptions}
+                    options={taxes[0].value ? taxes : noTaxOptions}
                     className=""
                     placeholder="Tax Name"
                     value={{

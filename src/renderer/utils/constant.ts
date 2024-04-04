@@ -9,7 +9,7 @@ const Navbar = [
   {
     label: 'Employees',
     icon: ProfileSVG,
-    link: '/customer',
+    link: '/employees',
   },
   {
     label: 'Sale',

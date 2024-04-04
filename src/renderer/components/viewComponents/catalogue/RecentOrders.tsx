@@ -3,10 +3,10 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-nested-ternary */
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useFetch } from '../../../utils/hooks';
 import { ArrowLongRight, EditSVG, ErrorSVG, ViewSVG } from '../../../utils/svg';
 import { formatTimestamp } from '../../../utils/methods';
-import { Link } from 'react-router-dom';
 
 function RecentOrders() {
   const tableBody = useRef<HTMLTableSectionElement>(null);
@@ -191,11 +191,18 @@ function RecentOrders() {
                             </td>
                             <td className="px-4 py-4 text-sm w-[20%]">
                               <div className="flex items-center">
-                                <p className="text-gray-500 mt-2">
+                                <ul className="text-gray-500 list-none flex items-center gap-2">
                                   {order.payment_methods.map((method: any) => {
-                                    return <p>{method.method}</p>;
+                                    return (
+                                      <li
+                                        key={method.method}
+                                        className="font-bold px-2 border rounded"
+                                      >
+                                        {method.method}
+                                      </li>
+                                    );
                                   })}
-                                </p>
+                                </ul>
                               </div>
                             </td>
 
@@ -212,16 +219,14 @@ function RecentOrders() {
                                 >
                                   <ViewSVG />
                                 </button>
-
-                                <button
-                                  type="button"
-                                  className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
-                                  // onClick={() =>
-                                  //   handleSelectProductForDelete(product)
-                                  // }
-                                >
-                                  <EditSVG />
-                                </button>
+                                <Link to={`/order/edit/${order.id}`}>
+                                  <button
+                                    type="button"
+                                    className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
+                                  >
+                                    <EditSVG />
+                                  </button>
+                                </Link>
                               </div>
                             </td>
                           </tr>
