@@ -1,7 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import { ErrorSVG } from '../../../utils/svg';
 
-function BarChart({ data }: { data: { label: string[]; data: number[] } }) {
+function BarChart({
+  data,
+  loading,
+}: {
+  data: { label: string[]; data: number[] };
+  loading: boolean;
+}) {
   const chart = useRef<any>();
   const [chartData, setChartData] = useState<any>({
     series: [],
@@ -63,38 +70,54 @@ function BarChart({ data }: { data: { label: string[]; data: number[] } }) {
   };
 
   useEffect(() => {
-    if (data.data.length > 0) {
-      setChartData({
-        ...chartData,
-        series: data.data,
-        options: {
-          ...chartData.options,
-          labels: data.label,
-        },
-      });
-    }
+    setChartData({
+      ...chartData,
+      series: data.data,
+      options: {
+        ...chartData.options,
+        labels: data.label,
+      },
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   return (
-    <div className="p-4 relative">
-      {chartData.series.length > 0 && (
-        <>
-          <button
-            type="button"
-            className="absolute bottom-0 text-sm font-medium  right-0 bg-amber-200 px-4 py-1 rounded-lg z-30"
-            onClick={handleDownload}
-          >
-            Download
-          </button>
-          <ReactApexChart
-            ref={chart}
-            options={chartData.options}
-            series={chartData.series}
-            type="pie"
-            width={480}
-          />
-        </>
+    <div className="p-4 relative flex-1">
+      {loading ? (
+        <div
+          className="h-96 w-96 rounded-full mx-auto bg-gray-300 animate-pulse"
+          style={{ animationDelay: '0.2s' }}
+        />
+      ) : (
+        <div>
+          {chartData.series.length > 0 ? (
+            <>
+              <button
+                type="button"
+                className="absolute bottom-0 text-sm font-medium  right-0 bg-amber-200 px-4 py-1 rounded-lg z-30"
+                onClick={handleDownload}
+              >
+                Download
+              </button>
+              <ReactApexChart
+                ref={chart}
+                options={chartData.options}
+                series={chartData.series}
+                type="pie"
+                width={480}
+              />
+            </>
+          ) : (
+            <div className="border mx-auto rounded-full h-96 w-96 flex items-center justify-center">
+              <div className="flex items-center justify-center gap-2 my-2">
+                <ErrorSVG />
+                <h2 className="font-medium text-gray-800  ">
+                  No Data Available
+                </h2>
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

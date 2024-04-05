@@ -7,6 +7,7 @@ import {
   BagSVG,
   CashSVG,
   ColorCirclesSVG,
+  ErrorSVG,
   PersonSVG,
   ViewSVG,
 } from '../utils/svg';
@@ -29,7 +30,7 @@ function Dashboard() {
     sale: 1,
     customer: 1,
     itemsSold: 1,
-    topTransactions: 30,
+    topTransactions: 1,
   });
   // [info]: hooks
   const { loading: analyticsSaleLoading, fetchData: analyticsSaleFetch } =
@@ -147,9 +148,7 @@ function Dashboard() {
             <div className="md:col-span-2 lg:col-span-1">
               <div className="h-full py-8 px-6 space-y-6 rounded-xl border border-gray-200 bg-white">
                 <div className="flex items-center justify-between">
-                  <h5 className="text-xl text-purple-800 font-medium">
-                    Store Sale
-                  </h5>
+                  <h5 className="text-xl text-purple-800 font-medium">Sales</h5>
                   <div className="flex items-center gap-2 z-20">
                     <button
                       type="button"
@@ -277,7 +276,7 @@ function Dashboard() {
               <div className="h-full py-8 px-6 space-y-6 rounded-xl border border-gray-200 bg-white">
                 <div className="flex items-center justify-between">
                   <h5 className="text-xl text-purple-800 font-medium">
-                    Store Customer
+                    Customers
                   </h5>
                   <div className="flex items-center gap-2 z-20">
                     <button
@@ -409,7 +408,7 @@ function Dashboard() {
               <div className="h-full py-8 px-6 space-y-6 rounded-xl border border-gray-200 bg-white">
                 <div className="flex items-center justify-between">
                   <h5 className="text-xl text-purple-800 font-medium">
-                    items Sold
+                    Sold Products
                   </h5>
                   <div className="flex items-center gap-2 z-20">
                     <button
@@ -543,10 +542,60 @@ function Dashboard() {
         <div className="w-3/5">
           <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden xl:col-span-3 w-full">
             <div className="relative bg-clip-border rounded-xl overflow-hidden bg-transparent text-gray-700 shadow-none m-0 flex items-center justify-between p-6">
-              <div>
+              <div className="flex items-center justify-between w-full">
                 <h6 className="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-blue-gray-900 mb-1">
                   Top Transactions Today
                 </h6>
+                <div className="flex items-center gap-2 z-20">
+                  <button
+                    type="button"
+                    className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
+                      selectedButton.topTransactions === 1 &&
+                      'opacity-70 border-blue-500 border-2'
+                    }`}
+                    disabled={selectedButton.topTransactions === 1}
+                    onClick={() =>
+                      setSelectedButton({
+                        ...selectedButton,
+                        topTransactions: 1,
+                      })
+                    }
+                  >
+                    Today
+                  </button>
+                  <button
+                    type="button"
+                    className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
+                      selectedButton.topTransactions === 7 &&
+                      'opacity-70 border-blue-500 border-2'
+                    }`}
+                    disabled={selectedButton.topTransactions === 7}
+                    onClick={() =>
+                      setSelectedButton({
+                        ...selectedButton,
+                        topTransactions: 7,
+                      })
+                    }
+                  >
+                    This Week
+                  </button>
+                  <button
+                    type="button"
+                    className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
+                      selectedButton.topTransactions === 30 &&
+                      'opacity-70 border-blue-500 border-2'
+                    }`}
+                    disabled={selectedButton.topTransactions === 30}
+                    onClick={() =>
+                      setSelectedButton({
+                        ...selectedButton,
+                        topTransactions: 30,
+                      })
+                    }
+                  >
+                    This Month
+                  </button>
+                </div>
               </div>
             </div>
             <div className="p-6 overflow-x-scroll px-0 pt-0 pb-2">
@@ -576,48 +625,96 @@ function Dashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {analyticsTopTransactions?.map((transactions: any) => (
-                    <tr key={transactions.id}>
-                      <td className="py-3 px-5 border-b border-blue-gray-50">
-                        <div className="flex items-center gap-4">
-                          <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-bold">
-                            {transactions.id}
-                          </p>
-                        </div>
-                      </td>
+                  {analyticsTopTransactionsLoading ? (
+                    <>
+                      {[...Array(5).keys()].map((key) => (
+                        <tr key={key}>
+                          <td className="py-3 px-5 border-b border-blue-gray-50">
+                            <div
+                              className="h-2 w-16 bg-gray-300 rounded-2xl animate-pulse"
+                              style={{ animationDelay: '0.2s' }}
+                            />
+                          </td>
 
-                      <td className="py-3 px-5 border-b border-blue-gray-50">
-                        <p className="block antialiased font-sans text-xs font-medium text-blue-gray-600">
-                          ${transactions.total}
-                        </p>
-                      </td>
-                      <td className="py-3 px-5 border-b border-blue-gray-50">
-                        <div className="w-4/6">
-                          <p className="antialiased font-sans mb-1 block text-xs font-medium text-blue-gray-600">
-                            {transactions.items.length}{' '}
-                            {transactions.items.length > 1 ? 'items' : 'item'}{' '}
-                            in cart
-                          </p>
+                          <td className="py-3 px-5 border-b border-blue-gray-50">
+                            <div
+                              className="h-2 w-16 bg-gray-300 rounded-2xl animate-pulse"
+                              style={{ animationDelay: '0.2s' }}
+                            />
+                          </td>
+                          <td className="py-3 px-5 border-b border-blue-gray-50">
+                            <div
+                              className="h-2 w-16 bg-gray-300 rounded-2xl animate-pulse"
+                              style={{ animationDelay: '0.2s' }}
+                            />
+                          </td>
+                          <td className="py-3 px-5 border-b border-blue-gray-50">
+                            <div
+                              className="h-2 w-16 bg-gray-300 rounded-2xl animate-pulse"
+                              style={{ animationDelay: '0.2s' }}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  ) : analyticsTopTransactions?.length <= 0 ? (
+                    <tr>
+                      <td colSpan={4} className="pt-4 text-center">
+                        <div className="flex items-center justify-center gap-2 my-2">
+                          <ErrorSVG />
+                          <h2 className="font-medium text-gray-800  ">
+                            No Data Available
+                          </h2>
                         </div>
-                      </td>
-                      <td className="py-3 px-5 border-b border-blue-gray-50">
-                        <Link to={`/order/edit/${transactions.id}`}>
-                          <button
-                            type="button"
-                            className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
-                          >
-                            <ViewSVG />
-                          </button>
-                        </Link>
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    analyticsTopTransactions?.map((transactions: any) => (
+                      <tr key={transactions.id}>
+                        <td className="py-3 px-5 border-b border-blue-gray-50">
+                          <div className="flex items-center gap-4">
+                            <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-bold">
+                              {transactions.id}
+                            </p>
+                          </div>
+                        </td>
+
+                        <td className="py-3 px-5 border-b border-blue-gray-50">
+                          <p className="block antialiased font-sans text-xs font-medium text-blue-gray-600">
+                            ${transactions.total}
+                          </p>
+                        </td>
+                        <td className="py-3 px-5 border-b border-blue-gray-50">
+                          <div className="w-4/6">
+                            <p className="antialiased font-sans mb-1 block text-xs font-medium text-blue-gray-600">
+                              {transactions.items.length}{' '}
+                              {transactions.items.length > 1 ? 'items' : 'item'}{' '}
+                              in cart
+                            </p>
+                          </div>
+                        </td>
+                        <td className="py-3 px-5 border-b border-blue-gray-50">
+                          <Link to={`/order/edit/${transactions.id}`}>
+                            <button
+                              type="button"
+                              className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
+                            >
+                              <ViewSVG />
+                            </button>
+                          </Link>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
-        <BarChart data={topTransactionsChartData} />
+        <BarChart
+          loading={analyticsTopTransactionsLoading}
+          data={topTransactionsChartData}
+        />
       </div>
       <LineChart />
     </div>
