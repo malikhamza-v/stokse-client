@@ -5,9 +5,11 @@ import { ErrorSVG } from '../../../utils/svg';
 function BarChart({
   data,
   loading,
+  position,
 }: {
   data: { label: string[]; data: number[] };
   loading: boolean;
+  position: string;
 }) {
   const chart = useRef<any>();
   const [chartData, setChartData] = useState<any>({
@@ -94,7 +96,9 @@ function BarChart({
             <>
               <button
                 type="button"
-                className="absolute bottom-0 text-sm font-medium  right-0 bg-amber-200 px-4 py-1 rounded-lg z-30"
+                className={`absolute bottom-0 text-sm font-medium ${
+                  position === 'right' ? 'right-0' : 'left-0'
+                } bg-amber-200 px-4 py-1 rounded-lg z-30`}
                 onClick={handleDownload}
               >
                 Download

@@ -25,12 +25,18 @@ function Dashboard() {
     data: [],
     label: [],
   });
+  const [topCustomers, setTopCustomers] = useState<any>(null);
+  const [topCustomersChartData, setTopCustomersChartData] = useState({
+    data: [],
+    label: [],
+  });
 
   const [selectedButton, setSelectedButton] = useState({
     sale: 1,
     customer: 1,
     itemsSold: 1,
     topTransactions: 1,
+    topCustomers: 1,
   });
   // [info]: hooks
   const { loading: analyticsSaleLoading, fetchData: analyticsSaleFetch } =
@@ -49,6 +55,11 @@ function Dashboard() {
   const {
     loading: analyticsTopTransactionsLoading,
     fetchData: analyticsTopTransactionsFetch,
+  } = useFetch();
+
+  const {
+    loading: analyticsTopCustomersLoading,
+    fetchData: topCustomersFetch,
   } = useFetch();
 
   // [info]: methods
@@ -116,6 +127,29 @@ function Dashboard() {
       });
   };
 
+  const fetchTopCustomers = (days: number) => {
+    topCustomersFetch(`/store/analytics/top-customers/?days=${days}`)
+      .then((res) => {
+        if (res.status === 200) {
+          setTopCustomers(res.data);
+          const label = res.data.map(
+            (customer: any) => customer.name || 'Walk-In',
+          );
+          const data = res.data.map((customer: any) =>
+            parseFloat(customer.total_spent),
+          );
+          setTopCustomersChartData({
+            data,
+            label,
+          });
+        }
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
+  };
+
   // [info]: lifecycles
   useEffect(() => {
     fetchAnalyticsSale(selectedButton.sale);
@@ -136,6 +170,11 @@ function Dashboard() {
     fetchAnalyticsTopTransactions(selectedButton.topTransactions);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedButton.topTransactions]);
+
+  useEffect(() => {
+    fetchTopCustomers(selectedButton.topCustomers);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedButton.topCustomers]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -719,7 +758,211 @@ function Dashboard() {
         <BarChart
           loading={analyticsTopTransactionsLoading}
           data={topTransactionsChartData}
+          position="right"
         />
+      </div>
+
+      <div className="px-6 my-8 flex items-center justify-between">
+        <BarChart
+          loading={analyticsTopCustomersLoading}
+          data={topCustomersChartData}
+          position="left"
+        />
+        <div className="w-3/5">
+          <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden xl:col-span-3 w-full">
+            <div className="relative bg-clip-border rounded-xl overflow-hidden bg-transparent text-gray-700 shadow-none m-0 flex items-center justify-between p-6">
+              <div className="flex items-center justify-between w-full">
+                <h6 className="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-blue-gray-900 mb-1">
+                  Top Customers{' '}
+                  {selectedButton.topCustomers === 1
+                    ? 'Today'
+                    : selectedButton.topCustomers === 7
+                    ? 'This Week'
+                    : 'This Month'}
+                </h6>
+                <div className="flex items-center gap-2 z-20">
+                  <button
+                    type="button"
+                    className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
+                      selectedButton.topCustomers === 1 &&
+                      'opacity-70 border-blue-500 border-2'
+                    }`}
+                    disabled={selectedButton.topCustomers === 1}
+                    onClick={() =>
+                      setSelectedButton({
+                        ...selectedButton,
+                        topCustomers: 1,
+                      })
+                    }
+                  >
+                    Today
+                  </button>
+                  <button
+                    type="button"
+                    className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
+                      selectedButton.topCustomers === 7 &&
+                      'opacity-70 border-blue-500 border-2'
+                    }`}
+                    disabled={selectedButton.topCustomers === 7}
+                    onClick={() =>
+                      setSelectedButton({
+                        ...selectedButton,
+                        topCustomers: 7,
+                      })
+                    }
+                  >
+                    This Week
+                  </button>
+                  <button
+                    type="button"
+                    className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
+                      selectedButton.topCustomers === 30 &&
+                      'opacity-70 border-blue-500 border-2'
+                    }`}
+                    disabled={selectedButton.topCustomers === 30}
+                    onClick={() =>
+                      setSelectedButton({
+                        ...selectedButton,
+                        topCustomers: 30,
+                      })
+                    }
+                  >
+                    This Month
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="p-6 overflow-x-scroll px-0 pt-0 pb-2">
+              <table className="w-full min-w-[640px] table-auto">
+                <thead>
+                  <tr>
+                    <th className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                      <p className="block antialiased font-sans text-[11px] font-medium uppercase text-blue-gray-400">
+                        Customer ID
+                      </p>
+                    </th>
+                    <th className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                      <p className="block antialiased font-sans text-[11px] font-medium uppercase text-blue-gray-400">
+                        Name
+                      </p>
+                    </th>
+                    <th className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                      <p className="block antialiased font-sans text-[11px] font-medium uppercase text-blue-gray-400">
+                        Email
+                      </p>
+                    </th>
+                    <th className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                      <p className="block antialiased font-sans text-[11px] font-medium uppercase text-blue-gray-400">
+                        Amount Spent
+                      </p>
+                    </th>
+                    <th className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                      <p className="block antialiased font-sans text-[11px] font-medium uppercase text-blue-gray-400">
+                        Action
+                      </p>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {analyticsTopCustomersLoading ? (
+                    <>
+                      {[...Array(5).keys()].map((key) => (
+                        <tr key={key}>
+                          <td className="py-3 px-5 border-b border-blue-gray-50">
+                            <div
+                              className="h-2 w-16 bg-gray-300 rounded-2xl animate-pulse"
+                              style={{ animationDelay: '0.2s' }}
+                            />
+                          </td>
+
+                          <td className="py-3 px-5 border-b border-blue-gray-50">
+                            <div
+                              className="h-2 w-16 bg-gray-300 rounded-2xl animate-pulse"
+                              style={{ animationDelay: '0.2s' }}
+                            />
+                          </td>
+                          <td className="py-3 px-5 border-b border-blue-gray-50">
+                            <div
+                              className="h-2 w-16 bg-gray-300 rounded-2xl animate-pulse"
+                              style={{ animationDelay: '0.2s' }}
+                            />
+                          </td>
+                          <td className="py-3 px-5 border-b border-blue-gray-50">
+                            <div
+                              className="h-2 w-16 bg-gray-300 rounded-2xl animate-pulse"
+                              style={{ animationDelay: '0.2s' }}
+                            />
+                          </td>
+                          <td className="py-3 px-5 border-b border-blue-gray-50">
+                            <div
+                              className="h-2 w-16 bg-gray-300 rounded-2xl animate-pulse"
+                              style={{ animationDelay: '0.2s' }}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  ) : topCustomers?.length <= 0 ? (
+                    <tr>
+                      <td colSpan={5} className="pt-4 text-center">
+                        <div className="flex items-center justify-center gap-2 my-2">
+                          <ErrorSVG />
+                          <h2 className="font-medium text-gray-800  ">
+                            No Data Available
+                          </h2>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    topCustomers?.map((customer: any) => (
+                      <tr key={customer.id}>
+                        <td className="py-3 px-5 border-b border-blue-gray-50">
+                          <div className="flex items-center gap-4">
+                            <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-bold">
+                              {customer.id}
+                            </p>
+                          </div>
+                        </td>
+
+                        <td className="py-3 px-5 border-b border-blue-gray-50">
+                          <p className="block antialiased font-sans text-xs font-medium text-blue-gray-600">
+                            {customer.name || 'Walk-In'}
+                          </p>
+                        </td>
+                        <td className="py-3 px-5 border-b border-blue-gray-50">
+                          <div className="w-4/6">
+                            <p className="antialiased font-sans mb-1 block text-xs font-medium text-blue-gray-600">
+                              {customer.email || 'None'}
+                            </p>
+                          </div>
+                        </td>
+                        <td className="py-3 px-5 border-b border-blue-gray-50">
+                          <div className="w-4/6">
+                            <p className="antialiased font-sans mb-1 block text-xs font-medium text-blue-gray-600">
+                              $
+                              {ConvertIntoDecimal(customer.total_spent) ||
+                                'None'}
+                            </p>
+                          </div>
+                        </td>
+                        <td className="py-3 px-5 border-b border-blue-gray-50">
+                          <Link to={`/customer/edit/${customer.id}`}>
+                            <button
+                              type="button"
+                              className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
+                            >
+                              <ViewSVG />
+                            </button>
+                          </Link>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
       <LineChart />
     </div>
