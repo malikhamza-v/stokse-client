@@ -544,7 +544,12 @@ function Dashboard() {
             <div className="relative bg-clip-border rounded-xl overflow-hidden bg-transparent text-gray-700 shadow-none m-0 flex items-center justify-between p-6">
               <div className="flex items-center justify-between w-full">
                 <h6 className="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-blue-gray-900 mb-1">
-                  Top Transactions Today
+                  Top Transactions{' '}
+                  {selectedButton.topTransactions === 1
+                    ? 'Today'
+                    : selectedButton.topTransactions === 7
+                    ? 'This Week'
+                    : 'This Month'}
                 </h6>
                 <div className="flex items-center gap-2 z-20">
                   <button
