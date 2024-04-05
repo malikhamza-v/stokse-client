@@ -1,20 +1,35 @@
 /* eslint-disable no-nested-ternary */
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import LineChart from '../components/viewComponents/chart/LineChart';
 import { useFetch } from '../utils/hooks';
-import { BagSVG, CashSVG, ColorCirclesSVG, PersonSVG } from '../utils/svg';
+import {
+  BagSVG,
+  CashSVG,
+  ColorCirclesSVG,
+  PersonSVG,
+  ViewSVG,
+} from '../utils/svg';
 import { ConvertIntoDecimal } from '../utils/methods';
+import BarChart from '../components/viewComponents/chart/BarChart';
 
 function Dashboard() {
   // [info]: states
-  const [analyticsSale, setAnalyticsSale] = useState(null);
-  const [analyticsCustomer, setAnalyticsCustomer] = useState(null);
-  const [analyticsItemsSold, setAnalyticsItemsSold] = useState(null);
+  const [analyticsSale, setAnalyticsSale] = useState<any>(null);
+  const [analyticsCustomer, setAnalyticsCustomer] = useState<any>(null);
+  const [analyticsItemsSold, setAnalyticsItemsSold] = useState<any>(null);
+  const [analyticsTopTransactions, setAnalyticsTopTransactions] =
+    useState<any>(null);
+  const [topTransactionsChartData, setTopTransactionsChartData] = useState({
+    data: [],
+    label: [],
+  });
 
   const [selectedButton, setSelectedButton] = useState({
     sale: 1,
     customer: 1,
     itemsSold: 1,
+    topTransactions: 30,
   });
   // [info]: hooks
   const { loading: analyticsSaleLoading, fetchData: analyticsSaleFetch } =
@@ -28,6 +43,11 @@ function Dashboard() {
   const {
     loading: analyticsItemsSoldLoading,
     fetchData: analyticsItemsSoldFetch,
+  } = useFetch();
+
+  const {
+    loading: analyticsTopTransactionsLoading,
+    fetchData: analyticsTopTransactionsFetch,
   } = useFetch();
 
   // [info]: methods
@@ -70,6 +90,31 @@ function Dashboard() {
       });
   };
 
+  const fetchAnalyticsTopTransactions = (days: number) => {
+    analyticsTopTransactionsFetch(
+      `/store/analytics/top-transactions/?days=${days}`,
+    )
+      .then((res) => {
+        if (res.status === 200) {
+          setAnalyticsTopTransactions(res?.data);
+          const label = res.data.map(
+            (transaction: any) => `order-${transaction.id}`,
+          );
+          const data = res.data.map((transaction: any) =>
+            parseFloat(transaction.total),
+          );
+          setTopTransactionsChartData({
+            data,
+            label,
+          });
+        }
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
+  };
+
   // [info]: lifecycles
   useEffect(() => {
     fetchAnalyticsSale(selectedButton.sale);
@@ -85,6 +130,11 @@ function Dashboard() {
     fetchAnalyticsItemsSold(selectedButton.itemsSold);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedButton.itemsSold]);
+
+  useEffect(() => {
+    fetchAnalyticsTopTransactions(selectedButton.topTransactions);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedButton.topTransactions]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -489,32 +539,14 @@ function Dashboard() {
           </div>
         </div>
       </div>
-      <div>
-        <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
-          <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden xl:col-span-2">
+      <div className="px-6 my-8 flex items-center justify-between">
+        <div className="w-3/5">
+          <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden xl:col-span-3 w-full">
             <div className="relative bg-clip-border rounded-xl overflow-hidden bg-transparent text-gray-700 shadow-none m-0 flex items-center justify-between p-6">
               <div>
                 <h6 className="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-blue-gray-900 mb-1">
                   Top Transactions Today
                 </h6>
-                <p className="antialiased font-sans text-sm leading-normal flex items-center gap-1 font-normal text-blue-gray-600">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="3"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                    className="h-4 w-4 text-blue-500"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4.5 12.75l6 6 9-13.5"
-                    />
-                  </svg>
-                  <strong>30 done</strong> this month
-                </p>
               </div>
             </div>
             <div className="p-6 overflow-x-scroll px-0 pt-0 pb-2">
@@ -523,163 +555,69 @@ function Dashboard() {
                   <tr>
                     <th className="border-b border-blue-gray-50 py-3 px-6 text-left">
                       <p className="block antialiased font-sans text-[11px] font-medium uppercase text-blue-gray-400">
-                        companies
+                        Order ID
                       </p>
                     </th>
                     <th className="border-b border-blue-gray-50 py-3 px-6 text-left">
                       <p className="block antialiased font-sans text-[11px] font-medium uppercase text-blue-gray-400">
-                        budget
+                        Total
                       </p>
                     </th>
                     <th className="border-b border-blue-gray-50 py-3 px-6 text-left">
                       <p className="block antialiased font-sans text-[11px] font-medium uppercase text-blue-gray-400">
-                        completion
+                        Items Sold
+                      </p>
+                    </th>
+                    <th className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                      <p className="block antialiased font-sans text-[11px] font-medium uppercase text-blue-gray-400">
+                        Action
                       </p>
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="flex items-center gap-4">
-                        <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-bold">
-                          Material XD Version
-                        </p>
-                      </div>
-                    </td>
+                  {analyticsTopTransactions?.map((transactions: any) => (
+                    <tr key={transactions.id}>
+                      <td className="py-3 px-5 border-b border-blue-gray-50">
+                        <div className="flex items-center gap-4">
+                          <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-bold">
+                            {transactions.id}
+                          </p>
+                        </div>
+                      </td>
 
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <p className="block antialiased font-sans text-xs font-medium text-blue-gray-600">
-                        $14,000
-                      </p>
-                    </td>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="w-10/12">
-                        <p className="antialiased font-sans mb-1 block text-xs font-medium text-blue-gray-600">
-                          60%
+                      <td className="py-3 px-5 border-b border-blue-gray-50">
+                        <p className="block antialiased font-sans text-xs font-medium text-blue-gray-600">
+                          ${transactions.total}
                         </p>
-                        <div className="flex flex-start bg-blue-gray-50 overflow-hidden w-full rounded-sm font-sans text-xs font-medium h-1">
-                          <div
-                            className="flex justify-center items-center h-full bg-gradient-to-tr from-blue-600 to-blue-400 text-white"
-                            style={{ width: '60%' }}
-                          />
+                      </td>
+                      <td className="py-3 px-5 border-b border-blue-gray-50">
+                        <div className="w-4/6">
+                          <p className="antialiased font-sans mb-1 block text-xs font-medium text-blue-gray-600">
+                            {transactions.items.length}{' '}
+                            {transactions.items.length > 1 ? 'items' : 'item'}{' '}
+                            in cart
+                          </p>
                         </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="flex items-center gap-4">
-                        <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-bold">
-                          Add Progress Track
-                        </p>
-                      </div>
-                    </td>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <p className="block antialiased font-sans text-xs font-medium text-blue-gray-600">
-                        $3,000
-                      </p>
-                    </td>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="w-10/12">
-                        <p className="antialiased font-sans mb-1 block text-xs font-medium text-blue-gray-600">
-                          10%
-                        </p>
-                        <div className="flex flex-start bg-blue-gray-50 overflow-hidden w-full rounded-sm font-sans text-xs font-medium h-1">
-                          <div
-                            className="flex justify-center items-center h-full bg-gradient-to-tr from-blue-600 to-blue-400 text-white"
-                            style={{ width: '10%' }}
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="flex items-center gap-4">
-                        <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-bold">
-                          Fix Platform Errors
-                        </p>
-                      </div>
-                    </td>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <p className="block antialiased font-sans text-xs font-medium text-blue-gray-600">
-                        Not set
-                      </p>
-                    </td>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="w-10/12">
-                        <p className="antialiased font-sans mb-1 block text-xs font-medium text-blue-gray-600">
-                          100%
-                        </p>
-                        <div className="flex flex-start bg-blue-gray-50 overflow-hidden w-full rounded-sm font-sans text-xs font-medium h-1">
-                          <div
-                            className="flex justify-center items-center h-full bg-gradient-to-tr from-green-600 to-green-400 text-white"
-                            style={{ width: '100%' }}
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="flex items-center gap-4">
-                        <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-bold">
-                          Launch our Mobile App
-                        </p>
-                      </div>
-                    </td>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <p className="block antialiased font-sans text-xs font-medium text-blue-gray-600">
-                        $20,500
-                      </p>
-                    </td>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="w-10/12">
-                        <p className="antialiased font-sans mb-1 block text-xs font-medium text-blue-gray-600">
-                          100%
-                        </p>
-                        <div className="flex flex-start bg-blue-gray-50 overflow-hidden w-full rounded-sm font-sans text-xs font-medium h-1">
-                          <div
-                            className="flex justify-center items-center h-full bg-gradient-to-tr from-green-600 to-green-400 text-white"
-                            style={{ width: '100%' }}
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="flex items-center gap-4">
-                        <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-bold">
-                          Add the New Pricing Page
-                        </p>
-                      </div>
-                    </td>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <p className="block antialiased font-sans text-xs font-medium text-blue-gray-600">
-                        $500
-                      </p>
-                    </td>
-                    <td className="py-3 px-5 border-b border-blue-gray-50">
-                      <div className="w-10/12">
-                        <p className="antialiased font-sans mb-1 block text-xs font-medium text-blue-gray-600">
-                          25%
-                        </p>
-                        <div className="flex flex-start bg-blue-gray-50 overflow-hidden w-full rounded-sm font-sans text-xs font-medium h-1">
-                          <div
-                            className="flex justify-center items-center h-full bg-gradient-to-tr from-blue-600 to-blue-400 text-white"
-                            style={{ width: '25%' }}
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
+                      </td>
+                      <td className="py-3 px-5 border-b border-blue-gray-50">
+                        <Link to={`/order/edit/${transactions.id}`}>
+                          <button
+                            type="button"
+                            className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
+                          >
+                            <ViewSVG />
+                          </button>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
+        <BarChart data={topTransactionsChartData} />
       </div>
       <LineChart />
     </div>
