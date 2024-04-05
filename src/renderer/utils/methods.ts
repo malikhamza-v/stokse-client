@@ -69,3 +69,7 @@ export const formatTimestamp = (timestamp: string) => {
 
   return `${day} ${month} ${year}`;
 };
+
+export const ConvertIntoDecimal = (value: number | string) => {
+  return parseFloat(value as string).toFixed(2);
+};
