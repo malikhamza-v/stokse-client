@@ -34,7 +34,7 @@ const LineChart = () => {
       dashArray: [0, 8, 5],
     },
     title: {
-      text: 'Page Statistics',
+      text: 'Overall Stats',
       align: 'left',
     },
     legend: {
@@ -101,15 +101,12 @@ const LineChart = () => {
 
   return (
     <div>
-      <div id="chart">
-        <ReactApexChart
-          options={options}
-          series={series}
-          type="line"
-          height={350}
-        />
-      </div>
-      <div id="html-dist"></div>
+      <ReactApexChart
+        options={options}
+        series={series}
+        type="line"
+        height={350}
+      />
     </div>
   );
 };

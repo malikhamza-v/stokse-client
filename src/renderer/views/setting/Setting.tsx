@@ -71,39 +71,18 @@ function Setting() {
               <div className="flex flex-wrap justify-center">
                 <div className="w-full">
                   <div className="bg-white rounded-2xl shadow-sm py-6 grid grid-cols-2 gap-4">
-                    <div className="col-span-2">
-                      <div className="grid grid-cols-2 gap-4">
-                        <LabelInput
-                          loading={false}
-                          errorMsg={null}
-                          label="Name"
-                          required
-                        >
-                          <input
-                            type="text"
-                            id="name"
-                            className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                            placeholder="Store Name"
-                            required
-                            // onChange={(e) =>
-                            //   handleUserInput('name', e.target.value)
-                            // }
-                          />
-                        </LabelInput>
-                      </div>
-                    </div>
-                    <div className="col-span-2">
+                    <div className="">
                       <LabelInput
                         loading={false}
                         errorMsg={null}
-                        label="Business Description"
+                        label="Name"
                         required
                       >
                         <input
-                          type="number"
+                          type="text"
                           id="name"
                           className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                          placeholder="Business Description"
+                          placeholder="Store Name"
                           required
                           // onChange={(e) =>
                           //   handleUserInput('name', e.target.value)
@@ -130,6 +109,7 @@ function Setting() {
                         />
                       </LabelInput>
                     </div>
+
                     <div className="">
                       <LabelInput
                         loading={false}
@@ -142,6 +122,26 @@ function Setting() {
                           id="name"
                           className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
                           placeholder="Business Phone"
+                          required
+                          // onChange={(e) =>
+                          //   handleUserInput('name', e.target.value)
+                          // }
+                        />
+                      </LabelInput>
+                    </div>
+
+                    <div>
+                      <LabelInput
+                        loading={false}
+                        errorMsg={null}
+                        label="Business Description"
+                        required
+                      >
+                        <input
+                          type="number"
+                          id="name"
+                          className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
+                          placeholder="Business Description"
                           required
                           // onChange={(e) =>
                           //   handleUserInput('name', e.target.value)
