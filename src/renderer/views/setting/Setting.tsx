@@ -24,6 +24,11 @@ function Setting() {
       description: 'Manage default taxes of your store.',
       link: '/setting/taxes',
     },
+    {
+      label: 'Stores',
+      description: 'Manage stores for your business.',
+      link: '/setting/taxes',
+    },
   ];
 
   const { ipcRenderer } = window as any;

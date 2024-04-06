@@ -26,6 +26,7 @@ import {
 import Catalogue from './views/catalogue/Catalogue';
 import Orders from './views/orders/Orders';
 import OrderEdit from './views/orders/OrderEdit';
+import Employees from './views/employee/Employees';
 
 export default function App() {
   return (
@@ -55,7 +56,7 @@ export default function App() {
               path="/employees"
               element={
                 <MainLayout>
-                  <p>Employees</p>
+                  <Employees />
                 </MainLayout>
               }
             />

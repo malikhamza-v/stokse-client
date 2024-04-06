@@ -3,8 +3,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-nested-ternary */
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useFetch } from '../../utils/hooks';
 import {
@@ -17,8 +16,6 @@ import {
 } from '../../utils/svg';
 import useRemove from '../../utils/hooks/useRemove';
 import { Toast } from '../../components/commonComponents';
-import { setEditProduct } from '../../../store/slices/appData';
-import useCreate from '../../utils/hooks/useCreate';
 
 /* eslint-disable jsx-a11y/control-has-associated-label */
 export default function Customers() {
@@ -30,26 +27,12 @@ export default function Customers() {
     filter: 'all',
   });
   const [preDeleteItem, setPreDeleteItem] = useState<any>({});
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [searchedProducts, setSearchedProducts] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedFilteredBtn, setSelectedFilteredBtn] = useState<string | null>(
-    null,
-  );
-  const [errorMsg, setErrorMsg] = useState({ upload: null });
 
   const { loading: fetchLoading, fetchData: productsFetch } = useFetch();
   const { loading: rProductLoading, removeData: removeProduct } = useRemove();
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
   // [info]: method
-
-  const handleProductForEdit = (product: any) => {
-    dispatch(setEditProduct(product));
-    navigate(`/inventory/edit/${product.id}`);
-  };
 
   const fetchProducts = (endpoint: string) => {
     productsFetch(endpoint)
@@ -163,25 +146,6 @@ export default function Customers() {
     fetchProducts(currentUrl);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (selectedFilteredBtn) {
-      let data;
-      if (selectedFilteredBtn === 'in-stock') {
-        data = products.filter((product: any) => {
-          return product.stock_quantity > 0;
-        });
-        setFilteredProducts(data);
-      } else if (selectedFilteredBtn === 'out-of-stock') {
-        data = products.filter((product: any) => {
-          return product.stock_quantity <= 0;
-        });
-        setFilteredProducts(data);
-      } else {
-        setFilteredProducts(products);
-      }
-    }
-  }, [selectedFilteredBtn, products]);
 
   return (
     <section className="container p-10 mx-auto">
