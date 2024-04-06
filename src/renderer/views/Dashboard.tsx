@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import LineChart from '../components/viewComponents/chart/LineChart';
 import { useFetch } from '../utils/hooks';
 import {
+  ArrowLeft,
+  ArrowRight,
   BagSVG,
   CashSVG,
   ColorCirclesSVG,
@@ -35,6 +37,12 @@ function Dashboard() {
   const [topProductsChartData, setTopProductsChartData] = useState({
     data: [],
     label: [],
+  });
+
+  const [overallAnalyticsChartData, setOverallAnalyticsChartData] = useState({
+    total_sales: [],
+    no_of_customers: [],
+    sale_volumn: [],
   });
 
   const [selectedButton, setSelectedButton] = useState({
@@ -71,6 +79,8 @@ function Dashboard() {
 
   const { loading: topProductsLoading, fetchData: topProductsFetch } =
     useFetch();
+
+  const { fetchData: overallAnalyticsFetch } = useFetch();
 
   // [info]: methods
   const fetchAnalyticsSale = (days: number) => {
@@ -181,6 +191,25 @@ function Dashboard() {
       });
   };
 
+  const fetchOverallAnalytics = () => {
+    overallAnalyticsFetch(
+      `/store/analytics/overall/?date=${new Date().toISOString().slice(0, 10)}`,
+    )
+      .then((res) => {
+        if (res.status === 200) {
+          setOverallAnalyticsChartData({
+            no_of_customers: res.data.num_customers,
+            total_sales: res.data.total_sale,
+            sale_volumn: res.data.total_products_sold,
+          });
+        }
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
+  };
+
   // [info]: lifecycles
   useEffect(() => {
     fetchAnalyticsSale(selectedButton.sale);
@@ -213,6 +242,7 @@ function Dashboard() {
   }, [selectedButton.topProducts]);
 
   useEffect(() => {
+    fetchOverallAnalytics();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -317,7 +347,10 @@ function Dashboard() {
                             fill="currentColor"
                           />
                         </svg>
-                        <span>{analyticsSale?.percentage_change}%</span>
+                        <span>
+                          {ConvertIntoDecimal(analyticsSale?.percentage_change)}
+                          %
+                        </span>
                       </div>
                     </div>
                   )}
@@ -449,7 +482,12 @@ function Dashboard() {
                             fill="currentColor"
                           />
                         </svg>
-                        <span>{analyticsCustomer?.percentage_change}%</span>
+                        <span>
+                          {ConvertIntoDecimal(
+                            analyticsCustomer?.percentage_change,
+                          )}
+                          %
+                        </span>
                       </div>
                     </div>
                   )}
@@ -483,7 +521,7 @@ function Dashboard() {
               <div className="h-full py-8 px-6 space-y-6 rounded-xl border border-gray-200 bg-white">
                 <div className="flex items-center justify-between">
                   <h5 className="text-xl text-purple-800 font-medium">
-                    Sold Products
+                    Sales Volumn
                   </h5>
                   <div className="flex items-center gap-2 z-20">
                     <button
@@ -581,7 +619,12 @@ function Dashboard() {
                             fill="currentColor"
                           />
                         </svg>
-                        <span>{analyticsItemsSold?.percentage_change}%</span>
+                        <span>
+                          {ConvertIntoDecimal(
+                            analyticsItemsSold?.percentage_change,
+                          )}
+                          %
+                        </span>
                       </div>
                     </div>
                   )}
@@ -613,7 +656,7 @@ function Dashboard() {
           </div>
         </div>
       </div>
-      <div className="px-6 my-8 flex items-center justify-between">
+      <div className="px-6 mt-20 flex items-center justify-between">
         <div className="w-3/5">
           <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden xl:col-span-3 w-full">
             <div className="relative bg-clip-border rounded-xl overflow-hidden bg-transparent text-gray-700 shadow-none m-0 flex items-center justify-between p-6">
@@ -798,7 +841,7 @@ function Dashboard() {
         />
       </div>
 
-      <div className="px-6 my-8 flex items-center justify-between">
+      <div className="px-6 mt-20 flex items-center justify-between">
         <BarChart
           loading={analyticsTopCustomersLoading}
           data={topCustomersChartData}
@@ -1001,7 +1044,7 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="px-6 my-8 flex items-center justify-between">
+      <div className="px-6 mt-20 flex items-center justify-between">
         <div className="w-3/5">
           <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden xl:col-span-3 w-full">
             <div className="relative bg-clip-border rounded-xl overflow-hidden bg-transparent text-gray-700 shadow-none m-0 flex items-center justify-between p-6">
@@ -1183,7 +1226,23 @@ function Dashboard() {
           position="right"
         />
       </div>
-      <LineChart />
+      <div className="px-10 pb-5 mt-20">
+        <div className="flex items-center justify-end z-20 gap-2 py-5">
+          <button type="button" className="bg-slate-50 p-2 rounded-full">
+            <ArrowLeft />
+          </button>
+          <button
+            type="button"
+            className="bg-slate-50 px-2 py-1 rounded-lg border text-sm"
+          >
+            This Month
+          </button>
+          <button type="button" className="bg-slate-50 p-2 rounded-full">
+            <ArrowRight />
+          </button>
+        </div>
+        <LineChart data={overallAnalyticsChartData} />
+      </div>
     </div>
   );
 }
