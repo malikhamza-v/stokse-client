@@ -1,6 +1,10 @@
-import { Link } from 'react-router-dom';
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import { Link, useNavigate } from 'react-router-dom';
 import { LabelInput } from '../../components/commonComponents';
 import { ArrowRight } from '../../utils/svg';
+import { useCreate } from '../../utils/hooks';
+import { SecondaryButton } from '../../components/commonComponents/buttons';
 
 function Setting() {
   const settingsOptions = [
@@ -31,15 +35,35 @@ function Setting() {
     },
   ];
 
-  const { ipcRenderer } = window as any;
+  // [info]: hook
+  const navigate = useNavigate();
+  const { loading: logoutLoading, createData: logout } = useCreate();
 
-  const updateMessage = () => {
-    console.log('message logged in view');
+  // [info]: methods
+  const handleLogout = () => {
+    logout('/auth/logout/', {}, false)
+      .then((res) => {
+        if (res.status === 200) {
+          localStorage.clear();
+          navigate('/sign-in');
+          return true;
+        }
+        return false;
+      })
+      .catch(() => {
+        return false;
+      });
   };
 
+  // const { ipcRenderer } = window as any;
+
+  // const updateMessage = () => {
+  //   console.log('message logged in view');
+  // };
+
   const checkForUpdate = () => {
-    console.log('check');
-    ipcRenderer.send('check-for-updates');
+    // console.log('check');
+    // ipcRenderer.send('check-for-updates');
     // bridge.updateMessage(updateMessage);
   };
   return (
@@ -213,6 +237,13 @@ function Setting() {
               </div>
             </div>
           </div>
+        </div>
+        <div className="w-fit flex ml-auto">
+          <SecondaryButton
+            label="Logout"
+            loading={logoutLoading}
+            onClickAction={handleLogout}
+          />
         </div>
       </div>
     </div>

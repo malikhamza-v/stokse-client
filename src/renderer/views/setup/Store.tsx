@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { LabelInput } from '../../components/commonComponents';
 import { PrimaryButton } from '../../components/commonComponents/buttons';
 import { CameraSVG, FingerRight } from '../../utils/svg';
 import { useCreate } from '../../utils/hooks';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
-function Business() {
+function Store() {
   const [isUploadImageHover, setIsUploadImageHover] = useState(false);
   const [userInput, setUserInput] = useState<{
     logo: string | Blob;
@@ -52,9 +52,9 @@ function Business() {
   const [loading, setLoading] = useState(false);
 
   const { createData: createStore } = useCreate();
-  const { createData: createEmployee } = useCreate();
 
   const user = useSelector((state: any) => state.appData.user);
+  const business = useSelector((state: any) => state.appData.business);
   const navigate = useNavigate();
 
   const handleUserInput = (key: string, value: string) => {
@@ -113,6 +113,8 @@ function Business() {
 
     try {
       const payload = {
+        user_id: user?.id,
+        business: business.id,
         name,
         email,
         description,
@@ -123,22 +125,8 @@ function Business() {
       };
       const res = await createStore('/store/', payload, false);
       if (res.status === 200) {
-        const employeePayload = {
-          role: 'Admin',
-          user: user?.id,
-          store: res.data.id,
-          is_admin: true,
-        };
-
-        const employeeRes = await createEmployee(
-          '/employee/',
-          employeePayload,
-          false,
-        );
-        if (employeeRes.status === 200) {
-          localStorage.setItem('token', employeeRes.data.token);
-          navigate('/setup/business/category');
-        }
+        localStorage.setItem('token', res.data.token);
+        navigate('/setup/business/category');
       }
     } finally {
       setLoading(false);
@@ -353,4 +341,4 @@ function Business() {
   );
 }
 
-export default Business;
+export default Store;

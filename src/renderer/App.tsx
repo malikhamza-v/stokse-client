@@ -20,13 +20,13 @@ import Signup from './views/Signup';
 import {
   Brand,
   Category,
-  Business,
   PaymentMethod as SetupPaymentMethod,
 } from './views/setup';
 import Catalogue from './views/catalogue/Catalogue';
 import Orders from './views/orders/Orders';
 import OrderEdit from './views/orders/OrderEdit';
 import Employees from './views/employee/Employees';
+import Store from './views/setup/Store';
 
 export default function App() {
   return (
@@ -37,7 +37,7 @@ export default function App() {
           <Route path="/sign-up" element={<Signup />} />
 
           <Route element={<PrivateRoute />}>
-            <Route path="/setup/business" element={<Business />} />
+            <Route path="/setup/store" element={<Store />} />
             <Route path="/setup/business/category" element={<Category />} />
             <Route path="/setup/business/brand" element={<Brand />} />
             <Route

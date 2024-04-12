@@ -1,17 +1,18 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { ChangeEvent, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { LabelInput, Toast } from '../components/commonComponents';
 import useCreate from '../utils/hooks/useCreate';
 import { ArrowLongRight } from '../utils/svg';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../../store/slices/appData';
+import { setUser, setBusiness } from '../../store/slices/appData';
 
 function Signup() {
   const [userInput, setUserInput] = useState({
     code: '',
     name: '',
+    business_name: '',
     phone: '',
     email: '',
     password: '',
@@ -22,6 +23,7 @@ function Signup() {
     code: string | null;
     email: string | null;
     name: string | null;
+    business_name: string | null;
     phone: string | null;
     password: string | null;
     retypePassword: string | null;
@@ -30,12 +32,18 @@ function Signup() {
     email: null,
     phone: null,
     name: null,
+    business_name: null,
     password: null,
     retypePassword: null,
   });
   const [isCodeTrue, setIsCodeTrue] = useState(false);
   const { loading: verifyTokenLoading, createData: verifyToken } = useCreate();
-  const { loading: registerLoading, createData: register } = useCreate();
+  const {
+    loading: registerLoading,
+    createData: register,
+    setLoading: setRegisterLoading,
+  } = useCreate();
+  const { loading: cBusinessLoading, createData: businessCreate } = useCreate();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -89,12 +97,13 @@ function Signup() {
       });
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (
       userInput.email.length <= 0 ||
       userInput.password.length <= 0 ||
       userInput.retypePassword.length <= 0 ||
       userInput.name.length <= 0 ||
+      userInput.business_name.length <= 0 ||
       userInput.phone.length <= 0
     ) {
       let errors = { ...errorMsg };
@@ -110,9 +119,13 @@ function Signup() {
       if (userInput.name.length <= 0) {
         errors = { ...errors, name: 'This field is required.' };
       }
+      if (userInput.business_name.length <= 0) {
+        errors = { ...errors, business_name: 'This field is required.' };
+      }
       if (userInput.phone.length <= 0) {
         errors = { ...errors, phone: 'This field is required.' };
       }
+      console.log('check');
       setErrorMsg(errors);
       return;
     }
@@ -129,35 +142,46 @@ function Signup() {
       password: userInput.password,
     };
 
-    register('/auth/register/', payload, false)
-      .then((res) => {
-        if (res.status === 400) {
-          const firstError = Object.keys(res.data)[0];
-          if (firstError) {
-            setTimeout(() => {
-              if (document.getElementById(firstError)) {
-                document.getElementById(firstError)?.scrollIntoView({
-                  behavior: 'smooth',
-                  block: 'center',
-                });
-                document.getElementById(firstError)?.focus();
-              }
-            }, 50);
+    const registerRes = await register('/auth/register/', payload, false);
+    if (registerRes.status === 400) {
+      const firstError = Object.keys(registerRes.data)[0];
+      if (firstError) {
+        setTimeout(() => {
+          if (document.getElementById(firstError)) {
+            document.getElementById(firstError)?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
+            document.getElementById(firstError)?.focus();
           }
-          toast.error(res.data.message);
+        }, 50);
+      }
+      toast.error(registerRes.data.message);
 
-          setErrorMsg(res.data);
-        } else if (res.status === 200) {
-          localStorage.setItem('token', res.data.token);
-          localStorage.setItem('user', JSON.stringify(res.data.user));
-          dispatch(setUser(res.data.user));
-          navigate('/setup/business');
-        }
-        return true;
-      })
-      .catch(() => {
-        return false;
-      });
+      setErrorMsg(registerRes.data);
+    } else if (registerRes.status === 200) {
+      setRegisterLoading(true);
+      // localStorage.setItem('phone', userInput.phone);
+      const createBusinessPayload = {
+        name: userInput.business_name,
+        admin: registerRes.data.user.id,
+      };
+      const businessRes = await businessCreate(
+        '/business/',
+        createBusinessPayload,
+        false,
+      );
+      if (businessRes.status === 200) {
+        setRegisterLoading(false);
+        localStorage.setItem('token', registerRes.data.token);
+        localStorage.setItem('user', JSON.stringify(registerRes.data.user));
+        localStorage.setItem('business', JSON.stringify(businessRes.data));
+        dispatch(setUser(registerRes.data.user));
+        dispatch(setBusiness(businessRes.data));
+        navigate('/setup/store');
+      }
+      setRegisterLoading(false);
+    }
   };
 
   return (
@@ -226,6 +250,25 @@ function Signup() {
                     />
                   </LabelInput>
                 </div>
+
+                <div className="mt-4">
+                  <LabelInput
+                    label="Business Name"
+                    errorMsg={errorMsg.business_name}
+                    required
+                    loading={false}
+                  >
+                    <input
+                      type="text"
+                      id="name"
+                      className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
+                      placeholder="Enter Business Name"
+                      value={userInput.business_name}
+                      onChange={(e) => handleInput(e, 'business_name')}
+                    />
+                  </LabelInput>
+                </div>
+
                 <div className="mt-4">
                   <LabelInput
                     label="Email"

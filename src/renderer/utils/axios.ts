@@ -17,4 +17,16 @@ api.interceptors.request.use(async function (config) {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response && error.response.status === 403) {
+      window.location.href = '/';
+    }
+    return Promise.reject(error);
+  },
+);
+
 export default api;

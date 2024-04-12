@@ -7,6 +7,7 @@ const appData = createSlice({
     editProduct: null, // [info]: single product data for edit
     editCustomer: null,
     user: JSON.parse(localStorage.getItem('user')) || null,
+    business: JSON.parse(localStorage.getItem('user')) || null,
     store: null,
     cart: {
       items: [],
@@ -43,6 +44,9 @@ const appData = createSlice({
     },
     setUser: (state, action) => {
       state.user = action.payload;
+    },
+    setBusiness: (state, action) => {
+      state.business = action.payload;
     },
     setStore: (state, action) => {
       state.store = action.payload;
@@ -102,6 +106,7 @@ export const {
   setEditProduct,
   setEditCustomer,
   setUser,
+  setBusiness,
   setStore,
   setCart,
   setOrderLevelTaxes,
