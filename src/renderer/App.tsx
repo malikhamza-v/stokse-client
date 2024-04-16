@@ -27,6 +27,7 @@ import Orders from './views/orders/Orders';
 import OrderEdit from './views/orders/OrderEdit';
 import Employees from './views/employee/Employees';
 import Store from './views/setup/Store';
+import EmployeeAdd from './views/employee/EmployeeAdd';
 
 export default function App() {
   return (
@@ -57,6 +58,14 @@ export default function App() {
               element={
                 <MainLayout>
                   <Employees />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/employee/add"
+              element={
+                <MainLayout>
+                  <EmployeeAdd />
                 </MainLayout>
               }
             />

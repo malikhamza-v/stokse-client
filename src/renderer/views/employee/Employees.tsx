@@ -152,15 +152,15 @@ export default function Employees() {
       <div className="sm:flex sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-x-3">
-            <h2 className="text-gray-800 font-bold text-2xl">Customers</h2>
+            <h2 className="text-gray-800 font-bold text-2xl">Employees</h2>
 
             <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full  ">
-              {products?.count} customers
+              {products?.count} employees
             </span>
           </div>
 
           <p className="mt-1 text-sm text-gray-500 ">
-            These are the products in your store.
+            These are the employees in your store.
           </p>
         </div>
 
@@ -194,7 +194,7 @@ export default function Employees() {
 
             <span>Export</span>
           </button>
-          <Link to="/inventory/add">
+          <Link to="/employee/add">
             <button
               type="button"
               className="flex items-center justify-center w-1/2 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-500 rounded-lg shrink-0 sm:w-auto gap-x-2 hover:bg-blue-600"
@@ -203,7 +203,7 @@ export default function Employees() {
                 <AddSVG />
               </div>
 
-              <span>Add customer</span>
+              <span>Add employee</span>
             </button>
           </Link>
         </div>
