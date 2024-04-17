@@ -43,7 +43,7 @@ function Signup() {
     createData: register,
     setLoading: setRegisterLoading,
   } = useCreate();
-  const { loading: cBusinessLoading, createData: businessCreate } = useCreate();
+  const { createData: businessCreate } = useCreate();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -125,7 +125,6 @@ function Signup() {
       if (userInput.phone.length <= 0) {
         errors = { ...errors, phone: 'This field is required.' };
       }
-      console.log('check');
       setErrorMsg(errors);
       return;
     }
@@ -161,7 +160,9 @@ function Signup() {
       setErrorMsg(registerRes.data);
     } else if (registerRes.status === 200) {
       setRegisterLoading(true);
-      // localStorage.setItem('phone', userInput.phone);
+      localStorage.setItem('token', registerRes.data.token);
+      localStorage.setItem('user', JSON.stringify(registerRes.data.user));
+      dispatch(setUser(registerRes.data.user));
       const createBusinessPayload = {
         name: userInput.business_name,
         admin: registerRes.data.user.id,
@@ -173,10 +174,9 @@ function Signup() {
       );
       if (businessRes.status === 200) {
         setRegisterLoading(false);
-        localStorage.setItem('token', registerRes.data.token);
-        localStorage.setItem('user', JSON.stringify(registerRes.data.user));
+        // localStorage.setItem('token', registerRes.data.token);
+        // localStorage.setItem('user', JSON.stringify(registerRes.data.user));
         localStorage.setItem('business', JSON.stringify(businessRes.data));
-        dispatch(setUser(registerRes.data.user));
         dispatch(setBusiness(businessRes.data));
         navigate('/setup/store');
       }

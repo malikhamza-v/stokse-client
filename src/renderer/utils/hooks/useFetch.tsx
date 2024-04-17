@@ -1,14 +1,18 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import api from '../axios';
+import { constructURLWithStoreParam } from '../methods';
 
 const useFetch = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
+  const storeID = useSelector((state: any) => state.appData.store?.id);
 
   const fetchData = async (url: string) => {
     setLoading(true);
     try {
-      const response = await api.get(url);
+      const urlWithStoreParam = constructURLWithStoreParam(url, storeID);
+      const response = await api.get(urlWithStoreParam);
       setData(response);
       return { status: 200, data: response.data };
     } catch (error: any) {

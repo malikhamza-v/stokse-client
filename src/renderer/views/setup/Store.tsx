@@ -1,11 +1,12 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { LabelInput } from '../../components/commonComponents';
 import { PrimaryButton } from '../../components/commonComponents/buttons';
 import { CameraSVG, FingerRight } from '../../utils/svg';
 import { useCreate } from '../../utils/hooks';
+import { setStore } from '../../../store/slices/appData';
 
 function Store() {
   const [isUploadImageHover, setIsUploadImageHover] = useState(false);
@@ -56,6 +57,8 @@ function Store() {
   const user = useSelector((state: any) => state.appData.user);
   const business = useSelector((state: any) => state.appData.business);
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const handleUserInput = (key: string, value: string) => {
     setErrorMsg({ ...errorMsg, [key]: null });
@@ -125,7 +128,9 @@ function Store() {
       };
       const res = await createStore('/store/', payload, false);
       if (res.status === 200) {
-        localStorage.setItem('token', res.data.token);
+        // [todo]: the reponse contain all managers which is not good
+        dispatch(setStore(res.data));
+        localStorage.setItem('store', JSON.stringify(res.data));
         navigate('/setup/business/category');
       }
     } finally {

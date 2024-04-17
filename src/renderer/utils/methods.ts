@@ -73,3 +73,12 @@ export const formatTimestamp = (timestamp: string) => {
 export const ConvertIntoDecimal = (value: number | string) => {
   return parseFloat(value as string).toFixed(2);
 };
+
+export const constructURLWithStoreParam = (
+  baseUrl: string,
+  storeParam: number,
+) => {
+  const encodedStoreParam = encodeURIComponent(storeParam);
+  const separator = baseUrl.includes('?') ? '&' : '?';
+  return `${baseUrl}${separator}store=${encodedStoreParam}`;
+};

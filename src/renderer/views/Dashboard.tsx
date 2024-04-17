@@ -53,6 +53,7 @@ function Dashboard() {
     topCustomers: 1,
     topProducts: 1,
   });
+
   // [info]: hooks
   const { loading: analyticsSaleLoading, fetchData: analyticsSaleFetch } =
     useFetch();
@@ -329,7 +330,7 @@ function Dashboard() {
                   ) : (
                     <div className="my-2 flex items-center justify-center gap-4">
                       <h3 className="text-3xl font-bold text-gray-700">
-                        ${ConvertIntoDecimal(analyticsSale?.total_sale)}
+                        ${ConvertIntoDecimal(analyticsSale?.total_sale || 0)}
                       </h3>
 
                       <div className="flex items-end gap-1 text-green-500">
@@ -348,7 +349,9 @@ function Dashboard() {
                           />
                         </svg>
                         <span>
-                          {ConvertIntoDecimal(analyticsSale?.percentage_change)}
+                          {ConvertIntoDecimal(
+                            analyticsSale?.percentage_change || 0,
+                          )}
                           %
                         </span>
                       </div>
@@ -373,7 +376,7 @@ function Dashboard() {
                           ? 'week'
                           : 'month'}{' '}
                       </span>
-                      ${ConvertIntoDecimal(analyticsSale?.prev_total_sale)}
+                      ${ConvertIntoDecimal(analyticsSale?.prev_total_sale || 0)}
                     </p>
                   )}
                 </div>
@@ -464,7 +467,7 @@ function Dashboard() {
                   ) : (
                     <div className="my-2 flex items-center justify-center gap-4">
                       <h3 className="text-3xl font-bold text-gray-700">
-                        {analyticsCustomer?.total_customers}
+                        {analyticsCustomer?.total_customers || 0}
                       </h3>
 
                       <div className="flex items-end gap-1 text-green-500">
@@ -484,7 +487,7 @@ function Dashboard() {
                         </svg>
                         <span>
                           {ConvertIntoDecimal(
-                            analyticsCustomer?.percentage_change,
+                            analyticsCustomer?.percentage_change || 0,
                           )}
                           %
                         </span>
@@ -510,7 +513,7 @@ function Dashboard() {
                           ? 'week'
                           : 'month'}{' '}
                       </span>
-                      {analyticsCustomer?.prev_total_customers}{' '}
+                      {analyticsCustomer?.prev_total_customers || 0}{' '}
                     </p>
                   )}
                 </div>
@@ -601,7 +604,7 @@ function Dashboard() {
                   ) : (
                     <div className="my-2 flex items-center justify-center gap-4">
                       <h3 className="text-3xl font-bold text-gray-700">
-                        {analyticsItemsSold?.total_items_sold}
+                        {analyticsItemsSold?.total_items_sold || 0}
                       </h3>
 
                       <div className="flex items-end gap-1 text-green-500">
@@ -621,7 +624,7 @@ function Dashboard() {
                         </svg>
                         <span>
                           {ConvertIntoDecimal(
-                            analyticsItemsSold?.percentage_change,
+                            analyticsItemsSold?.percentage_change || 0,
                           )}
                           %
                         </span>
@@ -647,7 +650,7 @@ function Dashboard() {
                           ? 'week'
                           : 'month'}{' '}
                       </span>
-                      {analyticsItemsSold?.prev_total_items_sold}{' '}
+                      {analyticsItemsSold?.prev_total_items_sold || 0}{' '}
                     </p>
                   )}
                 </div>

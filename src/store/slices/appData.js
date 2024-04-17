@@ -7,8 +7,8 @@ const appData = createSlice({
     editProduct: null, // [info]: single product data for edit
     editCustomer: null,
     user: JSON.parse(localStorage.getItem('user')) || null,
-    business: JSON.parse(localStorage.getItem('user')) || null,
-    store: null,
+    business: JSON.parse(localStorage.getItem('business')) || null,
+    store: JSON.parse(localStorage.getItem('store') || null) || null,
     cart: {
       items: [],
       customer: { name: '', phone: '', email: '' },

@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import api from '../axios';
 
 const useCreate = () => {
   const [loading, setLoading] = useState(false);
+  const storeID = useSelector((state: any) => state.appData.store?.id);
 
   const createData = async (url: string, payload: any, silent: boolean) => {
     if (!silent) {
@@ -19,7 +21,7 @@ const useCreate = () => {
           },
         });
       } else {
-        response = await api.post(url, payload);
+        response = await api.post(url, { ...payload, store: storeID });
       }
       return { status: 200, data: response.data };
     } catch (err: any) {

@@ -23,7 +23,7 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 403) {
-      window.location.href = '/';
+      // window.location.href = '/';
     }
     return Promise.reject(error);
   },

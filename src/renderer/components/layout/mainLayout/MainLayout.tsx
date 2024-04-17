@@ -9,7 +9,6 @@ function MainLayout({ children }: any) {
   useEffect(() => {
     const user = localStorage.getItem('user');
     const storeData = localStorage.getItem('store');
-
     if (user && storeData) {
       dispatch(setUser(JSON.parse(user)));
       dispatch(setStore(JSON.parse(storeData)));
