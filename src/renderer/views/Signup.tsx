@@ -139,6 +139,7 @@ function Signup() {
       email: userInput.email,
       phone: userInput.phone,
       password: userInput.password,
+      role: 'Admin',
     };
 
     const registerRes = await register('/auth/register/', payload, false);
