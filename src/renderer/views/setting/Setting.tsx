@@ -31,7 +31,7 @@ function Setting() {
     {
       label: 'Stores',
       description: 'Manage stores for your business.',
-      link: '/setting/taxes',
+      link: '/setting/stores',
     },
   ];
 

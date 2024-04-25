@@ -502,7 +502,7 @@ export default function Inventory() {
                                   <span className="font-semibold text-gray-600">
                                     Brand:{' '}
                                   </span>
-                                  <span>{product.brand.name}</span>
+                                  <span>{product.brand?.name || 'NONE'}</span>
                                 </p>
                               </div>
                             </td>

@@ -28,6 +28,8 @@ import OrderEdit from './views/orders/OrderEdit';
 import Employees from './views/employee/Employees';
 import Store from './views/setup/Store';
 import EmployeeAdd from './views/employee/EmployeeAdd';
+import Stores from './views/setting/Stores';
+import StoreAdd from './views/setting/StoreAdd';
 
 export default function App() {
   return (
@@ -176,6 +178,22 @@ export default function App() {
               element={
                 <MainLayout>
                   <Taxes />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/setting/stores"
+              element={
+                <MainLayout>
+                  <Stores />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/setting/stores/add"
+              element={
+                <MainLayout>
+                  <StoreAdd />
                 </MainLayout>
               }
             />

@@ -46,6 +46,7 @@ function Signin() {
           localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data.data.user));
           localStorage.setItem('store', JSON.stringify(data.data.store));
+          localStorage.setItem('business', JSON.stringify(data.data.business));
           toast.success(data.message);
           navigate('/');
         } else if (res.status === 400) {

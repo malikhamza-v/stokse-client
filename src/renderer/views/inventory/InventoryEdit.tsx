@@ -285,7 +285,7 @@ export default function InventoryEdit() {
       setUserInput({
         name: product.name,
         category: product.category.id,
-        brand: product.brand.id,
+        brand: product.brand?.id || null,
         description: product.description || '',
         cost_price: parseFloat(product.cost_price || 0),
         sale_price: parseFloat(product.sale_price || 0),
