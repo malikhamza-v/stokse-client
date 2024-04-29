@@ -30,6 +30,7 @@ import Store from './views/setup/Store';
 import EmployeeAdd from './views/employee/EmployeeAdd';
 import Stores from './views/setting/Stores';
 import StoreAdd from './views/setting/StoreAdd';
+import Managers from './views/setting/Managers';
 
 export default function App() {
   return (
@@ -197,6 +198,16 @@ export default function App() {
                 </MainLayout>
               }
             />
+            {/* [info]: Managers */}
+            <Route
+              path="/setting/managers"
+              element={
+                <MainLayout>
+                  <Managers />
+                </MainLayout>
+              }
+            />
+
             <Route
               path="/setting/payment-methods"
               element={

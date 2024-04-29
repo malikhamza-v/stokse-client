@@ -33,6 +33,11 @@ function Setting() {
       description: 'Manage stores for your business.',
       link: '/setting/stores',
     },
+    {
+      label: 'Managers',
+      description: 'Manage managers of your stores.',
+      link: '/setting/managers',
+    },
   ];
 
   // [info]: hook

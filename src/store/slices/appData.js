@@ -30,6 +30,7 @@ const appData = createSlice({
     categories: [],
     brands: [],
     taxes: [],
+    managers: [],
     paymentMethods: [],
   },
   reducers: {
@@ -75,6 +76,9 @@ const appData = createSlice({
     setTaxes: (state, action) => {
       state.taxes = action.payload;
     },
+    setManagers: (state, action) => {
+      state.managers = action.payment;
+    },
     setPaymentMethods: (state, action) => {
       state.paymentMethods = action.payload;
     },
@@ -115,6 +119,7 @@ export const {
   setCategories,
   setBrands,
   setTaxes,
+  setManagers,
   setPaymentMethods,
   resetCart,
 } = appData.actions;
