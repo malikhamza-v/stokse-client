@@ -42,6 +42,20 @@ const noTaxOptions: readonly {
   },
 ];
 
+const noStoreOptions: readonly {
+  value: string;
+  label: string;
+  color: string;
+  isDisabled: boolean;
+}[] = [
+  {
+    value: 'No Store Found',
+    label: 'No Store Found',
+    color: '#000',
+    isDisabled: true,
+  },
+];
+
 const data = [
   {
     id: 35,
@@ -135,4 +149,4 @@ const data = [
   },
 ];
 
-export { noTaxOptions, Navbar, data };
+export { noTaxOptions, noStoreOptions, Navbar, data };

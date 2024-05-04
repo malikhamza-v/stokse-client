@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { setManagers as setGlobalManagers } from '../../../store/slices/appData';
+import Select, { MultiValue } from 'react-select';
+import {
+  setManagers as setGlobalManagers,
+  setStores as setGlobalStores,
+} from '../../../store/slices/appData';
 import { LabelInput, Toast } from '../../components/commonComponents';
 import {
   BackButton,
@@ -10,9 +14,11 @@ import {
 } from '../../components/commonComponents/buttons';
 import { useCreate, useEdit, useFetch, useRemove } from '../../utils/hooks';
 import { DeleteSVG, EditSVG, ErrorSVG, SearchSVG } from '../../utils/svg';
+import { noStoreOptions } from '../../utils/constant';
 
 function Managers() {
   const [managers, setManagers] = useState<any>([]);
+  const [stores, setStores] = useState<any>([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [preDeleteItem, setPreDeleteItem] = useState<any>({});
   const [preEditItem, setPreEditItem] = useState<any>(null);
@@ -20,37 +26,43 @@ function Managers() {
   const [userInput, setUserInput] = useState<{
     name: string | null;
     email: string | null;
-    store: number | null;
+    phone: string | null;
+    stores: number[] | null;
     password: string | null;
     confirm_password: string | null;
   }>({
     name: '',
     email: '',
-    store: 0,
+    phone: '',
+    stores: [],
     password: '',
     confirm_password: '',
   });
   const [errorMsg, setErrorMsg] = useState<{
     name: string | null;
     email: string | null;
+    phone: string | null;
     store: string | null;
     password: string | null;
     confirm_password: string | null;
   }>({
     name: null,
     email: null,
+    phone: null,
     store: null,
     password: null,
     confirm_password: null,
   });
 
   const { loading: fetchLoading, fetchData: managersFetch } = useFetch();
+  const { loading: fetchStoreLoading, fetchData: storeFetch } = useFetch();
   const { createData: createManager, loading: cManagerLoading } = useCreate();
   const { loading: rManagerLoading, removeData: removeManager } = useRemove();
   const { loading: eManagerLoading, editData: editManager } = useEdit();
 
   const dispatch = useDispatch();
   const globalManagers = useSelector((state: any) => state.appData.managers);
+  const globalStores = useSelector((state: any) => state.appData.stores);
   const user = useSelector((state: any) => state.appData.user);
   const business = useSelector((state: any) => state.appData.business);
 
@@ -59,10 +71,31 @@ function Managers() {
     setErrorMsg({
       name: null,
       email: null,
+      phone: null,
       store: null,
       password: null,
       confirm_password: null,
     });
+  };
+
+  const resetUserInput = () => {
+    setUserInput({
+      name: '',
+      email: '',
+      phone: '',
+      stores: [],
+      password: '',
+      confirm_password: '',
+    });
+  };
+
+  const handleStoreData = (data: any) => {
+    setStores(
+      data.map((store: any) => ({
+        label: store.name,
+        value: store.id,
+      })),
+    );
   };
 
   const handleSearch = (event: { target: { value: any } }) => {
@@ -84,6 +117,21 @@ function Managers() {
         if (res?.status === 200) {
           setManagers(res?.data);
           dispatch(setGlobalManagers(res?.data));
+        }
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
+  };
+
+  const fetchStores = () => {
+    storeFetch(`/store-list/?user=${user.id}`)
+      .then((res) => {
+        if (res?.status === 200) {
+          handleStoreData(res?.data);
+          // setStores(res?.data);
+          dispatch(setGlobalStores(res?.data));
         }
         return true;
       })
@@ -133,7 +181,14 @@ function Managers() {
 
   const handleEditManager = () => {
     resetErrorMsg();
-    editManager(`/manager/${preEditItem.id}/`, userInput, false)
+    const payload = {
+      name: userInput.name,
+      email: userInput.email,
+      phone: userInput.phone,
+      stores: userInput.stores?.map((store) => store.value),
+      password: userInput.password,
+    };
+    editManager(`auth/update-manager/`, payload, false)
       .then((res) => {
         if (res.status === 400) {
           const firstError = Object.keys(res.data)[0];
@@ -181,7 +236,7 @@ function Managers() {
     }
   };
 
-  const handleUserInput = (key: string, value: string) => {
+  const handleUserInput = (key: string, value: string | MultiValue<number>) => {
     setUserInput({
       ...userInput,
       [key]: value,
@@ -190,15 +245,20 @@ function Managers() {
 
   const handleCancelEdit = () => {
     setPreEditItem(null);
-    setUserInput({ name: '', percent: '' });
+    resetUserInput();
   };
 
   const handleManagerForEdit = (manager: any) => {
+    console.log(manager);
     setPreEditItem(manager);
     setUserInput({
       name: manager.name,
       email: manager.email,
-      store: manager.store,
+      phone: manager.phone,
+      stores: manager.stores.map((store: any) => ({
+        label: store.name,
+        value: store.id,
+      })),
       password: '',
       confirm_password: '',
     });
@@ -211,8 +271,15 @@ function Managers() {
 
   const handleCreateManager = () => {
     resetErrorMsg();
+    const payload = {
+      name: userInput.name,
+      email: userInput.email,
+      phone: userInput.phone,
+      stores: userInput.stores?.map((store) => store.value),
+      password: userInput.password,
+    };
     // eslint-disable-next-line promise/catch-or-return
-    createManager('/manager/', userInput, false)
+    createManager('/auth/create-manager/', payload, false)
       .then(async (res) => {
         if (res.status === 400) {
           const firstError = Object.keys(res.data)[0];
@@ -229,7 +296,7 @@ function Managers() {
         if (res.status === 200) {
           clientSideManagerCreate(res?.data);
           toast.success('Manager created successfully!');
-          setUserInput({ name: '', percent: '' });
+          resetUserInput();
         }
         return true;
       })
@@ -247,6 +314,14 @@ function Managers() {
     } else {
       fetchManagers();
     }
+
+    if (globalStores?.length > 0) {
+      handleStoreData(globalStores);
+      // setStores(globalStores);
+      dispatch(setGlobalStores(globalStores));
+    } else {
+      fetchStores();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -261,7 +336,7 @@ function Managers() {
             <h2 className="text-gray-800 font-bold text-2xl">Managers</h2>
 
             <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full  ">
-              10 stores
+              {managers?.length} {managers?.length > 1 ? 'managers' : 'manager'}
             </span>
           </div>
 
@@ -400,12 +475,54 @@ function Managers() {
               </LabelInput>
 
               <LabelInput
-                errorMsg={errorMsg.store}
+                errorMsg={errorMsg.phone}
                 loading={false}
+                label="Manager Phone"
+                required
+              >
+                <input
+                  type="tel"
+                  id="phone"
+                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
+                  placeholder="Manager Phone"
+                  required
+                  value={userInput.phone || ''}
+                  onChange={(e) => handleUserInput('phone', e.target.value)}
+                />
+              </LabelInput>
+
+              <LabelInput
+                errorMsg={errorMsg.store}
+                loading={fetchStoreLoading}
                 label="Select Store"
                 required
               >
-                <div className="relative group rounded-full overflow-hidden before:absolute w-full bg-white border border-gray-300">
+                <Select
+                  closeMenuOnSelect={false}
+                  isMulti
+                  options={stores}
+                  value={userInput.stores}
+                  onChange={(e) => handleUserInput('stores', e)}
+                />
+
+                {/* <CreatableSelect
+                  isClearable
+                  isMulti
+                  options={stores?.length > 0 ? stores : noStoreOptions}
+                  className="inventory_add_tax"
+                  placeholder="Store Name"
+                  // value={{
+                  //   value: '',
+                  //   label: userInput.stores && userInput.stores[0],
+                  // }}
+                  // onChange={(selectedTax) =>
+                  //   handleSelectDefaultTax(selectedTax, index)
+                  // }
+                  // onCreateOption={(name) =>
+                  //   handleUserInputTax('name', name, index)
+                  // }
+                /> */}
+                {/* <div className="relative group rounded-full overflow-hidden before:absolute w-full bg-white border border-gray-300">
                   <svg
                     y="0"
                     xmlns="http://www.w3.org/2000/svg"
@@ -431,17 +548,22 @@ function Managers() {
                     className="appearance-none hover:placeholder-shown:bg-emerald-500 relative text-pink-400 bg-transparent ring-0 outline-none  placeholder-violet-700 text-sm font-bold rounded-full p-4 focus:ring-violet-500 focus:border-violet-500 block w-full"
                     id="category"
                   >
-                    <option value={undefined} disabled>
+                    <option value={0} disabled>
                       Select Store
                     </option>
+                    {stores.map((store: { id: number; name: string }) => (
+                      <option key={store.id} value={store.id}>
+                        {store.name}
+                      </option>
+                    ))}
                   </select>
-                </div>
+                </div> */}
               </LabelInput>
 
               <LabelInput
                 errorMsg={errorMsg.password}
                 loading={false}
-                label="Set Password"
+                label={preEditItem ? 'Change Password' : 'Set Password'}
                 required
               >
                 <input

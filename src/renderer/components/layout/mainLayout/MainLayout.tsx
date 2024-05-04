@@ -1,7 +1,11 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import SideBar from '../../commonComponents/sideBar/SideBar';
-import { setStore, setUser } from '../../../../store/slices/appData';
+import {
+  setBusiness,
+  setStore,
+  setUser,
+} from '../../../../store/slices/appData';
 
 function MainLayout({ children }: any) {
   const dispatch = useDispatch();
@@ -9,9 +13,12 @@ function MainLayout({ children }: any) {
   useEffect(() => {
     const user = localStorage.getItem('user');
     const storeData = localStorage.getItem('store');
-    if (user && storeData) {
+    const businessData = localStorage.getItem('business');
+
+    if (user && storeData && businessData) {
       dispatch(setUser(JSON.parse(user)));
       dispatch(setStore(JSON.parse(storeData)));
+      dispatch(setBusiness(JSON.parse(businessData)));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

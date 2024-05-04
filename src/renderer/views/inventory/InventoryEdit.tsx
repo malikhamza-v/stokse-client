@@ -243,6 +243,7 @@ export default function InventoryEdit() {
       reorder_quantity: userInput.reorder_quantity,
       additional_notes: userInput.additional_notes,
       taxes: userInput.taxes,
+      store: product.store,
     };
     editProduct(`/products/${product.id}/`, payload, false)
       .then((res) => {
@@ -263,12 +264,14 @@ export default function InventoryEdit() {
           setErrorMsg(res.data);
         }
         if (res.status === 200) {
-          const newProducts = globalProducts.map((singleGlobalProduct: any) => {
-            if (singleGlobalProduct.id === res.data.id) {
-              return res.data;
-            }
-            return singleGlobalProduct;
-          });
+          const newProducts = globalProducts?.map(
+            (singleGlobalProduct: any) => {
+              if (singleGlobalProduct.id === res.data.id) {
+                return res.data;
+              }
+              return singleGlobalProduct;
+            },
+          );
           dispatch(setProducts(newProducts));
           navigate('/inventory');
         }
@@ -291,7 +294,7 @@ export default function InventoryEdit() {
         sale_price: parseFloat(product.sale_price || 0),
         stock_quantity: parseFloat(product.stock_quantity || 0),
         enable_low_stock_notification: product.enable_low_stock_notification,
-        taxes: product.taxes,
+        taxes: product.taxes || [],
         low_stock_level: parseFloat(product.low_stock_level || 0),
         reorder_quantity: parseFloat(product.reorder_quantity || 0),
         additional_notes: product.additional_notes || '',
@@ -421,7 +424,7 @@ export default function InventoryEdit() {
                       Select Product Category
                     </option>
 
-                    {categories.map(
+                    {categories?.map(
                       (category: { id: number; name: string }) => (
                         <option key={category.id} value={category.id}>
                           {category.name}
@@ -468,7 +471,7 @@ export default function InventoryEdit() {
                     <option value={undefined} disabled>
                       Select Product Brand
                     </option>
-                    {brands.map((brand: { id: number; name: string }) => (
+                    {brands?.map((brand: { id: number; name: string }) => (
                       <option key={brand.id} value={brand.id}>
                         {brand.name}
                       </option>
@@ -628,7 +631,7 @@ export default function InventoryEdit() {
 
             {isTaxesInclude && (
               <div>
-                {userInput.taxes.map((tax, index) => (
+                {userInput.taxes?.map((tax, index) => (
                   <div
                     className="py-4 space-y-4"
                     key={`${tax.name}-${index + 1}`}
