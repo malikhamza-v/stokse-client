@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "Seamless POS solution for growing businesses",
   "license": "MIT",
   "author": {
@@ -22,7 +22,7 @@
     "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
     "test": "jest",
-    "dist": "electron-builder -p always --win"
+    "dist": "electron-builder --win"
   },
   "repository": "https://github.com/malikhamza-v/POS-Ventory-Builds",
   "browserslist": [],
