@@ -249,7 +249,6 @@ function Managers() {
   };
 
   const handleManagerForEdit = (manager: any) => {
-    console.log(manager);
     setPreEditItem(manager);
     setUserInput({
       name: manager.name,
