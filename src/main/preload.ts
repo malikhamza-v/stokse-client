@@ -29,6 +29,9 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   send: (channel: any, data: any) => ipcRenderer.send(channel, data),
   on: (channel: any, func: any) =>
     ipcRenderer.on(channel, (event, ...args) => func(...args)),
+  invoke: (channel: any, ...args: any[]) => {
+    return ipcRenderer.invoke(channel, ...args);
+  },
 });
 
 export type ElectronHandler = typeof electronHandler;

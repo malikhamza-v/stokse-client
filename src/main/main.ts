@@ -25,7 +25,6 @@ class AppUpdater {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
     autoUpdater.checkForUpdates();
-    console.log('checking for update');
   }
 }
 
@@ -115,11 +114,19 @@ const createWindow = async () => {
     }
   });
 
-  ipcMain.on('check-for-updates', async () => {
-    console.log('checking for update');
-    new AppUpdater();
+  ipcMain.handle('check-for-updates', async () => {
+    console.log('checking for updates');
+    if (process.platform !== 'darwin') {
+      const data = {
+        error: true,
+        message: 'AutoUpdate feature is only for windows',
+      };
 
-    // this.window.webContents.send('updateMessage', message);
+      return data;
+    }
+    // eslint-disable-next-line no-new
+    new AppUpdater();
+    return true;
   });
 
   mainWindow.on('ready-to-show', () => {

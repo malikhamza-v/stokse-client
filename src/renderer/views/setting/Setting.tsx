@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { Link, useNavigate } from 'react-router-dom';
-import { LabelInput } from '../../components/commonComponents';
+import { LabelInput, Toast } from '../../components/commonComponents';
 import { ArrowRight } from '../../utils/svg';
 import { useCreate } from '../../utils/hooks';
 import { SecondaryButton } from '../../components/commonComponents/buttons';
+import { toast } from 'react-toastify';
 
 function Setting() {
   const settingsOptions = [
@@ -60,16 +61,13 @@ function Setting() {
       });
   };
 
-  // const { ipcRenderer } = window as any;
+  const { ipcRenderer } = window as any;
 
-  // const updateMessage = () => {
-  //   console.log('message logged in view');
-  // };
-
-  const checkForUpdate = () => {
-    // console.log('check');
-    // ipcRenderer.send('check-for-updates');
-    // bridge.updateMessage(updateMessage);
+  const checkForUpdate = async () => {
+    const response = await ipcRenderer.invoke('check-for-updates');
+    if (response.error) {
+      toast.error(response.message);
+    }
   };
   return (
     <div className="flex flex-col h-full w-full overflow-y-scroll">
@@ -251,6 +249,7 @@ function Setting() {
           />
         </div>
       </div>
+      <Toast />
     </div>
   );
 }
