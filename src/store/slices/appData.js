@@ -78,7 +78,7 @@ const appData = createSlice({
       state.taxes = action.payload;
     },
     setManagers: (state, action) => {
-      state.managers = action.payment;
+      state.managers = action.payload;
     },
     setStores: (state, action) => {
       state.stores = action.payload;

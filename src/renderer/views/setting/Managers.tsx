@@ -14,7 +14,6 @@ import {
 } from '../../components/commonComponents/buttons';
 import { useCreate, useEdit, useFetch, useRemove } from '../../utils/hooks';
 import { DeleteSVG, EditSVG, ErrorSVG, SearchSVG } from '../../utils/svg';
-import { noStoreOptions } from '../../utils/constant';
 
 function Managers() {
   const [managers, setManagers] = useState<any>([]);
@@ -150,42 +149,13 @@ function Managers() {
     dispatch(setGlobalManagers(items));
   };
 
-  const clientSideManagerEdit = (store: any) => {
-    const managerIndex = globalManagers.findIndex(
-      (item: any) => item.id === store.id,
-    );
-    if (managerIndex !== -1) {
-      const updatedManagers = globalManagers.map((item: any, index: number) => {
-        if (index === managerIndex) {
-          return {
-            ...item,
-            ...store,
-          };
-        }
-        return item;
-      });
-
-      setManagers(updatedManagers);
-      dispatch(setGlobalManagers(updatedManagers));
-    } else {
-      fetchManagers();
-    }
-  };
-
-  const clientSideManagerCreate = (manager: any) => {
-    const items = [...globalManagers];
-    items.push(manager);
-    setManagers(items);
-    dispatch(setGlobalManagers(items));
-  };
-
   const handleEditManager = () => {
     resetErrorMsg();
     const payload = {
       name: userInput.name,
       email: userInput.email,
       phone: userInput.phone,
-      stores: userInput.stores?.map((store) => store.value),
+      stores: userInput.stores?.map((store: any) => store.value),
       password: userInput.password,
     };
     editManager(`auth/update-manager/`, payload, false)
@@ -203,10 +173,10 @@ function Managers() {
           setErrorMsg(res.data);
         }
         if (res.status === 200) {
-          clientSideManagerEdit(res?.data);
           toast.success('Manager edited successfully!');
+          fetchManagers();
           setPreEditItem(null);
-          setUserInput({ name: '', percent: '' });
+          resetUserInput();
         }
         return true;
       })
@@ -217,7 +187,7 @@ function Managers() {
 
   const handleDeleteManager = () => {
     if (preDeleteItem.id) {
-      removeManager(`/manager/${preDeleteItem.id}/`, false)
+      removeManager(`/auth/remove-manager/?manager=${preDeleteItem.id}`, false)
         .then((res) => {
           if (res.status === 204) {
             toast.success('Manager deleted successfully!');
@@ -241,6 +211,12 @@ function Managers() {
       ...userInput,
       [key]: value,
     });
+
+    if (key === 'confirm_password' && userInput.password !== value) {
+      setErrorMsg({ ...errorMsg, [key]: 'Password does not match' });
+      return;
+    }
+    setErrorMsg({ ...errorMsg, [key]: null });
   };
 
   const handleCancelEdit = () => {
@@ -269,12 +245,16 @@ function Managers() {
   };
 
   const handleCreateManager = () => {
+    if (userInput.password !== userInput.confirm_password) {
+      toast.error('Password do not match!');
+      return;
+    }
     resetErrorMsg();
     const payload = {
       name: userInput.name,
       email: userInput.email,
       phone: userInput.phone,
-      stores: userInput.stores?.map((store) => store.value),
+      stores: userInput.stores?.map((store: any) => store.value),
       password: userInput.password,
     };
     // eslint-disable-next-line promise/catch-or-return
@@ -289,12 +269,11 @@ function Managers() {
               }
             }, 50);
           }
-
           setErrorMsg(res.data);
         }
         if (res.status === 200) {
-          clientSideManagerCreate(res?.data);
           toast.success('Manager created successfully!');
+          fetchManagers();
           resetUserInput();
         }
         return true;
@@ -335,7 +314,8 @@ function Managers() {
             <h2 className="text-gray-800 font-bold text-2xl">Managers</h2>
 
             <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full  ">
-              {managers?.length} {managers?.length > 1 ? 'managers' : 'manager'}
+              {managers?.length || 0}{' '}
+              {managers?.length > 1 ? 'managers' : 'manager'}
             </span>
           </div>
 
@@ -395,7 +375,7 @@ function Managers() {
                 managers.map((manager: any) => {
                   return (
                     <div
-                      key={manager.id}
+                      key={manager.id + manager.email}
                       className="border flex items-center justify-between p-4 rounded-lg mb-2"
                     >
                       <div className="flex flex-col gap-1">
@@ -503,60 +483,6 @@ function Managers() {
                   value={userInput.stores}
                   onChange={(e) => handleUserInput('stores', e)}
                 />
-
-                {/* <CreatableSelect
-                  isClearable
-                  isMulti
-                  options={stores?.length > 0 ? stores : noStoreOptions}
-                  className="inventory_add_tax"
-                  placeholder="Store Name"
-                  // value={{
-                  //   value: '',
-                  //   label: userInput.stores && userInput.stores[0],
-                  // }}
-                  // onChange={(selectedTax) =>
-                  //   handleSelectDefaultTax(selectedTax, index)
-                  // }
-                  // onCreateOption={(name) =>
-                  //   handleUserInputTax('name', name, index)
-                  // }
-                /> */}
-                {/* <div className="relative group rounded-full overflow-hidden before:absolute w-full bg-white border border-gray-300">
-                  <svg
-                    y="0"
-                    xmlns="http://www.w3.org/2000/svg"
-                    x="0"
-                    width="100"
-                    viewBox="0 0 100 100"
-                    preserveAspectRatio="xMidYMid meet"
-                    height="100"
-                    className="w-8 h-8 absolute right-2 -rotate-45 stroke-pink-300 top-1/2 -translate-y-1/2 group-hover:rotate-0 duration-300"
-                  >
-                    <path
-                      strokeWidth="4"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      fill="none"
-                      d="M60.7,53.6,50,64.3m0,0L39.3,53.6M50,64.3V35.7m0,46.4A32.1,32.1,0,1,1,82.1,50,32.1,32.1,0,0,1,50,82.1Z"
-                      className="svg-stroke-primary"
-                    />
-                  </svg>
-                  <select
-                    onChange={(e) => handleUserInput('store', e.target.value)}
-                    value={userInput?.store}
-                    className="appearance-none hover:placeholder-shown:bg-emerald-500 relative text-pink-400 bg-transparent ring-0 outline-none  placeholder-violet-700 text-sm font-bold rounded-full p-4 focus:ring-violet-500 focus:border-violet-500 block w-full"
-                    id="category"
-                  >
-                    <option value={0} disabled>
-                      Select Store
-                    </option>
-                    {stores.map((store: { id: number; name: string }) => (
-                      <option key={store.id} value={store.id}>
-                        {store.name}
-                      </option>
-                    ))}
-                  </select>
-                </div> */}
               </LabelInput>
 
               <LabelInput
@@ -566,8 +492,8 @@ function Managers() {
                 required
               >
                 <input
-                  type="email"
-                  id="email"
+                  type="password"
+                  id="password"
                   className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
                   placeholder="Manager's Password"
                   required
@@ -583,8 +509,8 @@ function Managers() {
                 required
               >
                 <input
-                  type="email"
-                  id="email"
+                  type="password"
+                  id="confirm_password"
                   className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
                   placeholder="Confirm Password"
                   required
