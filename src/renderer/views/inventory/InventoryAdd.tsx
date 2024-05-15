@@ -292,7 +292,7 @@ export default function InventoryAdd() {
       stock_quantity: userInput.stock_quantity,
       enable_low_stock_notification: isLowLevelStock,
       low_stock_level: userInput.low_stock_level,
-      reorder_quantity: userInput.reorder_quantity,
+      reorder_quantity: userInput.reorder_quantity || 0,
       additional_notes: userInput.additional_notes,
       taxes: isTaxesInclude ? userInput.taxes : null,
     };
