@@ -116,7 +116,7 @@ function Stores() {
             <h2 className="text-gray-800 font-bold text-2xl">Stores</h2>
 
             <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full  ">
-              10 stores
+              {stores?.length || 0} stores
             </span>
           </div>
 
