@@ -10,6 +10,7 @@ import { useFetch } from '../../utils/hooks';
 import {
   AddSVG,
   DeleteSVG,
+  EditSVG,
   ErrorSVG,
   SearchSVG,
   ViewSVG,
@@ -21,6 +22,7 @@ import {
   setProducts as setGlobalProducts,
 } from '../../../store/slices/appData';
 import useCreate from '../../utils/hooks/useCreate';
+import Drawer from '../../components/commonComponents/drawer/Drawer';
 
 /* eslint-disable jsx-a11y/control-has-associated-label */
 export default function Inventory() {
@@ -35,6 +37,7 @@ export default function Inventory() {
   const [selectedFilteredBtn, setSelectedFilteredBtn] = useState<string | null>(
     null,
   );
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState({ upload: null });
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [paginatedProducts, setPaginatedProducts] = useState<{
@@ -76,6 +79,14 @@ export default function Inventory() {
       .catch(() => {
         return false;
       });
+  };
+
+  const handleProductView = (product) => {
+    setIsDrawerOpen(true);
+  };
+
+  const handleCloseProductView = () => {
+    setIsDrawerOpen(false);
   };
 
   const handleSearch = (event: { target: { value: any } }) => {
@@ -542,9 +553,17 @@ export default function Inventory() {
                                 <button
                                   type="button"
                                   className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
-                                  onClick={() => handleProductForEdit(product)}
+                                  onClick={() => handleProductView(product)}
                                 >
                                   <ViewSVG />
+                                </button>
+
+                                <button
+                                  type="button"
+                                  className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
+                                  onClick={() => handleProductForEdit(product)}
+                                >
+                                  <EditSVG />
                                 </button>
 
                                 <button
@@ -921,6 +940,14 @@ export default function Inventory() {
         </div>
       )}
       <Toast />
+
+      <Drawer
+        id="inventory_view"
+        isOpen={isDrawerOpen}
+        close={handleCloseProductView}
+      >
+        <p>Hello</p>
+      </Drawer>
     </section>
   );
 }
