@@ -7,11 +7,16 @@ const useFetch = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const storeID = useSelector((state: any) => state.appData.store?.id);
+  const businessID = useSelector((state: any) => state.appData.business?.id);
 
   const fetchData = async (url: string) => {
     setLoading(true);
     try {
-      const urlWithStoreParam = constructURLWithStoreParam(url, storeID);
+      const urlWithStoreParam = constructURLWithStoreParam(
+        url,
+        storeID,
+        businessID,
+      );
       const response = await api.get(urlWithStoreParam);
       setData(response);
       return { status: 200, data: response.data };

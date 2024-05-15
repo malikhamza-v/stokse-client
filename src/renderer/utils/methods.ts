@@ -77,8 +77,11 @@ export const ConvertIntoDecimal = (value: number | string) => {
 export const constructURLWithStoreParam = (
   baseUrl: string,
   storeParam: number,
+  businessParam: number,
 ) => {
   const encodedStoreParam = encodeURIComponent(storeParam);
   const separator = baseUrl.includes('?') ? '&' : '?';
-  return `${baseUrl}${separator}store=${encodedStoreParam}`;
+  return `${baseUrl}${separator}store=${encodedStoreParam}${
+    businessParam ? `&business=${businessParam}` : ''
+  }`;
 };

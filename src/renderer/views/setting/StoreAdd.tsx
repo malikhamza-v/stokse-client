@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { LabelInput } from '../../components/commonComponents';
 import { PrimaryButton } from '../../components/commonComponents/buttons';
-import { CameraSVG, FingerRight } from '../../utils/svg';
+import { CameraSVG } from '../../utils/svg';
 import { useCreate } from '../../utils/hooks';
-import { setStore } from '../../../store/slices/appData';
+import { setStores } from '../../../store/slices/appData';
 
 function StoreAdd() {
   const [isUploadImageHover, setIsUploadImageHover] = useState(false);
@@ -55,6 +55,7 @@ function StoreAdd() {
   const { createData: createStore } = useCreate();
 
   const user = useSelector((state: any) => state.appData.user);
+  const stores = useSelector((state: any) => state.appData.stores);
   const business = useSelector((state: any) => state.appData.business);
   const navigate = useNavigate();
 
@@ -128,10 +129,8 @@ function StoreAdd() {
       };
       const res = await createStore('/store/', payload, false);
       if (res.status === 200) {
-        // [todo]: the reponse contain all managers which is not good
-        dispatch(setStore(res.data));
-        localStorage.setItem('store', JSON.stringify(res.data));
-        navigate('/setup/business/category');
+        dispatch(setStores([...stores, res.data]));
+        navigate('/setting/stores');
       }
     } finally {
       setLoading(false);

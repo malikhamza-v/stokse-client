@@ -5,8 +5,6 @@ import { toast } from 'react-toastify';
 import { LabelInput, Toast } from '../components/commonComponents';
 import useCreate from '../utils/hooks/useCreate';
 import { ArrowLongRight } from '../utils/svg';
-import { setBusiness, setUser } from '../../store/slices/appData';
-import { useDispatch } from 'react-redux';
 
 function Signin() {
   const [userInput, setUserInput] = useState({ email: '', password: '' });
@@ -17,7 +15,6 @@ function Signin() {
   const { loading: loginLoading, createData: login } = useCreate();
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   //   [info]: methods
   const handleInput = (e: ChangeEvent<HTMLInputElement>, type: string) => {
