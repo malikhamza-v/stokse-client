@@ -1,7 +1,9 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useEffect, useState } from 'react';
 import Drawer from '../../components/commonComponents/drawer/Drawer';
+import { NotFound } from '../../utils/svg';
 
 function InventoryView({
   isViewOpen,
@@ -81,87 +83,115 @@ function InventoryView({
         </div>
 
         <div className="bg-gray-50 col-span-2 overflow-y-auto">
-          <div>
-            <p className="font-semibold text-2xl pl-8 pt-8">Product Details</p>
+          {currentView === 'detail' ? (
+            <div>
+              <p className="font-semibold text-2xl pl-8 pt-8">
+                Product Details
+              </p>
 
-            <div className="bg-white m-8 p-4 rounded-lg">
-              <div className="flex items-center justify-between border-b">
-                <p className="font-semibold text-base">Basic info</p>
-                <button type="button" className="btn btn-link no-underline">
-                  Edit
-                </button>
+              <div className="bg-white m-8 p-4 rounded-lg">
+                <div className="flex items-center justify-between border-b">
+                  <p className="font-semibold text-base">Basic info</p>
+                  <button type="button" className="btn btn-link no-underline">
+                    Edit
+                  </button>
+                </div>
+                <div className="flex flex-col gap-2 py-4 border-b">
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium">Product barcode</p>
+                    <p>Id quae est mollit u</p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium">Brand</p>
+                    <p>-</p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium">Product category</p>
+                    <p>-</p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium">Supplier</p>
+                    <p>-</p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium">Amount</p>
+                    <p>-</p>
+                  </div>
+                </div>
+                <div className="py-4 flex flex-col gap-4">
+                  <div>
+                    <p className="font-medium">Short description</p>
+                    <p>
+                      Rerum consequatur impedit soluta reprehenderit elit neque
+                      sed quo ullamco non omnis dolore ea
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-medium">Product description</p>
+                    <p>
+                      Iure error dolor culpa ex quia velit animi eius nisi est
+                      impedit nisi
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col gap-2 py-4 border-b">
-                <div className="flex items-center justify-between">
-                  <p className="font-medium">Product barcode</p>
-                  <p>Id quae est mollit u</p>
+
+              <div className="bg-white m-8 p-4 rounded-lg">
+                <div className="flex items-center justify-between border-b">
+                  <p className="font-semibold text-base">Stock Info</p>
+                  <button type="button" className="btn btn-link no-underline">
+                    Edit
+                  </button>
                 </div>
-                <div className="flex items-center justify-between">
-                  <p className="font-medium">Brand</p>
-                  <p>-</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="font-medium">Product category</p>
-                  <p>-</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="font-medium">Supplier</p>
-                  <p>-</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="font-medium">Amount</p>
-                  <p>-</p>
-                </div>
-              </div>
-              <div className="py-4 flex flex-col gap-4">
-                <div>
-                  <p className="font-medium">Short description</p>
-                  <p>
-                    Rerum consequatur impedit soluta reprehenderit elit neque
-                    sed quo ullamco non omnis dolore ea
-                  </p>
-                </div>
-                <div>
-                  <p className="font-medium">Product description</p>
-                  <p>
-                    Iure error dolor culpa ex quia velit animi eius nisi est
-                    impedit nisi
-                  </p>
+                <div className="flex flex-col gap-2 py-4 ">
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium">Primary SKU</p>
+                    <p>Id u</p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium">In stock</p>
+                    <p>-</p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium">Supply price</p>
+                    <p>-</p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium">Retail price</p>
+                    <p>-</p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium">Total stock cost</p>
+                    <p>-</p>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <div className="bg-white m-8 p-4 rounded-lg">
-              <div className="flex items-center justify-between border-b">
-                <p className="font-semibold text-base">Stock Info</p>
-                <button type="button" className="btn btn-link no-underline">
-                  Edit
-                </button>
-              </div>
-              <div className="flex flex-col gap-2 py-4 ">
-                <div className="flex items-center justify-between">
-                  <p className="font-medium">Primary SKU</p>
-                  <p>Id u</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="font-medium">In stock</p>
-                  <p>-</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="font-medium">Supply price</p>
-                  <p>-</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="font-medium">Retail price</p>
-                  <p>-</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="font-medium">Total stock cost</p>
-                  <p>-</p>
-                </div>
+          ) : currentView === 'order' ? (
+            <div className="flex flex-col h-full">
+              <p className="font-semibold text-2xl pl-8 pt-8">Stock Orders</p>
+              <div className="border border-gray-300 rounded-lg flex flex-col gap-2 justify-center items-center h-1/2 m-12">
+                <NotFound />
+                <p className="font-medium">No stock orders here yet</p>
               </div>
             </div>
-          </div>
+          ) : currentView === 'sale' ? (
+            <div className="flex flex-col h-full">
+              <p className="font-semibold text-2xl pl-8 pt-8">Sales</p>
+              <div className="border border-gray-300 rounded-lg flex flex-col gap-2 justify-center items-center h-1/2 m-12">
+                <NotFound />
+                <p className="font-medium">No sales here yet</p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col h-full">
+              <p className="font-semibold text-2xl pl-8 pt-8">Stock History</p>
+              <div className="border border-gray-300 rounded-lg flex flex-col gap-2 justify-center items-center h-1/2 m-12">
+                <NotFound />
+                <p className="font-medium">No stock history here yet</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </Drawer>
