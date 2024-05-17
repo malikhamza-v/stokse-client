@@ -23,6 +23,7 @@ import {
 } from '../../../store/slices/appData';
 import useCreate from '../../utils/hooks/useCreate';
 import Drawer from '../../components/commonComponents/drawer/Drawer';
+import InventoryView from './InventoryView';
 
 /* eslint-disable jsx-a11y/control-has-associated-label */
 export default function Inventory() {
@@ -941,13 +942,10 @@ export default function Inventory() {
       )}
       <Toast />
 
-      <Drawer
-        id="inventory_view"
-        isOpen={isDrawerOpen}
-        close={handleCloseProductView}
-      >
-        <p>Hello</p>
-      </Drawer>
+      <InventoryView
+        isViewOpen={isDrawerOpen}
+        handleCloseView={handleCloseProductView}
+      />
     </section>
   );
 }

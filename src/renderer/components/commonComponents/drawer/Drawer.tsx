@@ -48,7 +48,7 @@ function Drawer({
               <CloseSvg />
             </button>
           )}
-          <div>{children}</div>
+          <div className="h-full">{children}</div>
         </ul>
       </div>
     </div>
