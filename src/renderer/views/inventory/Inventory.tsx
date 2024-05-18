@@ -22,7 +22,6 @@ import {
   setProducts as setGlobalProducts,
 } from '../../../store/slices/appData';
 import useCreate from '../../utils/hooks/useCreate';
-import Drawer from '../../components/commonComponents/drawer/Drawer';
 import InventoryView from './InventoryView';
 
 /* eslint-disable jsx-a11y/control-has-associated-label */
@@ -35,6 +34,7 @@ export default function Inventory() {
   const [searchedProducts, setSearchedProducts] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [selectedProductID, setSelectedProductID] = useState(null);
   const [selectedFilteredBtn, setSelectedFilteredBtn] = useState<string | null>(
     null,
   );
@@ -82,8 +82,9 @@ export default function Inventory() {
       });
   };
 
-  const handleProductView = (product) => {
+  const handleProductView = (product: any) => {
     setIsDrawerOpen(true);
+    setSelectedProductID(product.id);
   };
 
   const handleCloseProductView = () => {
@@ -945,6 +946,7 @@ export default function Inventory() {
       <InventoryView
         isViewOpen={isDrawerOpen}
         handleCloseView={handleCloseProductView}
+        productID={selectedProductID}
       />
     </section>
   );

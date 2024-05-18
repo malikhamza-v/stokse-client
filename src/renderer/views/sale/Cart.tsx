@@ -57,6 +57,7 @@ function Cart() {
     (state: any) => state.appData.cart.calculations,
   );
   const customer = useSelector((state: any) => state.appData.cart.customer);
+  const user = useSelector((state: any) => state.appData.user);
 
   const { loading: cOrderLoading, createData: orderCreate } = useCreate();
 
@@ -197,6 +198,8 @@ function Cart() {
         total: calculations.total,
         payment_methods: calculations.payment?.methods || [],
         payment_status: 'completed',
+        status: 'completed',
+        created_by: user.id,
         customer_email: customer.email,
         customer_name: customer.name,
         customer_phone: customer.phone,
