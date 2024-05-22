@@ -49,7 +49,7 @@ export default function CustomerEdit() {
 
   const { loading: cProductLoading, editData: editProduct } = useEdit();
 
-  let params = useParams();
+  const params = useParams();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();

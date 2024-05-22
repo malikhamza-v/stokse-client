@@ -20,7 +20,7 @@ import useRemove from '../../utils/hooks/useRemove';
 export default function Employees() {
   let currentUrl = '/employee/';
   const tableBody = useRef<HTMLTableSectionElement>(null);
-  const [products, setProducts] = useState<any>([]);
+  const [employees, setEmployees] = useState<any>([]);
   const [userInput, setUserInput] = useState({
     email: '',
     filter: 'all',
@@ -28,16 +28,16 @@ export default function Employees() {
   const [preDeleteItem, setPreDeleteItem] = useState<any>({});
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const { loading: fetchLoading, fetchData: productsFetch } = useFetch();
+  const { loading: fetchLoading, fetchData: employeesFetch } = useFetch();
   const { loading: rProductLoading, removeData: removeProduct } = useRemove();
 
   // [info]: method
 
-  const fetchProducts = (endpoint: string) => {
-    productsFetch(endpoint)
+  const fetchEmployees = (endpoint: string) => {
+    employeesFetch(endpoint)
       .then((res) => {
         if (res?.status === 200) {
-          setProducts(res?.data);
+          setEmployees(res?.data);
         }
         return true;
       })
@@ -67,65 +67,21 @@ export default function Employees() {
   const handleFilter = (filter: string) => {
     setUserInput({ ...userInput, filter });
     constructUrl(userInput.email, filter);
-    fetchProducts(currentUrl);
-  };
-
-  function debounce<T extends (...args: any[]) => void>(
-    func: T,
-    delay: number,
-  ): (...args: Parameters<T>) => void {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    return function debouncedFunction(this: any, ...args: Parameters<T>) {
-      const context = this;
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        func.apply(context, args);
-      }, delay);
-    };
-  }
-
-  const debouncedHandleSearch = debounce((value: string, filter: string) => {
-    setUserInput({ ...userInput, email: value });
-
-    constructUrl(value, filter);
-    fetchProducts(currentUrl);
-  }, 1000);
-
-  const handleSearch = (event: { target: { value: any } }) => {
-    const { value } = event.target;
-    debouncedHandleSearch(value, userInput.filter);
-  };
-
-  const handlePagination = (direction: string) => {
-    if (tableBody.current) {
-      tableBody.current.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
-    }
-    if (direction === 'next') {
-      const [, url] = products.next.split('api');
-      currentUrl = url;
-      fetchProducts(currentUrl);
-    } else {
-      const [, url] = products.previous.split('api');
-      currentUrl = url;
-      fetchProducts(currentUrl);
-    }
+    fetchEmployees(currentUrl);
   };
 
   const handleDeleteItem = () => {
     if (preDeleteItem.id) {
-      removeProduct(`/products/${preDeleteItem.id}/`, false)
+      removeProduct(`/employee/${preDeleteItem.id}/`, false)
         .then((res) => {
           if (res.status === 204) {
-            toast.success('Product deleted successfully!');
+            toast.success('Employee deleted successfully!');
             setShowDeleteModal(false);
-            fetchProducts(currentUrl);
+            fetchEmployees(currentUrl);
           } else if (res.status === 400) {
             toast.error(res.data);
             setShowDeleteModal(false);
-            fetchProducts(currentUrl);
+            fetchEmployees(currentUrl);
           }
           return true;
         })
@@ -135,14 +91,14 @@ export default function Employees() {
     }
   };
 
-  const handleCustomerEdit = (customer: any) => {
+  const handleEmployeeDelete = (customer: any) => {
     setShowDeleteModal(true);
     setPreDeleteItem(customer);
   };
 
   // [info]: lifecyles
   useEffect(() => {
-    fetchProducts(currentUrl);
+    fetchEmployees(currentUrl);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -154,7 +110,7 @@ export default function Employees() {
             <h2 className="text-gray-800 font-bold text-2xl">Employees</h2>
 
             <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full  ">
-              {products?.count} employees
+              {employees?.length} employees
             </span>
           </div>
 
@@ -227,7 +183,7 @@ export default function Employees() {
             } sm:text-sm`}
             onClick={() => handleFilter('known')}
           >
-            Known
+            Active
           </button>
 
           <button
@@ -237,7 +193,7 @@ export default function Employees() {
             } sm:text-sm`}
             onClick={() => handleFilter('walk-in')}
           >
-            Walk-In
+            Inactive
           </button>
         </div>
 
@@ -250,7 +206,6 @@ export default function Employees() {
             type="text"
             placeholder="Search by email"
             className="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-            onChange={handleSearch}
           />
         </div>
       </div>
@@ -285,7 +240,7 @@ export default function Employees() {
                       scope="col"
                       className="py-3.5 pl-4 pr-8 text-sm font-normal text-left rtl:text-right text-gray-500 w-[20%] "
                     >
-                      No. of orders
+                      Role
                     </th>
 
                     <th
@@ -362,11 +317,11 @@ export default function Employees() {
                         </tr>
                       ))}
                     </>
-                  ) : products?.results?.length > 0 ? (
+                  ) : employees?.length > 0 ? (
                     <>
-                      {products.results.map((customer: any, index: number) => {
+                      {employees.map((employee: any, index: number) => {
                         return (
-                          <tr key={customer.id} className="table w-full">
+                          <tr key={employee.id} className="table w-full">
                             <td className="px-4 py-4 text-sm font-medium whitespace-pre-wrap w-[10%]">
                               <div>
                                 <p className="text-sm text-wrap  font-normal text-gray-600 mt-2">
@@ -377,33 +332,27 @@ export default function Employees() {
                             <td className="py-4 px-4 text-sm font-medium w-[20%]">
                               <div className="py-1 text-sm font-normal rounded-full text-emerald-500 bg-emerald-100/60 w-32 text-center">
                                 <p className="text-sm text-wrap  font-normal text-gray-600 capitalize">
-                                  <span>{customer.name || 'Walk-In'}</span>
+                                  <span>{employee.name || 'Walk-In'}</span>
                                 </p>
                               </div>
                             </td>
                             <td className="py-4 pl-4 pr-8 text-sm w-[20%]">
                               <div>
                                 <h4 className="text-gray-700 ">
-                                  <span>
-                                    {customer.total_orders}{' '}
-                                    {customer.total_orders > 1
-                                      ? 'orders'
-                                      : 'order'}{' '}
-                                    placed
-                                  </span>
+                                  <span>{employee.role}</span>
                                 </h4>
                               </div>
                             </td>
                             <td className="px-4 py-4 text-sm w-[20%]">
                               <div className="flex items-center">
                                 <p className="text-gray-500 mt-2">
-                                  {customer.email || 'NONE'}
+                                  {employee.email || 'NONE'}
                                 </p>
                               </div>
                             </td>
 
                             <td className="px-4 py-4 text-sm whitespace-nowrap w-[10%]">
-                              <div>{customer.phone || 'NONE'}</div>
+                              <div>{employee.phone || 'NONE'}</div>
                             </td>
 
                             <td className="px-4 py-4 text-sm whitespace-nowrap">
@@ -415,7 +364,7 @@ export default function Employees() {
                                 >
                                   <ViewSVG />
                                 </button>
-                                <Link to={`/customer/edit/${customer.id}`}>
+                                <Link to={`/employee/edit/${employee.id}`}>
                                   <button
                                     type="button"
                                     className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
@@ -428,7 +377,7 @@ export default function Employees() {
                                 <button
                                   type="button"
                                   className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
-                                  onClick={() => handleCustomerEdit(customer)}
+                                  onClick={() => handleEmployeeDelete(employee)}
                                 >
                                   <DeleteSVG />
                                 </button>
@@ -447,7 +396,7 @@ export default function Employees() {
                         <div className="flex items-center justify-center gap-2 my-2">
                           <ErrorSVG />
                           <h2 className="font-medium text-gray-800  ">
-                            No Customer Found
+                            No Employee Found
                           </h2>
                         </div>
                       </td>
@@ -457,67 +406,6 @@ export default function Employees() {
               </table>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div className="mt-6 sm:flex sm:items-center sm:justify-between ">
-        <div className="text-sm text-gray-500 ">
-          Page{' '}
-          <span className="font-medium text-gray-700 ">
-            {products.current_page} of {products.total_pages}
-          </span>
-        </div>
-
-        <div className="flex items-center mt-4 gap-x-4 sm:mt-0">
-          <button
-            type="button"
-            onClick={() => handlePagination('previous')}
-            className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100"
-            disabled={(products.current_page || 1) < 2}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-5 h-5 rtl:-scale-x-100"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
-              />
-            </svg>
-
-            <span>previous</span>
-          </button>
-
-          <button
-            type="button"
-            className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100"
-            onClick={() => handlePagination('next')}
-            disabled={
-              (products.current_page || 1) >= (products.total_pages || 0)
-            }
-          >
-            <span>Next</span>
-
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-5 h-5 rtl:-scale-x-100"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-              />
-            </svg>
-          </button>
         </div>
       </div>
 

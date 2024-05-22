@@ -32,6 +32,7 @@ import Stores from './views/setting/Stores';
 import StoreAdd from './views/setting/StoreAdd';
 import Managers from './views/setting/Managers';
 import { Toast } from './components/commonComponents';
+import EmployeeEdit from './views/employee/EmployeeEdit';
 
 export default function App() {
   return (
@@ -71,6 +72,14 @@ export default function App() {
               element={
                 <MainLayout>
                   <EmployeeAdd />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/employee/edit/:id"
+              element={
+                <MainLayout>
+                  <EmployeeEdit />
                 </MainLayout>
               }
             />
