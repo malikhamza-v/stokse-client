@@ -2,7 +2,7 @@
 import { ChangeEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { LabelInput, Toast } from '../components/commonComponents';
+import { LabelInput } from '../components/commonComponents';
 import useCreate from '../utils/hooks/useCreate';
 import { ArrowLongRight } from '../utils/svg';
 
@@ -143,7 +143,6 @@ function Signin() {
           alt="POS With inventory"
         />
       </div>
-      <Toast />
     </div>
   );
 }

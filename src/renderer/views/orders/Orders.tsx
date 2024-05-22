@@ -16,7 +16,6 @@ import {
   ViewSVG,
 } from '../../utils/svg';
 import useRemove from '../../utils/hooks/useRemove';
-import { Toast } from '../../components/commonComponents';
 import { setEditProduct } from '../../../store/slices/appData';
 import { formatTimestamp } from '../../utils/methods';
 
@@ -602,8 +601,6 @@ export default function Orders() {
           </div>
         </div>
       )}
-
-      <Toast />
     </section>
   );
 }

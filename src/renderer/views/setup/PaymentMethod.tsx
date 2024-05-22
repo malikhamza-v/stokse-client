@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPaymentMethods as setGlobalPaymentMethod } from '../../../store/slices/appData';
-import { LabelInput, Toast } from '../../components/commonComponents';
+import { LabelInput } from '../../components/commonComponents';
 import {
   BackButton,
   PrimaryButton,
@@ -427,8 +427,6 @@ function PaymentMethod() {
             </div>
           </div>
         )}
-
-        <Toast />
       </div>
       <div className="w-40 ml-auto pb-4">
         <PrimaryButton

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { setStores as setGlobalStores } from '../../../store/slices/appData';
-import { Toast } from '../../components/commonComponents';
 import { BackButton } from '../../components/commonComponents/buttons';
 import { useFetch, useRemove } from '../../utils/hooks';
 import {
@@ -305,8 +304,6 @@ function Stores() {
           </div>
         </div>
       )}
-
-      <Toast />
     </div>
   );
 }

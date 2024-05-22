@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCategories as setGlobalCategories } from '../../../store/slices/appData';
-import { LabelInput, Toast } from '../../components/commonComponents';
+import { LabelInput } from '../../components/commonComponents';
 import {
   PrimaryButton,
   SecondaryButton,
@@ -402,8 +402,6 @@ function Category() {
             </div>
           </div>
         )}
-
-        <Toast />
       </div>
       <div className="w-40 ml-auto pb-4">
         <PrimaryButton

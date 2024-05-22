@@ -31,11 +31,13 @@ import EmployeeAdd from './views/employee/EmployeeAdd';
 import Stores from './views/setting/Stores';
 import StoreAdd from './views/setting/StoreAdd';
 import Managers from './views/setting/Managers';
+import { Toast } from './components/commonComponents';
 
 export default function App() {
   return (
     <Provider store={store}>
       <Router>
+        <Toast />
         <Routes>
           <Route path="/sign-in" element={<Signin />} />
           <Route path="/sign-up" element={<Signup />} />

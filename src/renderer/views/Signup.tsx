@@ -3,7 +3,7 @@ import { ChangeEvent, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { LabelInput, Toast } from '../components/commonComponents';
+import { LabelInput } from '../components/commonComponents';
 import useCreate from '../utils/hooks/useCreate';
 import { ArrowLongRight } from '../utils/svg';
 import { setUser, setBusiness } from '../../store/slices/appData';
@@ -400,7 +400,6 @@ function Signup() {
           alt="POS With inventory"
         />
       </div>
-      <Toast />
     </div>
   );
 }

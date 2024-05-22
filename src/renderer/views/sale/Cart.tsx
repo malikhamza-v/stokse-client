@@ -19,7 +19,6 @@ import {
   MinusSVG,
 } from '../../utils/svg';
 import { resetCart, setCart } from '../../../store/slices/appData';
-import { Toast } from '../../components/commonComponents';
 import { useCreate } from '../../utils/hooks';
 
 import {
@@ -881,7 +880,6 @@ function Cart() {
           </div>
         </div>
       )}
-      <Toast />
     </div>
   );
 }

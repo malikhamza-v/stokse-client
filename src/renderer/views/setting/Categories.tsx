@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCategories as setGlobalCategories } from '../../../store/slices/appData';
-import { LabelInput, Toast } from '../../components/commonComponents';
+import { LabelInput } from '../../components/commonComponents';
 import {
   BackButton,
   PrimaryButton,
@@ -421,8 +421,6 @@ function Categories() {
           </div>
         </div>
       )}
-
-      <Toast />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { Link, useNavigate } from 'react-router-dom';
-import { LabelInput, Toast } from '../../components/commonComponents';
+import { LabelInput } from '../../components/commonComponents';
 import { ArrowRight } from '../../utils/svg';
 import { useCreate } from '../../utils/hooks';
 import { SecondaryButton } from '../../components/commonComponents/buttons';
@@ -249,7 +249,6 @@ function Setting() {
           />
         </div>
       </div>
-      <Toast />
     </div>
   );
 }

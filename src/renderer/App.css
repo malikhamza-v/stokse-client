@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import 'react-toastify/dist/ReactToastify.css';
+@import 'flatpickr/dist/themes/material_green.css';
 
 @layer base {
   input[type='number']::-webkit-inner-spin-button,
@@ -193,4 +194,10 @@ body {
 
 .category-close-btn {
   left: -12%;
+}
+
+/* Flatpick */
+
+.flatpickr-input {
+  @apply border border-gray-300 w-full h-12 rounded-full block p-2.5 px-4 text-sm text-gray-900 bg-white resize-none;
 }

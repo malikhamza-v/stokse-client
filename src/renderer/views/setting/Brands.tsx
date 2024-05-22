@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBrands as setGlobalBrands } from '../../../store/slices/appData';
-import { LabelInput, Toast } from '../../components/commonComponents';
+import { LabelInput } from '../../components/commonComponents';
 import {
   BackButton,
   PrimaryButton,
@@ -422,8 +422,6 @@ function Brands() {
           </div>
         </div>
       )}
-
-      <Toast />
     </div>
   );
 }

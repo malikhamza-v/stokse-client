@@ -16,7 +16,6 @@ import {
   ViewSVG,
 } from '../../utils/svg';
 import useRemove from '../../utils/hooks/useRemove';
-import { Toast } from '../../components/commonComponents';
 import {
   setEditProduct,
   setProducts as setGlobalProducts,
@@ -941,7 +940,6 @@ export default function Inventory() {
           </div>
         </div>
       )}
-      <Toast />
 
       <InventoryView
         isViewOpen={isDrawerOpen}

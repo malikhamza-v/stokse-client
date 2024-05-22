@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { setTaxes as setGlobalTaxes } from '../../../store/slices/appData';
-import { LabelInput, Toast } from '../../components/commonComponents';
+import { LabelInput } from '../../components/commonComponents';
 import {
   BackButton,
   PrimaryButton,
@@ -447,8 +447,6 @@ function Taxes() {
           </div>
         </div>
       )}
-
-      <Toast />
     </div>
   );
 }

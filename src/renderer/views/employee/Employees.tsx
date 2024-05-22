@@ -15,7 +15,6 @@ import {
   ViewSVG,
 } from '../../utils/svg';
 import useRemove from '../../utils/hooks/useRemove';
-import { Toast } from '../../components/commonComponents';
 
 /* eslint-disable jsx-a11y/control-has-associated-label */
 export default function Employees() {
@@ -598,8 +597,6 @@ export default function Employees() {
           </div>
         </div>
       )}
-
-      <Toast />
     </section>
   );
 }

@@ -6,7 +6,7 @@ import {
   setManagers as setGlobalManagers,
   setStores as setGlobalStores,
 } from '../../../store/slices/appData';
-import { LabelInput, Toast } from '../../components/commonComponents';
+import { LabelInput } from '../../components/commonComponents';
 import {
   BackButton,
   PrimaryButton,
@@ -627,8 +627,6 @@ function Managers() {
           </div>
         </div>
       )}
-
-      <Toast />
     </div>
   );
 }
