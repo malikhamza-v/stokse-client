@@ -14,7 +14,7 @@ export default function Catalogue() {
     <div className="grid grid-cols-12 w-full">
       <div className="col-span-2 border-r ">
         <p className="font-medium pt-8 px-8">Catalogue</p>
-        <div className="px-2 mt-2">
+        <div className="px-2 mt-4">
           <div
             className={`hover:bg-slate-100 cursor-pointer transition-all duration-300 p-4 rounded-lg px-6 ${
               selectedCatalogue === 'order'
@@ -26,7 +26,7 @@ export default function Catalogue() {
             <p className="font-light text-sm">Orders</p>
           </div>
           <div
-            className={`hover:bg-slate-100 cursor-pointer transition-all duration-300 p-4 rounded-lg px-6 ${
+            className={`hover:bg-slate-100 mt-2 cursor-pointer transition-all duration-300 p-4 rounded-lg px-6 ${
               selectedCatalogue === 'customer'
                 ? 'bg-purple-100 hover:bg-purple-100'
                 : 'bg-transparent'
