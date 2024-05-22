@@ -11,9 +11,8 @@ import {
   PrimaryButton,
 } from '../../components/commonComponents/buttons';
 import { LabelInput } from '../../components/commonComponents';
-import useCreate from '../../utils/hooks/useCreate';
 import { formatDateIntoYYMMDD } from '../../utils/methods';
-import { useFetch } from '../../utils/hooks';
+import { useEdit, useFetch } from '../../utils/hooks';
 
 interface UserInputInterface {
   name: string;
@@ -47,7 +46,7 @@ export default function EmployeeEdit() {
     date_of_birth: null,
     date_joined: null,
   });
-  const [cProductLoading, setCProductLoading] = useState(false);
+  const [eEmployeeLoading, setEEmployeeLoading] = useState(false);
 
   const [userInput, setUserInput] = useState<UserInputInterface>({
     name: '',
@@ -59,7 +58,7 @@ export default function EmployeeEdit() {
     date_of_birth: null,
   });
 
-  const { createData: createEmployee } = useCreate();
+  const { editData: editEmployee } = useEdit();
   const { loading: employeeFetchLoading, fetchData: employeeFetch } =
     useFetch();
   const navigate = useNavigate();
@@ -95,7 +94,7 @@ export default function EmployeeEdit() {
             phone: res.data.phone,
             role: res.data.role,
             address: res.data.address,
-            date_joined: res.data.data_joined,
+            date_joined: res.data.date_joined,
             date_of_birth: res.data.date_of_birth,
           });
         }
@@ -106,8 +105,8 @@ export default function EmployeeEdit() {
       });
   };
 
-  const handleCreateEmployee = () => {
-    setCProductLoading(true);
+  const handleEditEmployee = () => {
+    setEEmployeeLoading(true);
     resetErrorMsg();
     const payload = {
       name: userInput.name,
@@ -124,10 +123,10 @@ export default function EmployeeEdit() {
     };
 
     // eslint-disable-next-line promise/catch-or-return
-    createEmployee('/employee/', payload, false)
+    editEmployee(`/employee/${params.id}/`, payload, false)
       .then(async (res) => {
         if (res.status === 200) {
-          toast.success('Employee created successfully!');
+          toast.success('Employee edited successfully!');
           navigate('/employees');
         } else if (res.status === 400) {
           const firstError = Object.keys(res.data)[0];
@@ -154,7 +153,7 @@ export default function EmployeeEdit() {
         return false;
       })
       .finally(() => {
-        setCProductLoading(false);
+        setEEmployeeLoading(false);
       });
   };
 
@@ -326,7 +325,11 @@ export default function EmployeeEdit() {
                     required={false}
                   >
                     <Flatpickr
-                      value={userInput.date_joined ? userInput.date_joined : ''}
+                      value={
+                        userInput.date_joined
+                          ? new Date(userInput.date_joined)
+                          : ''
+                      }
                       placeholder="Joining Date"
                       onChange={([date]: any) => {
                         handleUserInput('date_joined', date);
@@ -363,9 +366,9 @@ export default function EmployeeEdit() {
 
         <div className="flex justify-end w-40 ml-auto mt-4">
           <PrimaryButton
-            loading={cProductLoading}
+            loading={eEmployeeLoading}
             label="Save"
-            onClickAction={handleCreateEmployee}
+            onClickAction={handleEditEmployee}
           />
         </div>
       </div>
