@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { LabelInput } from '../../components/commonComponents';
 import { ArrowRight } from '../../utils/svg';
 import { useCreate } from '../../utils/hooks';
 import { SecondaryButton } from '../../components/commonComponents/buttons';
-import { toast } from 'react-toastify';
 
 function Setting() {
   const settingsOptions = [
@@ -38,6 +38,11 @@ function Setting() {
       label: 'Managers',
       description: 'Manage managers of your stores.',
       link: '/setting/managers',
+    },
+    {
+      label: 'App activites',
+      description: 'See all activities at your store.',
+      link: '/setting/logs',
     },
   ];
 

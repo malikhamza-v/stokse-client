@@ -312,6 +312,7 @@ function PaymentMethod() {
             <LabelInput
               errorMsg={errorMsg.name}
               label="Payment Method Name"
+              loading={false}
               required
             >
               <input

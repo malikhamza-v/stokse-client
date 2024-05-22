@@ -2,20 +2,15 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { LabelInput } from '../../components/commonComponents';
 import {
   BackButton,
   PrimaryButton,
 } from '../../components/commonComponents/buttons';
 import useEdit from '../../utils/hooks/useEdit';
-import {
-  setCategories as setGlobalCategories,
-  setBrands as setGlobalBrands,
-} from '../../../store/slices/appData';
 import { useFetch } from '../../utils/hooks';
-import { AddSVG, DeleteSVG } from '../../utils/svg';
 import Accordion from '../../components/commonComponents/accordian/Accordian';
 
 interface UserInputInterface {
@@ -45,19 +40,13 @@ export default function CustomerEdit() {
     orders: [],
   });
 
-  const [brands, setBrands] = useState([]);
-
   const { loading: cProductLoading, editData: editProduct } = useEdit();
 
   const params = useParams();
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const product = useSelector((state: any) => state.appData.editProduct);
 
-  const { loading: categoryFetchLoading, fetchData: categoriesFetch } =
-    useFetch();
-  const { loading: brandFetchLoading, fetchData: brandsFetch } = useFetch();
+  const { fetchData: brandsFetch } = useFetch();
 
   // [info]: helpers
   const resetErrorMsg = () => {

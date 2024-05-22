@@ -33,6 +33,7 @@ import StoreAdd from './views/setting/StoreAdd';
 import Managers from './views/setting/Managers';
 import { Toast } from './components/commonComponents';
 import EmployeeEdit from './views/employee/EmployeeEdit';
+import Logs from './views/setting/Logs';
 
 export default function App() {
   return (
@@ -224,6 +225,16 @@ export default function App() {
               element={
                 <MainLayout>
                   <PaymentMethods />
+                </MainLayout>
+              }
+            />
+
+            {/* Logs */}
+            <Route
+              path="/setting/logs"
+              element={
+                <MainLayout>
+                  <Logs />
                 </MainLayout>
               }
             />
