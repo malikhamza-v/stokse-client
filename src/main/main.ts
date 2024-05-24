@@ -116,17 +116,36 @@ const createWindow = async () => {
 
   ipcMain.handle('check-for-updates', async () => {
     console.log('checking for updates');
-    if (process.platform !== 'darwin') {
-      const data = {
-        error: true,
-        message: 'AutoUpdate feature is only for windows',
-      };
+    console.log('=============', app.getVersion());
 
-      return data;
-    }
+    console.log('process', process.platform);
+    // if (process.platform !== 'darwin') {
+    //   const data = {
+    //     error: true,
+    //     message: 'AutoUpdate feature is only for windows',
+    //   };
+
+    //   // return data;
+    // }
     // eslint-disable-next-line no-new
     new AppUpdater();
     return true;
+  });
+
+  ipcMain.handle('get-app-version', async () => {
+    console.log('checking for updates', app.getVersion());
+    // console.log('process', process.platform);
+    // if (process.platform !== 'darwin') {
+    //   const data = {
+    //     error: true,
+    //     message: 'AutoUpdate feature is only for windows',
+    //   };
+
+    //   // return data;
+    // }
+    // eslint-disable-next-line no-new
+    // new AppUpdater();
+    return app.getVersion();
   });
 
   mainWindow.on('ready-to-show', () => {
@@ -185,3 +204,19 @@ app
     });
   })
   .catch(console.log);
+
+autoUpdater.on('update-available', () => {
+  const path = autoUpdater.downloadUpdate();
+});
+
+autoUpdater.on('update-not-available', () => {
+  console.log('no update is available');
+});
+
+autoUpdater.on('update-downloaded', () => {
+  console.log('update is downloaded');
+});
+
+autoUpdater.on('error', (err) => {
+  console.log('auto update has an error', err);
+});

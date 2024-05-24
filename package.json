@@ -1,5 +1,6 @@
 {
-  "version": "1.1.3",
+  "name": "stokse",
+  "version": "0.0.1",
   "description": "Seamless POS solution for growing businesses",
   "license": "MIT",
   "author": {
@@ -22,9 +23,13 @@
     "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
     "test": "jest",
-    "dist": "electron-builder --win"
+    "dist": "electron-builder"
   },
-  "repository": "https://github.com/malikhamza-v/POS-Ventory-Builds",
+  "repository": "https://github.com/malikhamza-v/stokse-builds",
+  "publish": {
+    "provider": "github",
+    "releaseType": "release"
+  },
   "browserslist": [],
   "prettier": {
     "singleQuote": true,
@@ -164,8 +169,8 @@
     "webpack-merge": "^5.9.0"
   },
   "build": {
-    "productName": "POS Ventory",
-    "appId": "posventory.com",
+    "productName": "Stokse",
+    "appId": "stokse.com",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
@@ -177,11 +182,7 @@
     "win": {
       "target": [
         "nsis"
-      ],
-      "publish": {
-        "provider": "github",
-        "releaseType": "release"
-      }
+      ]
     },
     "directories": {
       "app": "release/app",
@@ -190,12 +191,7 @@
     },
     "extraResources": [
       "./assets/**"
-    ],
-    "publish": {
-      "provider": "github",
-      "owner": "malikhamza-v",
-      "repo": "POS-Victory-Builds"
-    }
+    ]
   },
   "devEngines": {
     "node": ">=14.x",

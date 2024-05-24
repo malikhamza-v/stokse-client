@@ -6,8 +6,12 @@ import { LabelInput } from '../../components/commonComponents';
 import { ArrowRight } from '../../utils/svg';
 import { useCreate } from '../../utils/hooks';
 import { SecondaryButton } from '../../components/commonComponents/buttons';
+import { useEffect, useState } from 'react';
 
 function Setting() {
+  // const { appVersion } = window as any;
+  const [appVersion, setAppVersion] = useState<any>(null);
+
   const settingsOptions = [
     {
       label: 'Categories',
@@ -74,6 +78,15 @@ function Setting() {
       toast.error(response.message);
     }
   };
+
+  const getAppVersion = async () => {
+    const version = await ipcRenderer.invoke('get-app-version');
+    setAppVersion(version);
+  };
+
+  useEffect(() => {
+    getAppVersion();
+  });
   return (
     <div className="flex flex-col h-full w-full overflow-y-scroll">
       {/* <div className="px-16 pt-16 flex items-center justify-between">
@@ -246,12 +259,20 @@ function Setting() {
             </div>
           </div>
         </div>
-        <div className="w-fit flex ml-auto">
-          <SecondaryButton
-            label="Logout"
-            loading={logoutLoading}
-            onClickAction={handleLogout}
-          />
+        <div className="flex items-center justify-between">
+          <p className="text-green-800 text-sm font-medium">
+            Current app version is{' '}
+            <span className="badge badge-neutral cursor-pointer ml-2">
+              v{appVersion || 'n/a'}
+            </span>
+          </p>
+          <div className="w-fit">
+            <SecondaryButton
+              label="Logout"
+              loading={logoutLoading}
+              onClickAction={handleLogout}
+            />
+          </div>
         </div>
       </div>
     </div>
