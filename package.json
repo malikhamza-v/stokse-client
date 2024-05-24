@@ -1,13 +1,5 @@
 {
-  "name": "stokse",
-  "version": "0.0.1",
   "description": "Seamless POS solution for growing businesses",
-  "license": "MIT",
-  "author": {
-    "name": "Malik Hamza",
-    "email": "malikhamza.v@gmail.com",
-    "url": "https://malikhamza.me"
-  },
   "main": "./src/main/main.ts",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
@@ -182,6 +174,11 @@
     "win": {
       "target": [
         "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "deb"
       ]
     },
     "directories": {
