@@ -1,13 +1,3 @@
-/* eslint global-require: off, no-console: off, promise/always-return: off */
-
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `npm run build` or `npm run build:main`, this file is compiled to
- * `./src/main.js` using webpack. This gives us some performance wins.
- */
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
@@ -17,18 +7,95 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
 // AutoUpdater Configurations
-autoUpdater.autoDownload = false;
+autoUpdater.autoDownload = true;
 autoUpdater.autoInstallOnAppQuit = true;
 
+let mainWindow: BrowserWindow | null = null;
+
 class AppUpdater {
-  constructor() {
+  mainWindow: BrowserWindow;
+
+  constructor(mainWindow: BrowserWindow) {
+    this.mainWindow = mainWindow;
+
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
+    console.log('check for update');
+
     autoUpdater.checkForUpdates();
   }
 }
 
-let mainWindow: BrowserWindow | null = null;
+// Move autoUpdater event listeners outside the class constructor
+autoUpdater.on('update-available', () => {
+  console.log('update-available');
+  if (mainWindow) {
+    mainWindow.webContents.send(
+      'update-download-status',
+      'Update is available',
+    );
+  }
+});
+
+autoUpdater.on('update-not-available', () => {
+  console.log('update-not-available');
+
+  if (mainWindow) {
+    mainWindow.webContents.send(
+      'update-download-status',
+      'No update is available',
+    );
+  }
+});
+
+autoUpdater.on('update-downloaded', () => {
+  console.log('update-downloaded-available');
+
+  if (mainWindow) {
+    mainWindow.webContents.send(
+      'update-download-status',
+      'Update is downloaded',
+    );
+  }
+});
+
+autoUpdater.on('checking-for-update', () => {
+  console.log('is it even running');
+  if (mainWindow) {
+    mainWindow.webContents.send('update-download-status', 'is it even running');
+  }
+});
+
+autoUpdater.on('update-cancelled', () => {
+  console.log('update is canceleed');
+  if (mainWindow) {
+    mainWindow.webContents.send(
+      'update-download-status',
+      'update is canceleed',
+    );
+  }
+});
+
+autoUpdater.on('download-progress', () => {
+  console.log('download is in progress');
+  if (mainWindow) {
+    mainWindow.webContents.send(
+      'update-download-status',
+      'download is in progress',
+    );
+  }
+});
+
+autoUpdater.on('error', (err) => {
+  console.log('error');
+
+  if (mainWindow) {
+    mainWindow.webContents.send(
+      'update-download-status',
+      `Update error: ${err}`,
+    );
+  }
+});
 
 ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
@@ -114,38 +181,22 @@ const createWindow = async () => {
     }
   });
 
-  ipcMain.handle('check-for-updates', async () => {
-    console.log('checking for updates');
-    console.log('=============', app.getVersion());
+  ipcMain.handle('check-for-updates', async (event) => {
+    event.sender.send('update-download-status', 'Checking for updates');
 
-    console.log('process', process.platform);
-    // if (process.platform !== 'darwin') {
-    //   const data = {
-    //     error: true,
-    //     message: 'AutoUpdate feature is only for windows',
-    //   };
+    if (mainWindow) {
+      new AppUpdater(mainWindow);
+    }
 
-    //   // return data;
-    // }
-    // eslint-disable-next-line no-new
-    new AppUpdater();
     return true;
   });
 
-  ipcMain.handle('get-app-version', async () => {
-    console.log('checking for updates', app.getVersion());
-    // console.log('process', process.platform);
-    // if (process.platform !== 'darwin') {
-    //   const data = {
-    //     error: true,
-    //     message: 'AutoUpdate feature is only for windows',
-    //   };
+  ipcMain.handle('get-app-version', async (event) => {
+    const appVersion = app.getVersion();
+    console.log('checking for updates', process.env.npm_package_version);
 
-    //   // return data;
-    // }
-    // eslint-disable-next-line no-new
-    // new AppUpdater();
-    return app.getVersion();
+    event.sender.send('update-download-status', 'Init');
+    return appVersion;
   });
 
   mainWindow.on('ready-to-show', () => {
@@ -158,11 +209,6 @@ const createWindow = async () => {
       mainWindow.show();
     }
   });
-
-  // function showUpdatePrompt(message) {
-  //   console.log('show mesage trapped');
-  //   console.log(message);
-  // }
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -204,19 +250,3 @@ app
     });
   })
   .catch(console.log);
-
-autoUpdater.on('update-available', () => {
-  const path = autoUpdater.downloadUpdate();
-});
-
-autoUpdater.on('update-not-available', () => {
-  console.log('no update is available');
-});
-
-autoUpdater.on('update-downloaded', () => {
-  console.log('update is downloaded');
-});
-
-autoUpdater.on('error', (err) => {
-  console.log('auto update has an error', err);
-});

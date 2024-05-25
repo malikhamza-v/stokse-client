@@ -1,6 +1,6 @@
 {
   "name": "stokse",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Seamless POS solution for growing businesses",
   "license": "MIT",
   "main": "./dist/main/main.js",

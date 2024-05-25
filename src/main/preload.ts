@@ -24,7 +24,12 @@ const electronHandler = {
   },
 };
 
+// const bridge = {
+//   updateMessage: (callback) => ipcRenderer.on('updateMessage', callback),
+// };
+
 contextBridge.exposeInMainWorld('electron', electronHandler);
+// contextBridge.exposeInMainWorld('bridge', bridge);
 contextBridge.exposeInMainWorld('ipcRenderer', {
   send: (channel: any, data: any) => ipcRenderer.send(channel, data),
   on: (channel: any, func: any) =>
