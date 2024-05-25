@@ -13,14 +13,9 @@ autoUpdater.autoInstallOnAppQuit = true;
 let mainWindow: BrowserWindow | null = null;
 
 class AppUpdater {
-  mainWindow: BrowserWindow;
-
-  constructor(mainWindow: BrowserWindow) {
-    this.mainWindow = mainWindow;
-
+  constructor() {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
-    console.log('check for update');
 
     autoUpdater.checkForUpdates();
   }
@@ -28,7 +23,6 @@ class AppUpdater {
 
 // Move autoUpdater event listeners outside the class constructor
 autoUpdater.on('update-available', () => {
-  console.log('update-available');
   if (mainWindow) {
     mainWindow.webContents.send(
       'update-download-status',
@@ -38,61 +32,60 @@ autoUpdater.on('update-available', () => {
 });
 
 autoUpdater.on('update-not-available', () => {
-  console.log('update-not-available');
-
   if (mainWindow) {
     mainWindow.webContents.send(
       'update-download-status',
-      'No update is available',
+      "You're all up to date! No updates available.",
     );
   }
 });
 
 autoUpdater.on('update-downloaded', () => {
-  console.log('update-downloaded-available');
-
   if (mainWindow) {
     mainWindow.webContents.send(
       'update-download-status',
-      'Update is downloaded',
+      'Update successful!!!',
     );
+
+    autoUpdater.quitAndInstall();
+
+    app.relaunch();
+    app.exit();
   }
 });
 
 autoUpdater.on('checking-for-update', () => {
-  console.log('is it even running');
   if (mainWindow) {
-    mainWindow.webContents.send('update-download-status', 'is it even running');
+    mainWindow.webContents.send(
+      'update-download-status',
+      'Checking for updates!!!',
+    );
   }
 });
 
 autoUpdater.on('update-cancelled', () => {
-  console.log('update is canceleed');
   if (mainWindow) {
     mainWindow.webContents.send(
       'update-download-status',
-      'update is canceleed',
+      'Oops! Update failed. Please try again.',
     );
   }
 });
 
 autoUpdater.on('download-progress', () => {
-  console.log('download is in progress');
   if (mainWindow) {
     mainWindow.webContents.send(
       'update-download-status',
-      'download is in progress',
+      'Downloading is in progress!',
     );
   }
 });
 
-autoUpdater.on('error', (err) => {
-  console.log('error');
-
+autoUpdater.on('error', () => {
   if (mainWindow) {
     mainWindow.webContents.send(
       'update-download-status',
-      `Update error: ${err}`,
+      'Oops! Update failed. Please try again.',
     );
   }
 });
@@ -191,11 +184,8 @@ const createWindow = async () => {
     return true;
   });
 
-  ipcMain.handle('get-app-version', async (event) => {
+  ipcMain.handle('get-app-version', async () => {
     const appVersion = app.getVersion();
-    console.log('checking for updates', process.env.npm_package_version);
-
-    event.sender.send('update-download-status', 'Init');
     return appVersion;
   });
 

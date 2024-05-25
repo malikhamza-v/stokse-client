@@ -87,16 +87,8 @@ function Setting() {
 
   useEffect(() => {
     getAppVersion();
+  }, []);
 
-    ipcRenderer.on('update-download-status', (message) => {
-      console.log('meesage', message);
-      document.getElementById('status').innerHTML = message;
-    });
-
-    return () => {
-      // ipcRenderer.removeAllListeners('update-download-status');
-    };
-  });
   return (
     <div className="flex flex-col h-full w-full overflow-y-scroll">
       {/* <div className="px-16 pt-16 flex items-center justify-between">
@@ -276,7 +268,6 @@ function Setting() {
               v{appVersion || 'n/a'}
             </span>
           </p>
-          <p id="status">HELLO</p>
           <div className="w-fit">
             <SecondaryButton
               label="Logout"

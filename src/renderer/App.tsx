@@ -34,8 +34,25 @@ import Managers from './views/setting/Managers';
 import { Toast } from './components/commonComponents';
 import EmployeeEdit from './views/employee/EmployeeEdit';
 import Logs from './views/setting/Logs';
+import { useEffect, useRef } from 'react';
+import { toast } from 'react-toastify';
 
 export default function App() {
+  const { ipcRenderer } = window as any;
+  const toastId = useRef<any>(null);
+
+  useEffect(() => {
+    ipcRenderer.on('update-download-status', (message: string) => {
+      if (toastId.current) {
+        toast.update(toastId.current, {
+          render: message,
+          isLoading: true,
+        });
+      } else {
+        toastId.current = toast.info(message, { isLoading: true });
+      }
+    });
+  }, []);
   return (
     <Provider store={store}>
       <Router>
