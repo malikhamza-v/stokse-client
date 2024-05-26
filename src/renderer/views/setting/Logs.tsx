@@ -51,6 +51,8 @@ function Logs() {
   const handleViewActivity = (activity: Activity) => {
     if (activity.module === 'category') {
       navigate('/setting/categories');
+    } else if (activity.module === 'product') {
+      navigate(`/inventory/view/${activity.module_id}`);
     }
   };
 
