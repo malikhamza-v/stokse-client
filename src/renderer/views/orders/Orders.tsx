@@ -464,66 +464,68 @@ export default function Orders() {
         </div>
       </div>
 
-      <div className="mt-6 sm:flex sm:items-center sm:justify-between ">
-        <div className="text-sm text-gray-500 ">
-          Page{' '}
-          <span className="font-medium text-gray-700 ">
-            {products.current_page} of {products.total_pages}
-          </span>
-        </div>
+      {products.total_pages > 1 ? (
+        <div className="mt-6 sm:flex sm:items-center sm:justify-between ">
+          <div className="text-sm text-gray-500 ">
+            Page{' '}
+            <span className="font-medium text-gray-700 ">
+              {products.current_page} of {products.total_pages}
+            </span>
+          </div>
 
-        <div className="flex items-center mt-4 gap-x-4 sm:mt-0">
-          <button
-            type="button"
-            onClick={() => handlePagination('previous')}
-            className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100"
-            disabled={(products.current_page || 1) < 2}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-5 h-5 rtl:-scale-x-100"
+          <div className="flex items-center mt-4 gap-x-4 sm:mt-0">
+            <button
+              type="button"
+              onClick={() => handlePagination('previous')}
+              className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100"
+              disabled={(products.current_page || 1) < 2}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
-              />
-            </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-5 h-5 rtl:-scale-x-100"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
+                />
+              </svg>
 
-            <span>previous</span>
-          </button>
+              <span>previous</span>
+            </button>
 
-          <button
-            type="button"
-            className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100"
-            onClick={() => handlePagination('next')}
-            disabled={
-              (products.current_page || 1) >= (products.total_pages || 0)
-            }
-          >
-            <span>Next</span>
-
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-5 h-5 rtl:-scale-x-100"
+            <button
+              type="button"
+              className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md sm:w-auto gap-x-2 hover:bg-gray-100"
+              onClick={() => handlePagination('next')}
+              disabled={
+                (products.current_page || 1) >= (products.total_pages || 0)
+              }
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-              />
-            </svg>
-          </button>
+              <span>Next</span>
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-5 h-5 rtl:-scale-x-100"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
+      ) : null}
 
       {showDeleteModal && (
         <div className="flex items-center justify-center">
