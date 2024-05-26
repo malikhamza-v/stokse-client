@@ -71,23 +71,27 @@ function InventoryView({
       <div className="grid grid-cols-3 h-full">
         <div className="bg-white col-span-1 border-r h-full">
           <div className="flex flex-col justify-between h-full py-12">
-            {singleProductFetchLoading ? (
-              <div className="flex flex-col gap-4 mt-2 mx-12">
-                <div className="skeleton h-2 w-full" />
+            <div className="flex flex-col gap-4 items-center">
+              <div className="h-28 w-28">
+                <OrderBox />
               </div>
-            ) : (
-              <div className="flex flex-col gap-4 items-center">
-                <div className="h-28 w-28">
-                  <OrderBox />
+              {singleProductFetchLoading ? (
+                <div className="flex flex-col gap-4 mt-2 mx-12 w-3/4">
+                  <div className="skeleton h-2 w-full" />
+                  <div className="skeleton h-2 w-32 mx-auto" />
                 </div>
-                <p className="font-semibold text-center text-2xl truncate">
-                  {product?.name}
-                </p>
-                <p className="border bg-green-100 w-fit p-1 mt-2">
-                  {parseFloat(product?.stock_quantity || '0')} in stock
-                </p>
-              </div>
-            )}
+              ) : (
+                <>
+                  <p className="font-semibold text-center text-2xl truncate">
+                    {product?.name}
+                  </p>
+                  <p className="border bg-green-100 w-fit p-1 mt-2">
+                    {parseFloat(product?.stock_quantity || '0')} in stock
+                  </p>
+                </>
+              )}
+            </div>
+
             <div className="flex flex-col gap-4">
               <div
                 className={`p-4 rounded-lg mx-4 cursor-pointer hover:bg-gray-100 ${
