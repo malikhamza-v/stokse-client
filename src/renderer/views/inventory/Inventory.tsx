@@ -560,7 +560,7 @@ export default function Inventory({ isView }: { isView: boolean }) {
         </div>
       </div>
 
-      {paginatedProducts.totalPage && paginatedProducts.totalPage > 1 && (
+      {paginatedProducts.totalPage && paginatedProducts.totalPage > 1 ? (
         <div className="mt-6 sm:flex sm:items-center sm:justify-between ">
           <div className="text-sm text-gray-500 ">
             Page{' '}
@@ -622,7 +622,7 @@ export default function Inventory({ isView }: { isView: boolean }) {
             </button>
           </div>
         </div>
-      )}
+      ) : null}
 
       {showDeleteModal && (
         <div className="flex items-center justify-center">
