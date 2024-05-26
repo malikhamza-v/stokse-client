@@ -57,30 +57,42 @@ function OrderEdit() {
             <div className="flex flex-col gap-4 text-gray-500">
               <div className="font-medium flex items-center justify-between">
                 <p>Order ID</p>
-                <div className="py-1 text-sm font-normal rounded-full text-emerald-500 bg-emerald-100/60 w-32 text-center">
-                  <p className="text-sm text-wrap  font-normal text-gray-600 capitalize">
-                    {/* [todo] */}
-                    <span>OR-{order?.id}</span>
-                  </p>
-                </div>
+                {orderFetchLoading ? (
+                  <div className="skeleton h-4 w-28 ml-auto" />
+                ) : (
+                  <div className="py-1 text-sm font-normal rounded-full text-emerald-500 bg-emerald-100/60 w-32 text-center">
+                    <p className="text-sm text-wrap  font-normal text-gray-600 capitalize">
+                      {/* [todo] */}
+                      <span>OR-{order?.id}</span>
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="font-medium flex items-center justify-between">
                 <p>Order Status</p>
-                <div className="py-1 text-sm font-normal rounded-full text-emerald-500 bg-emerald-100/60 w-32 text-center">
-                  <p className="text-sm text-wrap  font-normal text-gray-600 capitalize">
-                    <span>{order?.payment_status}</span>
-                  </p>
-                </div>
+                {orderFetchLoading ? (
+                  <div className="skeleton h-4 w-28 ml-auto" />
+                ) : (
+                  <div className="py-1 text-sm font-normal rounded-full text-emerald-500 bg-emerald-100/60 w-32 text-center">
+                    <p className="text-sm text-wrap  font-normal text-gray-600 capitalize">
+                      <span>{order?.payment_status}</span>
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="font-medium flex items-center justify-between">
                 <p>Date</p>
-                <div className="py-1 text-sm font-normal rounded-full text-emerald-500 bg-emerald-100/60 w-32 text-center">
-                  <p className="text-sm text-wrap font-normal text-gray-600 capitalize">
-                    <span>{formatTimestamp(order?.created_at)}</span>
-                  </p>
-                </div>
+                {orderFetchLoading ? (
+                  <div className="skeleton h-4 w-40 ml-auto" />
+                ) : (
+                  <div className="py-1 px-4 text-sm font-normal rounded-full text-emerald-500 bg-emerald-100/60 w-fit text-center">
+                    <p className="text-sm text-wrap font-normal text-gray-600">
+                      <span>{formatTimestamp(order?.created_at)}</span>
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -270,7 +282,92 @@ function OrderEdit() {
                 )}
               </tbody>
             </table>
-            <div>
+            <div className="flex justify-between text-sm text-gray-600 mb-4 mt-8">
+              <div>
+                <div className="flex flex-col gap-1">
+                  <p className="text-base font-medium mb-3">Customer Detail:</p>
+                  <div className="flex flex-col text-sm text-gray-600">
+                    <div className="flex gap-2 items-center mb-2">
+                      <p>Name:</p>
+                      {orderFetchLoading ? (
+                        <div className="skeleton h-2 w-20 ml-auto" />
+                      ) : (
+                        <p>{order?.customer.name || 'Walk-In'}</p>
+                      )}
+                    </div>
+                    <div className="flex gap-2 items-center mb-2">
+                      <p>Email:</p>
+                      {orderFetchLoading ? (
+                        <div className="skeleton h-2 w-20 ml-auto" />
+                      ) : (
+                        <p>{order?.customer.email || 'None'}</p>
+                      )}
+                    </div>
+                    <div className="flex gap-2 items-center mb-2">
+                      <p>Phone:</p>
+                      {orderFetchLoading ? (
+                        <div className="skeleton h-2 w-20 ml-auto" />
+                      ) : (
+                        <p>{order?.customer.phone || 'None'}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                <p className="text-base font-medium mb-3">Order Detail:</p>
+                <div className="flex flex-col w-fit ml-auto text-sm text-gray-600">
+                  <div className="flex justify-between gap-4 items-center mb-2">
+                    <p>Subtotal:</p>
+                    {orderFetchLoading ? (
+                      <div className="skeleton h-2 w-20 ml-auto" />
+                    ) : (
+                      <p>{order?.sub_total} USD</p>
+                    )}
+                  </div>
+                  <div className="flex justify-between gap-4 items-center mb-2">
+                    <p>Total:</p>
+                    {orderFetchLoading ? (
+                      <div className="skeleton h-2 w-20 ml-auto" />
+                    ) : (
+                      <p>{order?.total} USD</p>
+                    )}
+                  </div>
+                  <div className="flex justify-between gap-4 items-center mb-2">
+                    <p>Change:</p>
+                    {orderFetchLoading ? (
+                      <div className="skeleton h-2 w-20 ml-auto" />
+                    ) : (
+                      <p>{order?.total} USD</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="flex flex-col gap-1">
+                  <p className="text-base font-medium mb-3">Payment By:</p>
+                  {orderFetchLoading ? (
+                    <div className="flex flex-col gap-2">
+                      <div className="skeleton h-2 w-full ml-auto " />
+                      <div className="skeleton h-2 w-full ml-auto " />
+                    </div>
+                  ) : (
+                    order?.payment_methods.map(
+                      (method: { method: string; amount: string }) => (
+                        <div
+                          key={`${method.method}-${method.amount}`}
+                          className="flex justify-between gap-4 items-center"
+                        >
+                          <p>{method.method}:</p>
+                          <p>{method.amount} USD</p>
+                        </div>
+                      ),
+                    )
+                  )}
+                </div>
+              </div>
+            </div>
+            {/* <div>
               <div>
                 <p>Subtotal:</p>
                 <p>{order?.sub_total}</p>
@@ -279,7 +376,7 @@ function OrderEdit() {
                 <p>Total:</p>
                 <p>{order?.total}</p>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
