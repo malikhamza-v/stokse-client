@@ -98,16 +98,20 @@ function Logs() {
       <div className="px-16 pt-8 grid grid-cols-2 gap-4 overflow-y-auto">
         <div className="col-span-2">
           {activityFetchLoading ? (
-            <div className="w-full ">
-              <div
-                className="w-full h-10 bg-gray-200 rounded-lg animate-pulse mb-2"
-                style={{ animationDelay: '0.2s' }}
-              />
-            </div>
+            [...Array(5).keys()].map((key) => {
+              return (
+                <div className="w-full" key={key}>
+                  <div
+                    className="w-full h-10 bg-gray-200 rounded-lg animate-pulse mb-2"
+                    style={{ animationDelay: '0.2s' }}
+                  />
+                </div>
+              );
+            })
           ) : activities && activities?.results?.length > 0 ? (
             activities?.results?.map((activity) => {
               return (
-                <div>
+                <div key={activity.id}>
                   <div className="border flex items-center justify-between p-4 rounded-lg mb-2">
                     <div className="flex flex-col gap-1">
                       <p>{activity.description}</p>
