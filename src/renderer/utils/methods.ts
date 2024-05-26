@@ -67,7 +67,21 @@ export const formatTimestamp = (timestamp: string) => {
   const month = months[date.getMonth()];
   const year = date.getFullYear();
 
-  return `${day} ${month} ${year}`;
+  // Extract time components
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+
+  // Convert hours from 24-hour to 12-hour format
+  hours %= 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+
+  // Format minutes to always have two digits
+  const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+
+  return `${day} ${month} ${year} ${
+    formattedMinutes ? `at ${hours}:${formattedMinutes} ${ampm}` : ''
+  }`;
 };
 
 export const ConvertIntoDecimal = (value: number | string) => {

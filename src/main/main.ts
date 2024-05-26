@@ -158,7 +158,6 @@ const createWindow = async () => {
   ipcMain.on('download', async (event, { file }) => {
     const win: any = BrowserWindow.getFocusedWindow();
     try {
-      console.log('wind', win);
       console.log(
         await download(win, file, {
           openFolderWhenDone: true,

@@ -56,7 +56,7 @@ function Signin() {
         return true;
       })
       .catch(() => {
-        toast.error('Something went wrong using cryptokuff!');
+        return false;
       });
   };
 
