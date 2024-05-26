@@ -105,7 +105,15 @@ export default function App() {
               path="/inventory"
               element={
                 <MainLayout>
-                  <Inventory />
+                  <Inventory isView={false} />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/inventory/view/:id"
+              element={
+                <MainLayout>
+                  <Inventory isView={true} />
                 </MainLayout>
               }
             />

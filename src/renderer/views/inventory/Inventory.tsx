@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-nested-ternary */
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useFetch } from '../../utils/hooks';
@@ -20,11 +20,10 @@ import {
   setEditProduct,
   setProducts as setGlobalProducts,
 } from '../../../store/slices/appData';
-import useCreate from '../../utils/hooks/useCreate';
 import InventoryView from './InventoryView';
 
 /* eslint-disable jsx-a11y/control-has-associated-label */
-export default function Inventory() {
+export default function Inventory({ isView }: { isView: boolean }) {
   const noOfItemsPerPage = 15;
   const tableBody = useRef<HTMLTableSectionElement>(null);
   const [products, setProducts] = useState<any>([]);
@@ -32,14 +31,13 @@ export default function Inventory() {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchedProducts, setSearchedProducts] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showUploadModal, setShowUploadModal] = useState(false);
-  const [selectedProductID, setSelectedProductID] = useState(null);
+  const [selectedProductID, setSelectedProductID] = useState<number | null>(
+    null,
+  );
   const [selectedFilteredBtn, setSelectedFilteredBtn] = useState<string | null>(
     null,
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [errorMsg, setErrorMsg] = useState({ upload: null });
-  const [selectedFile, setSelectedFile] = useState<any>(null);
   const [paginatedProducts, setPaginatedProducts] = useState<{
     currentPage: number | null;
     totalPage: number | null;
@@ -52,13 +50,11 @@ export default function Inventory() {
 
   const { loading: fetchLoading, fetchData: productsFetch } = useFetch();
   const { loading: rProductLoading, removeData: removeProduct } = useRemove();
-  const { loading: cProductLoading, createData: productCreate } = useCreate();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const params = useParams();
   const globalProducts = useSelector((state: any) => state.appData.products);
-
-  const { ipcRenderer } = window as any;
 
   // [info]: method
   const handleProductForEdit = (product: any) => {
@@ -81,13 +77,11 @@ export default function Inventory() {
       });
   };
 
-  const handleProductView = (product: any) => {
-    setIsDrawerOpen(true);
-    setSelectedProductID(product.id);
-  };
-
   const handleCloseProductView = () => {
     setIsDrawerOpen(false);
+    setTimeout(() => {
+      navigate('/inventory');
+    }, 200);
   };
 
   const handleSearch = (event: { target: { value: any } }) => {
@@ -157,46 +151,6 @@ export default function Inventory() {
     setPreDeleteItem(product);
   };
 
-  const handleImageSelect = (event: any) => {
-    setSelectedFile(event.target.files[0]);
-    event.target.value = '';
-  };
-
-  const handleDownloadSampleFile = (file: string) => {
-    if (file === 'csv') {
-      ipcRenderer.send('download', {
-        file: 'https://drive.google.com/uc?export=download&id=1ehEneeLKTNGWNC_h5ZMQuPk-VLjumpPe',
-      });
-    } else if (file === 'xlsx') {
-      ipcRenderer.send('download', {
-        file: 'https://drive.google.com/uc?export=download&id=1KPShWYQcHQHLl5GofOF8OqeF0FnV62og',
-      });
-    }
-  };
-
-  const handleImageUpload = () => {
-    if (selectedFile) {
-      productCreate('/upload-products/', selectedFile, false)
-        .then((res) => {
-          if (res.status === 400) {
-            setErrorMsg({ upload: res.data.error });
-            toast.error('Please fix your file errors!');
-          } else if (res.status === 200) {
-            toast.success('Items added successfully!');
-            setShowUploadModal(false);
-            setSelectedFile(null);
-            fetchProducts();
-          }
-          return true;
-        })
-        .catch(() => {
-          return false;
-        });
-    } else {
-      toast.error('Please select a file first!');
-    }
-  };
-
   // [info]: lifecyles
   useEffect(() => {
     if (globalProducts.length > 0) {
@@ -244,12 +198,13 @@ export default function Inventory() {
   }, [selectedFilteredBtn, products]);
 
   useEffect(() => {
-    setErrorMsg({ upload: null });
-  }, [selectedFile]);
-
-  useEffect(() => {
-    setSelectedFile(null);
-  }, [showUploadModal]);
+    if (isView) {
+      setIsDrawerOpen(true);
+      if (params.id) {
+        setSelectedProductID(parseInt(params.id));
+      }
+    }
+  }, [navigate]);
 
   return (
     <section className="container p-10 mx-auto">
@@ -272,7 +227,6 @@ export default function Inventory() {
           <button
             type="button"
             className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto hover:bg-gray-100"
-            onClick={() => setShowUploadModal(true)}
           >
             <svg
               width="20"
@@ -554,7 +508,9 @@ export default function Inventory() {
                                 <button
                                   type="button"
                                   className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
-                                  onClick={() => handleProductView(product)}
+                                  onClick={() =>
+                                    navigate(`/inventory/view/${product.id}`)
+                                  }
                                 >
                                   <ViewSVG />
                                 </button>
@@ -743,209 +699,15 @@ export default function Inventory() {
         </div>
       )}
 
-      {showUploadModal && (
-        <div className="flex items-center justify-center">
-          <div
-            className="fixed inset-0 transition-opacity h-full"
-            onClick={() => setShowUploadModal(false)}
-          >
-            <div className="absolute inset-0 bg-black opacity-60" />
-          </div>
-          <div className="max-w-2xl my-10 p-10 bg-white rounded-xl fixed z-10 inset-0 overflow-y-auto flex flex-col mx-auto">
-            <div className="text-center">
-              <h2 className="mt-5 text-3xl font-bold text-gray-900">
-                Import Products!
-              </h2>
-              <p className="mt-2 text-sm text-gray-400">
-                Create products in bulk with <strong>csv</strong> or{' '}
-                <strong>xlsx</strong> file.
-              </p>
-            </div>
-            <div className="mt-8 space-y-3">
-              <div className="grid grid-cols-1 space-y-2">
-                <span className="text-sm font-bold text-gray-500 tracking-wide">
-                  Upload File
-                </span>
-                <div className="flex items-center justify-center w-full">
-                  <label
-                    htmlFor="image-uploader"
-                    className="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center"
-                  >
-                    <div className="h-full w-full text-center flex flex-col justify-center items-center  ">
-                      <div className="flex flex-auto max-h-48 w-2/5 mx-auto -mt-10">
-                        <img
-                          className="has-mask h-36 object-center"
-                          style={{
-                            position: 'absolute',
-                            clip: 'rect(10px, 150px, 130px, 10px)',
-                          }}
-                          src="https://img.freepik.com/free-vector/image-upload-concept-landing-page_52683-27130.jpg?size=338&ext=jpg"
-                          alt="product upload"
-                        />
-                      </div>
-                      <p className="pointer-none text-gray-500 ">
-                        <span className="text-sm">Drag and drop</span> files
-                        here <br /> or{' '}
-                        <label
-                          htmlFor="image-uploader"
-                          className="text-blue-600 hover:underline cursor-pointer"
-                        >
-                          select a file
-                        </label>{' '}
-                        from your computer
-                      </p>
-                    </div>
-
-                    <input
-                      type="file"
-                      id="image-uploader"
-                      accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                      className="hidden"
-                      onChange={handleImageSelect}
-                    />
-                  </label>
-                </div>
-              </div>
-              <div className="text-sm text-gray-400 flex justify-between items-center">
-                <span>
-                  <strong>File type:</strong> csv, xlsx types of files
-                </span>
-                <div>
-                  <strong>Download Sample File:</strong>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="underline text-blue-600 cursor-pointer"
-                      onClick={() => handleDownloadSampleFile('csv')}
-                    >
-                      csv
-                    </span>
-                    <span
-                      className="underline text-blue-600 cursor-pointer"
-                      onClick={() => handleDownloadSampleFile('xlsx')}
-                    >
-                      xlsx
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="text-sm text-gray-400">
-                <strong>Note:</strong>
-                <span>
-                  {' '}
-                  csv or xlsx file must contain the following columns
-                </span>
-                <div className="flex gap-2 items-center flex-wrap mt-2">
-                  <button
-                    type="button"
-                    className="middle none center rounded-lg p-2 font-sans text-xs font-bold text-pink-500 transition-all bg-pink-500/10 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                  >
-                    name
-                  </button>
-                  <button
-                    type="button"
-                    className="middle none center rounded-lg p-2 font-sans text-xs font-bold text-pink-500 transition-all bg-pink-500/10 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                  >
-                    category
-                  </button>
-                  <button
-                    type="button"
-                    className="middle none center rounded-lg p-2 font-sans text-xs font-bold text-pink-500 transition-all bg-pink-500/10 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                  >
-                    brand
-                  </button>
-                  <button
-                    type="button"
-                    className="middle none center rounded-lg p-2 font-sans text-xs font-bold text-pink-500 transition-all bg-pink-500/10 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                  >
-                    stock_quantity
-                  </button>
-                  <button
-                    type="button"
-                    className="middle none center rounded-lg p-2 font-sans text-xs font-bold text-pink-500 transition-all bg-pink-500/10 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                  >
-                    sale_price
-                  </button>
-                  <button
-                    type="button"
-                    className="middle none center rounded-lg p-2 font-sans text-xs font-bold text-pink-500 transition-all bg-pink-500/10 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                  >
-                    cost_price
-                  </button>
-                </div>
-              </div>
-              {selectedFile && (
-                <>
-                  <div className="h-1" />
-                  <div className="flex justify-between items-center border rounded-lg p-4 bg-slate-50">
-                    <div>
-                      <div className="flex flex-col">
-                        <p className="flex items-center gap-2 text-gray-500">
-                          <strong>Name:</strong>
-                          {selectedFile.name}
-                        </p>
-                        <p className="flex items-center gap-2 text-gray-500">
-                          <strong>Size:</strong>
-                          {(selectedFile.size / 1000).toFixed(2)}kb
-                        </p>
-                      </div>
-                    </div>
-                    <div>
-                      <button
-                        type="button"
-                        className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
-                        onClick={() => setSelectedFile(null)}
-                      >
-                        <DeleteSVG />
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {errorMsg.upload && (
-                <p className="text-red-600 text-sm">{`[ERROR]: ${errorMsg.upload}`}</p>
-              )}
-              <div className="flex items-center gap-4">
-                <button
-                  type="button"
-                  onClick={() => setShowUploadModal(false)}
-                  className="my-5 w-full flex justify-center bg-white  text-black p-4 rounded-full tracking-wide
-                                    font-semibold focus:outline-none focus:shadow-outline hover:bg-slate-50 shadow-lg cursor-pointer transition ease-in duration-300"
-                >
-                  {' '}
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className={`my-5 w-full flex justify-center bg-blue-500 text-gray-100 p-4 rounded-full tracking-wide
-                  font-semibold focus:outline-none focus:shadow-outline hover:bg-blue-600 shadow-lg cursor-pointer transition ease-in duration-300 ${
-                    cProductLoading && 'opacity-50'
-                  }`}
-                  onClick={handleImageUpload}
-                  disabled={cProductLoading}
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    {cProductLoading && (
-                      <div className="flex flex-row gap-1">
-                        <div className="w-2 h-2 rounded-full bg-white animate-bounce" />
-                        <div className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:-.3s]" />
-                        <div className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:-.5s]" />
-                      </div>
-                    )}
-                    {cProductLoading ? 'Loading' : 'Upload'}
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+      {isView && (
+        <>
+          <InventoryView
+            isViewOpen={isDrawerOpen}
+            handleCloseView={handleCloseProductView}
+            productID={selectedProductID as unknown as number}
+          />
+        </>
       )}
-
-      <InventoryView
-        isViewOpen={isDrawerOpen}
-        handleCloseView={handleCloseProductView}
-        productID={selectedProductID}
-      />
     </section>
   );
 }
