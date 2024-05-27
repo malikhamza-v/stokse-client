@@ -18,9 +18,10 @@ import {
 import useRemove from '../../utils/hooks/useRemove';
 import { setEditProduct } from '../../../store/slices/appData';
 import { formatTimestamp } from '../../utils/methods';
+import OrderView from './OrderView';
 
 /* eslint-disable jsx-a11y/control-has-associated-label */
-export default function Orders() {
+export default function Orders({ isView }: { isView: boolean }) {
   let currentUrl = '/orders/';
   const tableBody = useRef<HTMLTableSectionElement>(null);
   const [products, setProducts] = useState<any>([]);
@@ -424,7 +425,9 @@ export default function Orders() {
                                 <button
                                   type="button"
                                   className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
-                                  // onClick={() => handleProductForEdit(product)}
+                                  onClick={() =>
+                                    navigate(`/order/view/${customer.id}`)
+                                  }
                                 >
                                   <ViewSVG />
                                 </button>
@@ -602,6 +605,14 @@ export default function Orders() {
             </div>
           </div>
         </div>
+      )}
+
+      {isView && (
+        <OrderView
+          isViewOpen={true}
+          handleCloseView={null}
+          productID={1 as unknown as number}
+        />
       )}
     </section>
   );

@@ -1,4 +1,10 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+import {
+  MemoryRouter as Router,
+  Routes,
+  Route,
+  Red,
+  Navigate,
+} from 'react-router-dom';
 import { Provider } from 'react-redux';
 import MainLayout from './components/layout';
 import Dashboard from './views/Dashboard';
@@ -133,11 +139,30 @@ export default function App() {
                 </MainLayout>
               }
             />
+
             <Route
               path="/catalogue/"
+              element={<Navigate to="/catalogue/orders" replace />}
+            />
+
+            <Route
+              path="/catalogue/orders"
               element={
                 <MainLayout>
-                  <Catalogue />
+                  <Catalogue>
+                    <Orders isView={false} />
+                  </Catalogue>
+                </MainLayout>
+              }
+            />
+
+            <Route
+              path="/catalogue/customers"
+              element={
+                <MainLayout>
+                  <Catalogue>
+                    <Customers />
+                  </Catalogue>
                 </MainLayout>
               }
             />
@@ -160,14 +185,23 @@ export default function App() {
             />
 
             {/* [info]: orders */}
-            <Route
+            {/* <Route
               path="/orders/"
               element={
                 <MainLayout>
-                  <Orders />
+                  <Orders isView={false} />
                 </MainLayout>
               }
-            />
+            /> */}
+
+            {/* <Route
+              path="/order/view/:id"
+              element={
+                <MainLayout>
+                  <Orders isView={true} />
+                </MainLayout>
+              }
+            /> */}
 
             <Route
               path="/order/edit/:id"
