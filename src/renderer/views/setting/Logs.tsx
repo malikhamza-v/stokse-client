@@ -53,6 +53,8 @@ function Logs() {
       navigate('/setting/categories');
     } else if (activity.module === 'product') {
       navigate(`/inventory/view/${activity.module_id}`);
+    } else if (activity.module === 'order') {
+      navigate(`/catalogue/order-list/view/${activity.module_id}`);
     }
   };
 
@@ -60,7 +62,6 @@ function Logs() {
     activityFetch(url)
       .then((res) => {
         if (res?.status === 200) {
-          console.log('res', res);
           setActivities(res.data);
         }
         return true;

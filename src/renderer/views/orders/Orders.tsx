@@ -36,6 +36,7 @@ export default function Orders({ isView }: { isView: boolean }) {
   const [selectedFilteredBtn, setSelectedFilteredBtn] = useState<string | null>(
     null,
   );
+  const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(true);
 
   const { loading: fetchLoading, fetchData: productsFetch } = useFetch();
   const { loading: rProductLoading, removeData: removeProduct } = useRemove();
@@ -48,6 +49,13 @@ export default function Orders({ isView }: { isView: boolean }) {
   const handleProductForEdit = (product: any) => {
     dispatch(setEditProduct(product));
     navigate(`/inventory/edit/${product.id}`);
+  };
+
+  const handleCloseDrawer = () => {
+    setIsViewDrawerOpen(false);
+    setTimeout(() => {
+      navigate('/catalogue/order-list');
+    }, 200);
   };
 
   const fetchProducts = (endpoint: string) => {
@@ -136,6 +144,15 @@ export default function Orders({ isView }: { isView: boolean }) {
     fetchProducts(currentUrl);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (isView) {
+      setIsViewDrawerOpen(true);
+      // if (params.id) {
+      //   setSelectedProductID(parseInt(params.id));
+      // }
+    }
+  }, [navigate]);
 
   useEffect(() => {
     if (selectedFilteredBtn) {
@@ -426,7 +443,9 @@ export default function Orders({ isView }: { isView: boolean }) {
                                   type="button"
                                   className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
                                   onClick={() =>
-                                    navigate(`/order/view/${customer.id}`)
+                                    navigate(
+                                      `/catalogue/order-list/view/${customer.id}`,
+                                    )
                                   }
                                 >
                                   <ViewSVG />
@@ -609,8 +628,8 @@ export default function Orders({ isView }: { isView: boolean }) {
 
       {isView && (
         <OrderView
-          isViewOpen={true}
-          handleCloseView={null}
+          isViewOpen={isViewDrawerOpen}
+          handleCloseView={handleCloseDrawer}
           productID={1 as unknown as number}
         />
       )}

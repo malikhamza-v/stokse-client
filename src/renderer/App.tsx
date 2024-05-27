@@ -142,15 +142,26 @@ export default function App() {
 
             <Route
               path="/catalogue/"
-              element={<Navigate to="/catalogue/orders" replace />}
+              element={<Navigate to="/catalogue/order-list" replace />}
             />
 
             <Route
-              path="/catalogue/orders"
+              path="/catalogue/order-list"
               element={
                 <MainLayout>
                   <Catalogue>
                     <Orders isView={false} />
+                  </Catalogue>
+                </MainLayout>
+              }
+            />
+
+            <Route
+              path="/catalogue/order-list/view/:id"
+              element={
+                <MainLayout>
+                  <Catalogue>
+                    <Orders isView={true} />
                   </Catalogue>
                 </MainLayout>
               }
