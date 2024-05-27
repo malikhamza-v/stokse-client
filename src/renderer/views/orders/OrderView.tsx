@@ -88,7 +88,7 @@ function OrderView({
 
               <div
                 className={`p-4 rounded-lg mx-4 cursor-pointer hover:bg-gray-100 ${
-                  currentView === 'order'
+                  currentView === 'activity'
                     ? 'bg-purple-200 hover:bg-purple-200'
                     : 'bg-transparent'
                 }`}
