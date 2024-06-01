@@ -19,7 +19,7 @@ import useRemove from '../../utils/hooks/useRemove';
 import {
   setEditProduct,
   setProducts as setGlobalProducts,
-} from '../../../store/slices/appData';
+} from '../../../store/slices/appSlice';
 import InventoryView from './InventoryView';
 
 /* eslint-disable jsx-a11y/control-has-associated-label */

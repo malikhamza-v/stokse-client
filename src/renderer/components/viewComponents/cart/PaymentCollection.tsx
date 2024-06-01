@@ -5,10 +5,8 @@ import { SingleValue } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { useDispatch, useSelector } from 'react-redux';
 import { LabelInput } from '../../commonComponents';
-import {
-  setPaymentMethods as setGlobalPaymentMethod,
-  setPayment,
-} from '../../../../store/slices/appData';
+import { setPayment } from '../../../../store/slices/cartSlice';
+import { setPaymentMethods as setGlobalPaymentMethod } from '../../../../store/slices/appSlice';
 import { useFetch } from '../../../utils/hooks';
 import { noTaxOptions } from '../../../utils/constant';
 import { AddSVG, DeleteSVG } from '../../../utils/svg';

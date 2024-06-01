@@ -16,7 +16,7 @@ import {
   ViewSVG,
 } from '../../utils/svg';
 import useRemove from '../../utils/hooks/useRemove';
-import { setEditProduct } from '../../../store/slices/appData';
+import { setEditProduct } from '../../../store/slices/appSlice';
 import { formatTimestamp } from '../../utils/methods';
 import OrderView from './OrderView';
 

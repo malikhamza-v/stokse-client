@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { LabelInput } from '../../commonComponents';
-import { setCustomer } from '../../../../store/slices/appData';
+import { setCustomer } from '../../../../store/slices/cartSlice';
 
 function CustomerDetail() {
   // [info]: states

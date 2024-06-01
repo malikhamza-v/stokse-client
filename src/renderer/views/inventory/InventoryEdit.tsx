@@ -16,7 +16,7 @@ import {
   setCategories as setGlobalCategories,
   setBrands as setGlobalBrands,
   setProducts,
-} from '../../../store/slices/appData';
+} from '../../../store/slices/appSlice';
 import { useFetch } from '../../utils/hooks';
 import { AddSVG, DeleteSVG } from '../../utils/svg';
 

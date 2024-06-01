@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPayment } from '../../../../store/slices/appData';
+import { setPayment } from '../../../../store/slices/cartSlice';
 
 function CartDetail() {
   // [info]: state

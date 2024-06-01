@@ -19,7 +19,7 @@ import {
   setBrands as setGlobalBrands,
   setTaxes as setGlobalTaxes,
   setProducts,
-} from '../../../store/slices/appData';
+} from '../../../store/slices/appSlice';
 import { useFetch } from '../../utils/hooks';
 import { AddSVG, DeleteSVG, ErrorSVG } from '../../utils/svg';
 import { noTaxOptions } from '../../utils/constant';

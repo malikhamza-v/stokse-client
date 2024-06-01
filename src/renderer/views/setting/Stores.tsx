@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { setStores as setGlobalStores } from '../../../store/slices/appData';
+import { setStores as setGlobalStores } from '../../../store/slices/appSlice';
 import { BackButton } from '../../components/commonComponents/buttons';
 import { useFetch, useRemove } from '../../utils/hooks';
 import {

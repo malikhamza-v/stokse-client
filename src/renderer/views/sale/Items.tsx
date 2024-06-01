@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AddSVG, EditSVG, ErrorSVG, SearchSVG } from '../../utils/svg';
+import { setCart } from '../../../store/slices/cartSlice';
 import {
-  setCart,
   setProducts as setGlobalProducts,
   setCategories as setGlobalCategories,
-} from '../../../store/slices/appData';
+} from '../../../store/slices/appSlice';
 import { useFetch } from '../../utils/hooks';
 
 function Items() {

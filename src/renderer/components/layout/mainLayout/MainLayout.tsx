@@ -5,7 +5,7 @@ import {
   setBusiness,
   setStore,
   setUser,
-} from '../../../../store/slices/appData';
+} from '../../../../store/slices/appSlice';
 
 function MainLayout({ children }: any) {
   const dispatch = useDispatch();

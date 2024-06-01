@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { setBrands as setGlobalBrands } from '../../../store/slices/appData';
+import { setBrands as setGlobalBrands } from '../../../store/slices/appSlice';
 import { LabelInput } from '../../components/commonComponents';
 import {
   PrimaryButton,

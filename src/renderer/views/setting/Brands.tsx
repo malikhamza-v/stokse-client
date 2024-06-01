@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { setBrands as setGlobalBrands } from '../../../store/slices/appData';
+import { setBrands as setGlobalBrands } from '../../../store/slices/appSlice';
 import { LabelInput } from '../../components/commonComponents';
 import {
   BackButton,

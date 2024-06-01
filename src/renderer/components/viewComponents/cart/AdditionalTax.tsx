@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
 import { useDispatch, useSelector } from 'react-redux';
 import { LabelInput } from '../../commonComponents';
+import { setTaxes as setGlobalTaxes } from '../../../../store/slices/appSlice';
 import {
   setCart,
-  setTaxes as setGlobalTaxes,
   setOrderLevelTaxes,
-} from '../../../../store/slices/appData';
+} from '../../../../store/slices/cartSlice';
 import { useFetch } from '../../../utils/hooks';
 import {
   calculateTaxAmount,

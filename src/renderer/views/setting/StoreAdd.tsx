@@ -6,7 +6,7 @@ import { LabelInput } from '../../components/commonComponents';
 import { PrimaryButton } from '../../components/commonComponents/buttons';
 import { CameraSVG } from '../../utils/svg';
 import { useCreate } from '../../utils/hooks';
-import { setStores } from '../../../store/slices/appData';
+import { setStores } from '../../../store/slices/appSlice';
 
 function StoreAdd() {
   const [isUploadImageHover, setIsUploadImageHover] = useState(false);

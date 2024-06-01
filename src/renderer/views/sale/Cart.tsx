@@ -18,7 +18,7 @@ import {
   InfoSVG,
   MinusSVG,
 } from '../../utils/svg';
-import { resetCart, setCart } from '../../../store/slices/appData';
+import { resetCart, setCart } from '../../../store/slices/cartSlice';
 import { useCreate } from '../../utils/hooks';
 
 import {

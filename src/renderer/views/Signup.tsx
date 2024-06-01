@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { LabelInput } from '../components/commonComponents';
 import useCreate from '../utils/hooks/useCreate';
 import { ArrowLongRight } from '../utils/svg';
-import { setUser, setBusiness } from '../../store/slices/appData';
+import { setUser, setBusiness } from '../../store/slices/appSlice';
 
 function Signup() {
   const [userInput, setUserInput] = useState({
@@ -207,36 +207,11 @@ function Signup() {
           </div>
 
           <div className="mt-10">
-            <div>
-              <LabelInput
-                label="Sign Up Code"
-                errorMsg={errorMsg.code}
-                required
-                loading={false}
-              >
-                <input
-                  type="text"
-                  id="code"
-                  className={`bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4 ${
-                    isCodeTrue && '!bg-slate-100'
-                  }`}
-                  placeholder="Enter code"
-                  value={userInput.code}
-                  disabled={isCodeTrue}
-                  onChange={(e) => handleInput(e, 'code')}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleVerifyToken();
-                    }
-                  }}
-                />
-              </LabelInput>
-            </div>
             {isCodeTrue && (
               <div>
                 <div className="mt-4">
                   <LabelInput
-                    label="Name"
+                    label="Full name"
                     errorMsg={errorMsg.name}
                     required
                     loading={false}
@@ -245,14 +220,14 @@ function Signup() {
                       type="text"
                       id="name"
                       className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                      placeholder="Enter Name"
+                      placeholder="Enter full name"
                       value={userInput.name}
                       onChange={(e) => handleInput(e, 'name')}
                     />
                   </LabelInput>
                 </div>
 
-                <div className="mt-4">
+                {/* <div className="mt-4">
                   <LabelInput
                     label="Business Name"
                     errorMsg={errorMsg.business_name}
@@ -268,7 +243,7 @@ function Signup() {
                       onChange={(e) => handleInput(e, 'business_name')}
                     />
                   </LabelInput>
-                </div>
+                </div> */}
 
                 <div className="mt-4">
                   <LabelInput
@@ -289,7 +264,7 @@ function Signup() {
                 </div>
                 <div className="mt-4">
                   <LabelInput
-                    label="Phone"
+                    label="Phone number"
                     errorMsg={errorMsg.phone}
                     required
                     loading={false}
@@ -324,14 +299,14 @@ function Signup() {
                 </div>
                 <div className="mt-4">
                   <LabelInput
-                    label="Re-type Password"
+                    label="Re-type password"
                     errorMsg={errorMsg.retypePassword}
                     required
                     loading={false}
                   >
                     <input
                       type="password"
-                      id="retype- password"
+                      id="retypepassword"
                       className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
                       placeholder="Re-type password"
                       value={userInput.retypePassword}

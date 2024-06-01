@@ -5,7 +5,7 @@ import Select, { MultiValue } from 'react-select';
 import {
   setManagers as setGlobalManagers,
   setStores as setGlobalStores,
-} from '../../../store/slices/appData';
+} from '../../../store/slices/appSlice';
 import { LabelInput } from '../../components/commonComponents';
 import {
   BackButton,
