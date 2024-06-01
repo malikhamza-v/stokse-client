@@ -95,12 +95,10 @@ export default function InventoryAdd() {
 
   const { createData: createProduct } = useCreate();
 
-  const globalCategories = useSelector(
-    (state: any) => state.appData.categories,
-  );
-  const globalBrands = useSelector((state: any) => state.appData.brands);
-  const globalTaxes = useSelector((state: any) => state.appData.taxes);
-  const products = useSelector((state: any) => state.appData.products);
+  const globalCategories = useSelector((state: any) => state.app.categories);
+  const globalBrands = useSelector((state: any) => state.app.brands);
+  const globalTaxes = useSelector((state: any) => state.app.taxes);
+  const products = useSelector((state: any) => state.app.products);
 
   const dispatch = useDispatch();
 

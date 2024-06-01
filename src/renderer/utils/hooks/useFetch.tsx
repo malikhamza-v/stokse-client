@@ -6,8 +6,8 @@ import { constructURLWithStoreParam } from '../methods';
 const useFetch = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
-  const storeID = useSelector((state: any) => state.appData.store?.id);
-  const businessID = useSelector((state: any) => state.appData.business?.id);
+  const storeID = useSelector((state: any) => state.app.store?.id);
+  const businessID = useSelector((state: any) => state.app.business?.id);
 
   const fetchData = async (url: string) => {
     setLoading(true);

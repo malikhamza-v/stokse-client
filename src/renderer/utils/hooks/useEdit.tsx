@@ -5,7 +5,7 @@ import { constructURLWithStoreParam } from '../methods';
 
 const useEdit = () => {
   const [loading, setLoading] = useState(false);
-  const storeID = useSelector((state: any) => state.appData.store?.id);
+  const storeID = useSelector((state: any) => state.app.store?.id);
 
   const editData = async (url: string, payload: any, silent: boolean) => {
     if (!silent) {

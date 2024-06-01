@@ -27,7 +27,7 @@ function PaymentCollection() {
   //   [info]: hooks
   const dispatch = useDispatch();
   const globalPaymentMethods = useSelector(
-    (state: any) => state.appData.paymentMethods,
+    (state: any) => state.app.paymentMethods,
   );
   const { loading: fetchLoading, fetchData: paymentMethodFetch } = useFetch();
 

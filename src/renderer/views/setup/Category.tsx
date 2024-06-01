@@ -32,9 +32,7 @@ function Category() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const globalCategories = useSelector(
-    (state: any) => state.appData.categories,
-  );
+  const globalCategories = useSelector((state: any) => state.app.categories);
 
   //   [info]: methods
   const resetErrorMsg = () => {

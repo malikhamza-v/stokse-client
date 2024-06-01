@@ -60,10 +60,10 @@ function Managers() {
   const { loading: eManagerLoading, editData: editManager } = useEdit();
 
   const dispatch = useDispatch();
-  const globalManagers = useSelector((state: any) => state.appData.managers);
-  const globalStores = useSelector((state: any) => state.appData.stores);
-  const user = useSelector((state: any) => state.appData.user);
-  const business = useSelector((state: any) => state.appData.business);
+  const globalManagers = useSelector((state: any) => state.app.managers);
+  const globalStores = useSelector((state: any) => state.app.stores);
+  const user = useSelector((state: any) => state.app.user);
+  const business = useSelector((state: any) => state.app.business);
 
   //   [info]: methods
   const resetErrorMsg = () => {

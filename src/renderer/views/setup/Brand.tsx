@@ -32,7 +32,7 @@ function Brand() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const globalBrands = useSelector((state: any) => state.appData.brands);
+  const globalBrands = useSelector((state: any) => state.app.brands);
 
   //   [info]: methods
   const resetErrorMsg = () => {

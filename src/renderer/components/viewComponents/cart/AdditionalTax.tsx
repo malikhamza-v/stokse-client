@@ -33,13 +33,11 @@ function AdditionalTax() {
 
   //   [info]: hooks
   const dispatch = useDispatch();
-  const globalTaxes = useSelector((state: any) => state.appData.taxes);
+  const globalTaxes = useSelector((state: any) => state.app.taxes);
   const { loading: taxFetchLoading, fetchData: taxesFetch } = useFetch();
-  const calculations = useSelector(
-    (state: any) => state.appData.cart.calculations,
-  );
+  const calculations = useSelector((state: any) => state.cart.calculations);
   const cartTaxes = useSelector(
-    (state: any) => state.appData.cart.calculations.order_tax,
+    (state: any) => state.cart.calculations.order_tax,
   );
 
   //   [info]: methods

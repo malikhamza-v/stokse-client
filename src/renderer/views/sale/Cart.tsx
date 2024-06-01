@@ -51,12 +51,10 @@ function Cart() {
   // [info]: hooks
   const dispatch = useDispatch();
 
-  const cartItems = useSelector((state: any) => state.appData.cart.items);
-  const calculations = useSelector(
-    (state: any) => state.appData.cart.calculations,
-  );
-  const customer = useSelector((state: any) => state.appData.cart.customer);
-  const user = useSelector((state: any) => state.appData.user);
+  const cartItems = useSelector((state: any) => state.cart.items);
+  const calculations = useSelector((state: any) => state.cart.calculations);
+  const customer = useSelector((state: any) => state.cart.customer);
+  const user = useSelector((state: any) => state.app.user);
 
   const { loading: cOrderLoading, createData: orderCreate } = useCreate();
 

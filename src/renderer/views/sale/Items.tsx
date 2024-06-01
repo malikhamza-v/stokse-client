@@ -36,11 +36,9 @@ function Items() {
     useFetch();
   const dispatch = useDispatch();
 
-  const globalProducts = useSelector((state: any) => state.appData.products);
-  const cartItems = useSelector((state: any) => state.appData.cart.items);
-  const globalCategories = useSelector(
-    (state: any) => state.appData.categories,
-  );
+  const globalProducts = useSelector((state: any) => state.app.products);
+  const cartItems = useSelector((state: any) => state.cart.items);
+  const globalCategories = useSelector((state: any) => state.app.categories);
   //   [info]: methods
   const fetchProducts = () => {
     productsFetch('/products/')

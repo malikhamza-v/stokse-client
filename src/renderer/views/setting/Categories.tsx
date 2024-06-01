@@ -30,9 +30,7 @@ function Categories() {
   const { loading: eCategoryLoading, editData: editCategory } = useEdit();
 
   const dispatch = useDispatch();
-  const globalCategories = useSelector(
-    (state: any) => state.appData.categories,
-  );
+  const globalCategories = useSelector((state: any) => state.app.categories);
 
   //   [info]: methods
   const resetErrorMsg = () => {

@@ -13,7 +13,7 @@ const useBucket = () => {
   const [uploadLoading, setUploadLoading] = useState(false);
   const [retrieveLoading, setRetrieveLoading] = useState(false);
 
-  const store = useSelector((state: any) => state.appData.store);
+  const store = useSelector((state: any) => state.app.store);
 
   const s3Client = new S3Client({
     endpoint: 'https://nyc3.digitaloceanspaces.com',

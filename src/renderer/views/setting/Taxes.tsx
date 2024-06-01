@@ -38,7 +38,7 @@ function Taxes() {
   const { loading: eTaxLoading, editData: editTax } = useEdit();
 
   const dispatch = useDispatch();
-  const globalTaxes = useSelector((state: any) => state.appData.taxes);
+  const globalTaxes = useSelector((state: any) => state.app.taxes);
 
   //   [info]: methods
   const resetErrorMsg = () => {

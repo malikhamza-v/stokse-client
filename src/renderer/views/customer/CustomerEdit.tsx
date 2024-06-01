@@ -44,7 +44,7 @@ export default function CustomerEdit() {
 
   const params = useParams();
 
-  const product = useSelector((state: any) => state.appData.editProduct);
+  const product = useSelector((state: any) => state.app.editProduct);
 
   const { fetchData: brandsFetch } = useFetch();
 

@@ -7,6 +7,7 @@ import { LabelInput } from '../components/commonComponents';
 import useCreate from '../utils/hooks/useCreate';
 import { ArrowLongRight } from '../utils/svg';
 import { setUser, setBusiness } from '../../store/slices/appSlice';
+import VerifyCode from '../components/viewComponents/signup/verifyCode';
 
 function Signup() {
   const [userInput, setUserInput] = useState({
@@ -37,7 +38,6 @@ function Signup() {
     retypePassword: null,
   });
   const [isCodeTrue, setIsCodeTrue] = useState(false);
-  const { loading: verifyTokenLoading, createData: verifyToken } = useCreate();
   const {
     loading: registerLoading,
     createData: register,
@@ -66,35 +66,6 @@ function Signup() {
       setErrorMsg({ ...errorMsg, [type]: null });
     }
     setUserInput({ ...userInput, [type]: e.target.value });
-  };
-
-  const handleVerifyToken = () => {
-    if (!userInput.code || userInput.code.length <= 0) {
-      let errors = { ...errorMsg };
-      if (!userInput.code || userInput.code.length <= 0) {
-        errors = { ...errors, code: 'Code cannot be empty.' };
-      }
-
-      setErrorMsg(errors);
-      return;
-    }
-
-    const payload = {
-      code: userInput.code,
-    };
-    verifyToken('/auth/verify-code/', payload, false)
-      .then((res) => {
-        const { data } = res;
-        if (res.status === 200) {
-          setIsCodeTrue(true);
-        } else if (res.status === 400) {
-          toast.error(data.message);
-        }
-        return true;
-      })
-      .catch(() => {
-        toast.error('Something went wrong!');
-      });
   };
 
   const handleRegister = async () => {
@@ -206,6 +177,7 @@ function Signup() {
             <p>Enter your signup code sent to your email</p>
           </div>
 
+          <VerifyCode />
           <div className="mt-10">
             {isCodeTrue && (
               <div>
@@ -318,25 +290,7 @@ function Signup() {
             )}
 
             <div className="my-10">
-              {!isCodeTrue ? (
-                <button
-                  type="button"
-                  className={`w-full rounded-full bg-purple-600 font-bold text-white p-5 hover:bg-purple-700 flex items-center justify-center gap-2 ${
-                    verifyTokenLoading && 'opacity-50'
-                  }`}
-                  onClick={handleVerifyToken}
-                  disabled={verifyTokenLoading}
-                >
-                  {verifyTokenLoading && (
-                    <div className="flex flex-row gap-1">
-                      <div className="w-2 h-2 rounded-full bg-white animate-bounce" />
-                      <div className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:-.3s]" />
-                      <div className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:-.5s]" />
-                    </div>
-                  )}
-                  {verifyTokenLoading ? 'Loading' : 'Verify'}
-                </button>
-              ) : (
+              {!isCodeTrue ? null : (
                 <button
                   type="button"
                   className={`w-full rounded-full bg-purple-600 font-bold text-white p-5 hover:bg-purple-700 flex items-center justify-center gap-2 ${

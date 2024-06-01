@@ -43,7 +43,7 @@ function PaymentMethod() {
 
   const dispatch = useDispatch();
   const globalPaymentMethods = useSelector(
-    (state: any) => state.appData.paymentMethods,
+    (state: any) => state.app.paymentMethods,
   );
 
   //   [info]: methods

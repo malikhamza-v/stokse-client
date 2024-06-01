@@ -90,15 +90,13 @@ export default function InventoryEdit() {
 
   const { loading: cProductLoading, editData: editProduct } = useEdit();
 
-  const globalCategories = useSelector(
-    (state: any) => state.appData.categories,
-  );
-  const globalBrands = useSelector((state: any) => state.appData.brands);
+  const globalCategories = useSelector((state: any) => state.app.categories);
+  const globalBrands = useSelector((state: any) => state.app.brands);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const product = useSelector((state: any) => state.appData.editProduct);
-  const globalProducts = useSelector((state: any) => state.appData.products);
+  const product = useSelector((state: any) => state.app.editProduct);
+  const globalProducts = useSelector((state: any) => state.app.products);
 
   const { loading: categoryFetchLoading, fetchData: categoriesFetch } =
     useFetch();

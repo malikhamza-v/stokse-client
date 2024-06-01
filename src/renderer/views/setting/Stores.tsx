@@ -35,8 +35,8 @@ function Stores() {
   const { loading: rStoreLoading, removeData: storeRemove } = useRemove();
 
   const dispatch = useDispatch();
-  const globalStores = useSelector((state: any) => state.appData.stores);
-  const user = useSelector((state: any) => state.appData.user);
+  const globalStores = useSelector((state: any) => state.app.stores);
+  const user = useSelector((state: any) => state.app.user);
 
   //   [info]: methods
 

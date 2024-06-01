@@ -54,7 +54,7 @@ export default function Inventory({ isView }: { isView: boolean }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const params = useParams();
-  const globalProducts = useSelector((state: any) => state.appData.products);
+  const globalProducts = useSelector((state: any) => state.app.products);
 
   // [info]: method
   const handleProductForEdit = (product: any) => {

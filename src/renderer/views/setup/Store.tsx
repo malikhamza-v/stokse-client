@@ -54,8 +54,8 @@ function Store() {
 
   const { createData: createStore } = useCreate();
 
-  const user = useSelector((state: any) => state.appData.user);
-  const business = useSelector((state: any) => state.appData.business);
+  const user = useSelector((state: any) => state.app.user);
+  const business = useSelector((state: any) => state.app.business);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
