@@ -7,6 +7,9 @@ import { ArrowRight } from '../../utils/svg';
 import { useCreate } from '../../utils/hooks';
 import { SecondaryButton } from '../../components/commonComponents/buttons';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { resetAppData } from '../../../store/slices/appSlice';
+import { resetCart } from '../../../store/slices/cartSlice';
 
 function Setting() {
   // const { appVersion } = window as any;
@@ -52,6 +55,7 @@ function Setting() {
 
   // [info]: hook
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { loading: logoutLoading, createData: logout } = useCreate();
 
   // [info]: methods
@@ -59,14 +63,18 @@ function Setting() {
     logout('/auth/logout/', {}, false)
       .then((res) => {
         if (res.status === 200) {
-          localStorage.clear();
-          navigate('/sign-in');
           return true;
         }
         return false;
       })
       .catch(() => {
         return false;
+      })
+      .finally(() => {
+        localStorage.clear();
+        dispatch(resetCart());
+        dispatch(resetAppData());
+        navigate('/sign-in');
       });
   };
 

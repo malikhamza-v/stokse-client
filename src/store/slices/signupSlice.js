@@ -47,6 +47,10 @@ const signupSlice = createSlice({
     setBusinessInfo(state, action) {
       state.businessInfo = action.payload;
     },
+
+    resetSignupData() {
+      return initialState;
+    },
   },
 });
 
@@ -56,6 +60,7 @@ export const {
   setAdminInfo,
   setBusinessInfo,
   setStoreInfo,
+  resetSignupData,
 } = signupSlice.actions;
 
 export default signupSlice.reducer;

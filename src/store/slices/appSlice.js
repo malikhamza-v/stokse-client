@@ -38,7 +38,6 @@ const appSlice = createSlice({
     setStore: (state, action) => {
       state.store = action.payload;
     },
-
     setCategories: (state, action) => {
       state.categories = action.payload;
     },
@@ -57,6 +56,9 @@ const appSlice = createSlice({
     setPaymentMethods: (state, action) => {
       state.paymentMethods = action.payload;
     },
+    resetAppData() {
+      return initialState;
+    },
   },
 });
 
@@ -73,6 +75,7 @@ export const {
   setManagers,
   setStores,
   setPaymentMethods,
+  resetAppData,
 } = appSlice.actions;
 
 export default appSlice.reducer;

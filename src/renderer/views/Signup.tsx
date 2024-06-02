@@ -50,29 +50,31 @@ function Signup() {
           <Waiting />
         )}
 
-        <div className="flex items-center justify-between w-full">
-          {signupSetp > 0 && (
-            <div>
+        {signupSetp !== 4 && (
+          <div className="flex items-center justify-between w-full">
+            {signupSetp > 0 && (
+              <div>
+                <button
+                  type="button"
+                  className="flex items-center gap-2 justify-end ml-auto my-4 text-blue-600"
+                  onClick={handleGoBack}
+                >
+                  <ArrowLongLeft />
+                  <p>Back</p>
+                </button>
+              </div>
+            )}
+            <Link to="/sign-in" className="ml-auto">
               <button
                 type="button"
                 className="flex items-center gap-2 justify-end ml-auto my-4 text-blue-600"
-                onClick={handleGoBack}
               >
-                <ArrowLongLeft />
-                <p>Back</p>
+                <p>Back to login</p>
+                <ArrowLongRight />
               </button>
-            </div>
-          )}
-          <Link to="/sign-in" className="ml-auto">
-            <button
-              type="button"
-              className="flex items-center gap-2 justify-end ml-auto my-4 text-blue-600"
-            >
-              <p>Back to login</p>
-              <ArrowLongRight />
-            </button>
-          </Link>
-        </div>
+            </Link>
+          </div>
+        )}
       </div>
 
       <div className="h-screen w-1/2">

@@ -8,6 +8,7 @@ import {
 } from '../../../../store/slices/appSlice';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { resetSignupData } from '../../../../store/slices/signupSlice';
 
 function Waiting() {
   const { createData: register } = useCreate();
@@ -23,7 +24,6 @@ function Waiting() {
   const navigate = useNavigate();
 
   const createResgistration = async () => {
-    console.log('initializing registration');
     const resPayload = {
       code: signCode,
       name: userInfo.name,
@@ -75,6 +75,7 @@ function Waiting() {
         if (storeRes.status === 200) {
           dispatch(setStore(storeRes.data));
           localStorage.setItem('store', JSON.stringify(storeRes.data));
+          dispatch(resetSignupData());
           navigate('/');
         }
       }
