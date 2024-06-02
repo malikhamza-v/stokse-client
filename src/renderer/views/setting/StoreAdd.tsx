@@ -139,7 +139,7 @@ function StoreAdd() {
 
   return (
     <div className="h-screen container mx-auto">
-      <div className="px-16 py-8 h-full overflow-y-scroll">
+      <div className="px-16 py-8 h-full">
         <div>
           <div className="flex flex-wrap justify-center ">
             <div className="w-full flex justify-center">

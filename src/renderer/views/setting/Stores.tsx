@@ -13,7 +13,7 @@ import {
   SearchSVG,
 } from '../../utils/svg';
 
-interface Store {
+export interface Store {
   id: number;
   name: string;
   description: string;

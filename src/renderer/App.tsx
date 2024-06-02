@@ -36,6 +36,7 @@ import EmployeeEdit from './views/employee/EmployeeEdit';
 import Logs from './views/setting/Logs';
 import { useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
+import SelectStore from './views/SelectStore';
 
 export default function App() {
   const { ipcRenderer } = window as any;
@@ -62,6 +63,15 @@ export default function App() {
           <Route path="/sign-up" element={<Signup />} />
 
           <Route element={<PrivateRoute />}>
+            <Route
+              path="/select-store"
+              element={
+                <MainLayout>
+                  <SelectStore />
+                </MainLayout>
+              }
+            />
+
             <Route
               path="/"
               element={

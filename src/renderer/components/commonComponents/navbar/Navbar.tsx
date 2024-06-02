@@ -1,19 +1,23 @@
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { ChangeSVG } from '../../../utils/svg';
 
 function NavBar() {
   const store = useSelector((state: any) => state.app.store);
+
   return (
     <header>
       <div className="sticky z-10 top-0 h-16 border-b lg:py-2.5">
         <div className="px-6 flex items-center justify-between space-x-4 2xl:container">
           <div className="flex items-center gap-2">
             <h5 hidden className="text-xl text-gray-600 font-medium lg:block">
-              {store.store_name}
+              {store.name}
             </h5>
-            <div className="cursor-pointer">
-              <ChangeSVG />
-            </div>
+            <Link to="/select-store">
+              <div className="cursor-pointer">
+                <ChangeSVG />
+              </div>
+            </Link>
           </div>
           <div className="flex space-x-4">
             <button
