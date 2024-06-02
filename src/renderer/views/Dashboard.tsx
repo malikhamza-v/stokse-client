@@ -247,7 +247,7 @@ function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <div className="w-full overflow-y-scroll">
+    <div className="w-full overflow-y-auto h-full">
       <div>
         <div className="px-6 pt-6 2xl:container">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

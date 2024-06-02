@@ -107,7 +107,7 @@ function Setting() {
   }, []);
 
   return (
-    <div className="flex flex-col h-full w-full overflow-y-scroll">
+    <div className="flex flex-col h-full w-full overflow-y-auto">
       {/* <div className="px-16 pt-16 flex items-center justify-between">
         <div>
           <h2 className="font-bold text-2xl">Setting</h2>

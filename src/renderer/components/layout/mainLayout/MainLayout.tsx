@@ -6,9 +6,12 @@ import {
   setStore,
   setUser,
 } from '../../../../store/slices/appSlice';
+import NavBar from '../../commonComponents/navbar/Navbar';
+import { useLocation } from 'react-router-dom';
 
 function MainLayout({ children }: any) {
   const dispatch = useDispatch();
+  const location = useLocation();
 
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -26,7 +29,20 @@ function MainLayout({ children }: any) {
   return (
     <div className="relative flex h-screen overflow-y-hidden">
       <SideBar />
-      {children}
+      <div
+        className={`w-full flex flex-col  ${
+          location.pathname === '/sale' ? 'overflow-y-auto' : ''
+        }`}
+      >
+        <NavBar />
+        <div
+          className={`${
+            location.pathname !== '/sale' ? 'overflow-y-auto' : ''
+          } `}
+        >
+          {children}
+        </div>
+      </div>
     </div>
   );
 }
