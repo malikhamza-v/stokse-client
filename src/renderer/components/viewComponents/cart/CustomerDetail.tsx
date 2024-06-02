@@ -30,7 +30,7 @@ function CustomerDetail() {
   return (
     <div className="text-base flex flex-col gap-2">
       <p className="font-bold my-4">Customer Detail:</p>
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-2 items-center justify-between">
         <LabelInput
           label="Customer Name"
           errorMsg={null}
@@ -39,7 +39,7 @@ function CustomerDetail() {
         >
           <input
             type="text"
-            className="p-2.5 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+            className="p-2.5 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600 "
             placeholder="Customer Name"
             value={userInput.name}
             // value={discount.percent}
@@ -55,7 +55,7 @@ function CustomerDetail() {
         >
           <input
             type="number"
-            className="p-2.5 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+            className="p-2.5 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600 "
             placeholder="Customer Phone"
             value={userInput.phone}
             onChange={(e) => handleUserInput('phone', e.target.value)}

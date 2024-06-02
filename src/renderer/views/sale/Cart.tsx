@@ -101,6 +101,8 @@ function Cart() {
       toast.error('Your cart is empty');
       return;
     }
+
+    setOrderConfirmationState(1);
     setShowOrderConfirmationModal(true);
   };
 
@@ -573,11 +575,11 @@ function Cart() {
           >
             <div className="absolute inset-0 bg-black opacity-60" />
           </div>
-          <div className="max-w-2xl my-10 bg-white rounded-xl fixed z-10 inset-0 overflow-y-scroll flex flex-col mx-auto w-fit h-fit max-h-[90%]">
-            <div className="flex flex-col justify-center h-fit">
-              <div className="relative sm:max-w-xl sm:mx-auto h-full">
-                <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 rounded-3xl sm:p-10 h-full">
-                  <div className="max-w-md mx-auto flex flex-col h-full">
+          <div className="max-w-2xl  my-10 bg-white rounded-xl fixed z-10 inset-0 overflow-y-scroll flex flex-col mx-auto h-fit max-h-[90%]">
+            <div className="flex flex-col justify-center h-fit ">
+              <div className="relative sm:max-w-2xl sm:mx-auto h-full w-full">
+                <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 rounded-3xl sm:p-10 h-full w-full">
+                  <div className="mx-auto flex flex-col h-full ">
                     <div className="flex items-center space-x-5">
                       <div className="block font-semibold text-xl self-start text-gray-700">
                         <h2 className="leading-relaxed">Order Confirmation</h2>

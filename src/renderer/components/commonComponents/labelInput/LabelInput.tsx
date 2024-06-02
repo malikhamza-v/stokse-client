@@ -13,7 +13,7 @@ export default function LabelInput({
   children: any;
 }) {
   return (
-    <div>
+    <div className="w-full">
       <label
         htmlFor="first_name"
         className="block mb-2 font-medium text-gray-900 text-left"
