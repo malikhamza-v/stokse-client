@@ -1,13 +1,18 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { ChangeEvent, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { LabelInput } from '../components/commonComponents';
 import useCreate from '../utils/hooks/useCreate';
-import { ArrowLongRight } from '../utils/svg';
+import { ArrowLongLeft, ArrowLongRight } from '../utils/svg';
 import { setUser, setBusiness } from '../../store/slices/appSlice';
 import VerifyCode from '../components/viewComponents/signup/verifyCode';
+import AdminInfo from '../components/viewComponents/signup/adminInfo';
+import SetupBusiness from '../components/viewComponents/signup/setupBusiness';
+import { setSignupStep } from '../../store/slices/signupSlice';
+import SetupStore from '../components/viewComponents/signup/setupStore';
+import Waiting from '../components/viewComponents/signup/waiting';
 
 function Signup() {
   const [userInput, setUserInput] = useState({
@@ -45,27 +50,15 @@ function Signup() {
   } = useCreate();
   const { createData: businessCreate } = useCreate();
 
+  const signupSetp = useSelector((state: any) => state.signup.signupStep);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   //   [info]: methods
-  const handleInput = (e: ChangeEvent<HTMLInputElement>, type: string) => {
-    if (type === 'retypePassword') {
-      if (e.target.value !== userInput.password) {
-        setErrorMsg({
-          ...errorMsg,
-          retypePassword: 'Password does not match.',
-        });
-      } else {
-        setErrorMsg({
-          ...errorMsg,
-          retypePassword: null,
-        });
-      }
-    } else {
-      setErrorMsg({ ...errorMsg, [type]: null });
-    }
-    setUserInput({ ...userInput, [type]: e.target.value });
+
+  const handleGoBack = () => {
+    dispatch(setSignupStep(signupSetp - 1));
   };
 
   const handleRegister = async () => {
@@ -157,171 +150,54 @@ function Signup() {
   };
 
   return (
-    <div className="flex h-screen w-full justify-between ">
+    <div className="flex items-center">
       <div
-        className="flex-1 overflow-y-scroll py-12 w-1/2 bg-white text-black"
-        style={{
-          height: 'calc(100vh)',
-          maxHeight: 'calc(100vh)',
-        }}
+        className={`flex flex-col px-20 xl:px-40 flex-1 overflow-y-auto h-screen py-14 ${
+          signupSetp !== 1 && signupSetp !== 3 ? 'justify-center' : ''
+        }`}
       >
-        <div
-          className={`mx-auto flex w-2/3 flex-col justify-center xl:w-1/2 ${
-            !isCodeTrue && 'h-full'
-          }`}
-        >
-          <div>
-            <p className="text-3xl font-bold text-blue-600">
-              Ready to register!
-            </p>
-            <p>Enter your signup code sent to your email</p>
-          </div>
+        <div>
+          <p className="text-3xl font-bold text-blue-600">Ready to register!</p>
+          <p>Enter your signup code sent to your email</p>
+        </div>
 
+        {signupSetp === 0 ? (
           <VerifyCode />
-          <div className="mt-10">
-            {isCodeTrue && (
-              <div>
-                <div className="mt-4">
-                  <LabelInput
-                    label="Full name"
-                    errorMsg={errorMsg.name}
-                    required
-                    loading={false}
-                  >
-                    <input
-                      type="text"
-                      id="name"
-                      className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                      placeholder="Enter full name"
-                      value={userInput.name}
-                      onChange={(e) => handleInput(e, 'name')}
-                    />
-                  </LabelInput>
-                </div>
+        ) : signupSetp === 1 ? (
+          <AdminInfo />
+        ) : signupSetp === 2 ? (
+          <SetupBusiness />
+        ) : signupSetp === 3 ? (
+          <SetupStore />
+        ) : (
+          <Waiting />
+        )}
 
-                {/* <div className="mt-4">
-                  <LabelInput
-                    label="Business Name"
-                    errorMsg={errorMsg.business_name}
-                    required
-                    loading={false}
-                  >
-                    <input
-                      type="text"
-                      id="name"
-                      className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                      placeholder="Enter Business Name"
-                      value={userInput.business_name}
-                      onChange={(e) => handleInput(e, 'business_name')}
-                    />
-                  </LabelInput>
-                </div> */}
-
-                <div className="mt-4">
-                  <LabelInput
-                    label="Email"
-                    errorMsg={errorMsg.email}
-                    required
-                    loading={false}
-                  >
-                    <input
-                      type="email"
-                      id="email"
-                      className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                      placeholder="Enter Email"
-                      value={userInput.email}
-                      onChange={(e) => handleInput(e, 'email')}
-                    />
-                  </LabelInput>
-                </div>
-                <div className="mt-4">
-                  <LabelInput
-                    label="Phone number"
-                    errorMsg={errorMsg.phone}
-                    required
-                    loading={false}
-                  >
-                    <input
-                      type="number"
-                      id="phone"
-                      className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                      placeholder="Enter Phone"
-                      value={userInput.phone}
-                      onChange={(e) => handleInput(e, 'phone')}
-                    />
-                  </LabelInput>
-                </div>
-
-                <div className="mt-4">
-                  <LabelInput
-                    label="Password"
-                    errorMsg={errorMsg.password}
-                    required
-                    loading={false}
-                  >
-                    <input
-                      type="password"
-                      id="password"
-                      className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                      placeholder="Enter password"
-                      value={userInput.password}
-                      onChange={(e) => handleInput(e, 'password')}
-                    />
-                  </LabelInput>
-                </div>
-                <div className="mt-4">
-                  <LabelInput
-                    label="Re-type password"
-                    errorMsg={errorMsg.retypePassword}
-                    required
-                    loading={false}
-                  >
-                    <input
-                      type="password"
-                      id="retypepassword"
-                      className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                      placeholder="Re-type password"
-                      value={userInput.retypePassword}
-                      onChange={(e) => handleInput(e, 'retypePassword')}
-                    />
-                  </LabelInput>
-                </div>
-              </div>
-            )}
-
-            <div className="my-10">
-              {!isCodeTrue ? null : (
-                <button
-                  type="button"
-                  className={`w-full rounded-full bg-purple-600 font-bold text-white p-5 hover:bg-purple-700 flex items-center justify-center gap-2 ${
-                    registerLoading && 'opacity-50'
-                  }`}
-                  onClick={handleRegister}
-                  disabled={registerLoading}
-                >
-                  {registerLoading && (
-                    <div className="flex flex-row gap-1">
-                      <div className="w-2 h-2 rounded-full bg-white animate-bounce" />
-                      <div className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:-.3s]" />
-                      <div className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:-.5s]" />
-                    </div>
-                  )}
-                  {registerLoading ? 'Loading' : 'Register'}
-                </button>
-              )}
-              <Link to="/sign-in">
-                <button
-                  type="button"
-                  className="flex items-center gap-2 justify-end ml-auto my-4 text-blue-600"
-                >
-                  <p>Back to login</p>
-                  <ArrowLongRight />
-                </button>
-              </Link>
+        <div className="flex items-center justify-between w-full">
+          {signupSetp > 0 && (
+            <div>
+              <button
+                type="button"
+                className="flex items-center gap-2 justify-end ml-auto my-4 text-blue-600"
+                onClick={handleGoBack}
+              >
+                <ArrowLongLeft />
+                <p>Back</p>
+              </button>
             </div>
-          </div>
+          )}
+          <Link to="/sign-in" className="ml-auto">
+            <button
+              type="button"
+              className="flex items-center gap-2 justify-end ml-auto my-4 text-blue-600"
+            >
+              <p>Back to login</p>
+              <ArrowLongRight />
+            </button>
+          </Link>
         </div>
       </div>
+
       <div className="h-screen w-1/2">
         <img
           src="https://placehold.co/500x900"
@@ -330,6 +206,63 @@ function Signup() {
         />
       </div>
     </div>
+    // <div className="flex h-screen w-full justify-between">
+    //   <div
+    //     className="overflow-y-scroll w-1/2 bg-white text-black py-14 flex justify-center"
+    //     // style={{
+    //     //   height: 'calc(100vh)',
+    //     //   maxHeight: 'calc(100vh)',
+    //     // }}
+    //   >
+    //     <div className="mx-auto flex w-2/3 flex-col xl:w-1/2 h-full">
+    //       <div>
+    //         <p className="text-3xl font-bold text-blue-600">
+    //           Ready to register!
+    //         </p>
+    //         <p>Enter your signup code sent to your email</p>
+    //       </div>
+
+    //       {signupSetp === 0 ? (
+    //         <VerifyCode />
+    //       ) : signupSetp === 1 ? (
+    //         <AdminInfo />
+    //       ) : signupSetp === 2 ? (
+    //         <SetupBusiness />
+    //       ) : null}
+
+    //       <div className="flex items-center justify-between w-full">
+    //         {signupSetp > 0 && (
+    //           <div>
+    //             <button
+    //               type="button"
+    //               className="flex items-center gap-2 justify-end ml-auto my-4 text-blue-600"
+    //               onClick={handleGoBack}
+    //             >
+    //               <ArrowLongLeft />
+    //               <p>Back</p>
+    //             </button>
+    //           </div>
+    //         )}
+    //         <Link to="/sign-in" className="ml-auto">
+    //           <button
+    //             type="button"
+    //             className="flex items-center gap-2 justify-end ml-auto my-4 text-blue-600"
+    //           >
+    //             <p>Back to login</p>
+    //             <ArrowLongRight />
+    //           </button>
+    //         </Link>
+    //       </div>
+    //     </div>
+    //   </div>
+    //   <div className="h-screen w-1/2">
+    //     <img
+    //       src="https://placehold.co/500x900"
+    //       className="h-full w-full object-cover"
+    //       alt="POS With inventory"
+    //     />
+    //   </div>
+    // </div>
   );
 }
 

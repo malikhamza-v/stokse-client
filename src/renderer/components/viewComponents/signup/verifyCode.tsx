@@ -2,17 +2,27 @@ import { ChangeEvent, useState } from 'react';
 import { LabelInput } from '../../commonComponents';
 import { useCreate } from '../../../utils/hooks';
 import { toast } from 'react-toastify';
+import {
+  setSignupCode,
+  setSignupStep,
+} from '../../../../store/slices/signupSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 function VerifyCode() {
   const [userInput, setUserInput] = useState({
     code: '',
   });
 
-  const [errorMsg, setErrorMsg] = useState({
+  const [errorMsg, setErrorMsg] = useState<{
+    code: string | null;
+  }>({
     code: null,
   });
 
   const { loading: verifyTokenLoading, createData: verifyToken } = useCreate();
+
+  const signupSetp = useSelector((state: any) => state.signup.signupStep);
+  const dispatch = useDispatch();
 
   //   [info]: methods
   const handleInput = (e: ChangeEvent<HTMLInputElement>, type: string) => {
@@ -39,6 +49,8 @@ function VerifyCode() {
         const { data } = res;
         if (res.status === 200) {
           // setIsCodeTrue(true);
+          dispatch(setSignupStep(signupSetp + 1));
+          dispatch(setSignupCode(userInput.code));
         } else if (res.status === 400) {
           toast.error(data.message);
         }

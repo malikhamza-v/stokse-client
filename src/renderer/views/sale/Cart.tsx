@@ -53,6 +53,10 @@ function Cart() {
 
   const cartItems = useSelector((state: any) => state.cart.items);
   const calculations = useSelector((state: any) => state.cart.calculations);
+
+  useEffect(() => {
+    console.log(calculations);
+  }, [calculations]);
   const customer = useSelector((state: any) => state.cart.customer);
   const user = useSelector((state: any) => state.app.user);
 
@@ -272,7 +276,7 @@ function Cart() {
 
       const calculatedSubTotal = parseFloat(subTotal || 0).toFixed(2);
       const calculatedItemTax = calculateTotalTax();
-
+      console.log(calculations);
       dispatch(
         setCart({
           calculations: {
@@ -392,12 +396,12 @@ function Cart() {
           </div>
           <div className="flex justify-between items-center">
             <p className="text-gray-400 text-md">Subtotal (incl. taxes)</p>
-            <p className="font-medium">{calculations.subTotal} USD</p>
+            <p className="font-medium">{calculations?.subTotal} USD</p>
           </div>
 
           <div className="flex justify-between items-center mb-6 mt-4">
             <p className="text-lg font-bold">Total</p>
-            <p className="font-medium">{calculations.total} USD</p>
+            <p className="font-medium">{calculations?.total} USD</p>
           </div>
         </div>
         <div className="flex flex-col gap-2">

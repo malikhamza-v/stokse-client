@@ -2,7 +2,6 @@ import {
   MemoryRouter as Router,
   Routes,
   Route,
-  Red,
   Navigate,
 } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -23,16 +22,11 @@ import Brands from './views/setting/Brands';
 import PaymentMethods from './views/setting/PaymentMethods';
 import Taxes from './views/setting/Taxes';
 import Signup from './views/Signup';
-import {
-  Brand,
-  Category,
-  PaymentMethod as SetupPaymentMethod,
-} from './views/setup';
+
 import Catalogue from './views/catalogue/Catalogue';
 import Orders from './views/orders/Orders';
 import OrderEdit from './views/orders/OrderEdit';
 import Employees from './views/employee/Employees';
-import Store from './views/setup/Store';
 import EmployeeAdd from './views/employee/EmployeeAdd';
 import Stores from './views/setting/Stores';
 import StoreAdd from './views/setting/StoreAdd';
@@ -68,13 +62,6 @@ export default function App() {
           <Route path="/sign-up" element={<Signup />} />
 
           <Route element={<PrivateRoute />}>
-            <Route path="/setup/store" element={<Store />} />
-            <Route path="/setup/business/category" element={<Category />} />
-            <Route path="/setup/business/brand" element={<Brand />} />
-            <Route
-              path="/setup/business/payment-method"
-              element={<SetupPaymentMethod />}
-            />
             <Route
               path="/"
               element={
