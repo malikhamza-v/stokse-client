@@ -7,7 +7,7 @@ import { ArrowRight } from '../../utils/svg';
 import { useCreate } from '../../utils/hooks';
 import { SecondaryButton } from '../../components/commonComponents/buttons';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { resetAppData } from '../../../store/slices/appSlice';
 import { resetCart } from '../../../store/slices/cartSlice';
 
@@ -15,41 +15,50 @@ function Setting() {
   // const { appVersion } = window as any;
   const [appVersion, setAppVersion] = useState<any>(null);
 
+  const user = useSelector((state: any) => state.app.user);
+
   const settingsOptions = [
     {
       label: 'Categories',
       description: 'Manage categories of your products.',
       link: '/setting/categories',
+      onlyForAdmin: false,
     },
     {
       label: 'Brands',
       description: 'Manage brands of your products.',
       link: '/setting/brands',
+      onlyForAdmin: false,
     },
     {
       label: 'Payment Methods',
       description: 'Manage payment methods of your store.',
       link: '/setting/payment-methods',
+      onlyForAdmin: false,
     },
     {
       label: 'Taxes',
       description: 'Manage default taxes of your store.',
       link: '/setting/taxes',
+      onlyForAdmin: false,
     },
     {
       label: 'Stores',
       description: 'Manage stores for your business.',
       link: '/setting/stores',
+      onlyForAdmin: true,
     },
     {
       label: 'Managers',
       description: 'Manage managers of your stores.',
       link: '/setting/managers',
+      onlyForAdmin: true,
     },
     {
       label: 'App activites',
       description: 'See all activities at your store.',
       link: '/setting/logs',
+      onlyForAdmin: false,
     },
   ];
 
@@ -243,17 +252,37 @@ function Setting() {
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4 mt-4">
-              {settingsOptions.map((option) => (
-                <Link to={option.link} key={option.link}>
-                  <div className="border p-4 rounded-xl flex items-center justify-between cursor-pointer hover:bg-slate-50">
-                    <div>
-                      <p className="font-bold">{option.label}</p>
-                      <p className="text-gray-600">{option.description}</p>
+              {settingsOptions.map((option) => {
+                if (option.onlyForAdmin && user?.role !== 'Admin') {
+                  return (
+                    <div className="relative">
+                      <div className="border opacity-65 p-4 rounded-xl flex items-center justify-between cursor-pointer hover:bg-slate-50">
+                        <div>
+                          <p className="font-bold">{option.label}</p>
+                          <p className="text-gray-600">{option.description}</p>
+                        </div>
+                        <ArrowRight />
+                      </div>
+
+                      <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 bg-gray-500 px-4 py-2 rounded-lg text-white">
+                        <p>Only for admins</p>
+                      </div>
                     </div>
-                    <ArrowRight />
-                  </div>
-                </Link>
-              ))}
+                  );
+                } else {
+                  return (
+                    <Link to={option.link} key={option.link}>
+                      <div className="border p-4 rounded-xl flex items-center justify-between cursor-pointer hover:bg-slate-50">
+                        <div>
+                          <p className="font-bold">{option.label}</p>
+                          <p className="text-gray-600">{option.description}</p>
+                        </div>
+                        <ArrowRight />
+                      </div>
+                    </Link>
+                  );
+                }
+              })}
               <div
                 onClick={checkForUpdate}
                 className="border p-4 rounded-xl flex items-center justify-between cursor-pointer hover:bg-slate-50"

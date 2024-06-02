@@ -182,25 +182,6 @@ export default function App() {
               }
             />
 
-            {/* [info]: orders */}
-            {/* <Route
-              path="/orders/"
-              element={
-                <MainLayout>
-                  <Orders isView={false} />
-                </MainLayout>
-              }
-            /> */}
-
-            {/* <Route
-              path="/order/view/:id"
-              element={
-                <MainLayout>
-                  <Orders isView={true} />
-                </MainLayout>
-              }
-            /> */}
-
             <Route
               path="/order/edit/:id"
               element={
