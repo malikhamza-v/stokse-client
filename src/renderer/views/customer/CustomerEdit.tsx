@@ -46,7 +46,7 @@ export default function CustomerEdit() {
 
   const product = useSelector((state: any) => state.app.editProduct);
 
-  const { fetchData: brandsFetch } = useFetch();
+  const { fetchData: brandsFetch, loading: customerLoading } = useFetch();
 
   // [info]: helpers
   const resetErrorMsg = () => {
@@ -145,7 +145,7 @@ export default function CustomerEdit() {
             <div className="pb-6">
               <LabelInput
                 errorMsg={errorMsg.name}
-                loading={false}
+                loading={customerLoading}
                 label="Name"
                 required
               >
@@ -164,7 +164,7 @@ export default function CustomerEdit() {
             <div className="pb-6">
               <LabelInput
                 errorMsg={errorMsg.email}
-                loading={false}
+                loading={customerLoading}
                 label="Email"
                 required
               >
@@ -183,7 +183,7 @@ export default function CustomerEdit() {
             <div className="pb-6">
               <LabelInput
                 errorMsg={errorMsg.phone}
-                loading={false}
+                loading={customerLoading}
                 label="Phone"
                 required
               >

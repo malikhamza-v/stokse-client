@@ -1,11 +1,44 @@
 /* eslint-disable no-nested-ternary */
-import React, { useRef, useState } from 'react';
+import React, { RefObject, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, ErrorSVG } from '../../../utils/svg';
 import { formatTimestamp } from '../../../utils/methods';
 import { PrimaryButton } from '../buttons';
+import { useCreate } from '../../../utils/hooks';
+import { toast } from 'react-toastify';
 
-function AccordionItem({ question, isOpen, onClick }) {
-  const contentHeight = useRef<HTMLDivElement | undefined>();
+interface Order {
+  id: number;
+  payment_status: string;
+  total: number;
+  payment_methods: {
+    method: string;
+  }[];
+  created_at: string;
+}
+
+function AccordionItem({
+  order,
+  isOpen,
+  onClick,
+}: {
+  order: Order;
+  isOpen: boolean;
+  onClick: any;
+}) {
+  const contentHeight = useRef<any>();
+
+  const { createData: sendInvoice, loading: sendInvoiceLoading } = useCreate();
+
+  const handleSendInvoice = (order_id: number) => {
+    sendInvoice(`order/${order_id}/send-invoice/`, null, false)
+      .then(() => {
+        toast.success('Email sent successfully!');
+        return true;
+      })
+      .catch(() => {
+        toast.error('Something went wrong!');
+      });
+  };
   return (
     <div className="wrapper">
       <button
@@ -16,7 +49,7 @@ function AccordionItem({ question, isOpen, onClick }) {
         <td className="px-4 py-4 text-sm font-medium whitespace-pre-wrap w-[10%]">
           <div>
             <p className="text-sm text-wrap  font-normal text-gray-600 mt-2">
-              <span>{question.id}</span>
+              <span>{order.id}</span>
             </p>
           </div>
         </td>
@@ -24,7 +57,7 @@ function AccordionItem({ question, isOpen, onClick }) {
         <td className="py-4 text-sm font-medium w-[20%]">
           <div className="py-1 text-sm font-normal rounded-full text-emerald-500 bg-emerald-100/60 w-32 text-center">
             <p className="text-sm text-wrap font-normal text-gray-600 capitalize">
-              <span>{question.payment_status}</span>
+              <span>{order.payment_status}</span>
             </p>
           </div>
         </td>
@@ -32,14 +65,14 @@ function AccordionItem({ question, isOpen, onClick }) {
         <td className="py-4 pl-2 text-sm w-[15%]">
           <div>
             <h4 className="text-gray-700 ">
-              <span>{question.total}</span>
+              <span>{order.total}</span>
             </h4>
           </div>
         </td>
         <td className="py-4 text-sm w-[20%]">
           <div className="flex items-center">
             <ul className="text-gray-500 list-none flex items-center gap-2">
-              {question.payment_methods.map((method: any) => {
+              {order.payment_methods.map((method: any) => {
                 return (
                   <li className="font-bold px-2 border rounded">
                     {method.method}
@@ -51,13 +84,10 @@ function AccordionItem({ question, isOpen, onClick }) {
         </td>
 
         <td className="px-4 py-4 text-sm whitespace-nowrap w-[10%]">
-          <div>{formatTimestamp(question.created_at)}</div>
+          <div>{formatTimestamp(order.created_at)}</div>
         </td>
 
-        <td>
-          {/* <p className="question-content">{question}</p> */}
-          {isOpen ? <ArrowLeft /> : <ArrowRight />}
-        </td>
+        <td>{isOpen ? <ArrowLeft /> : <ArrowRight />}</td>
       </button>
 
       <div
@@ -80,8 +110,8 @@ function AccordionItem({ question, isOpen, onClick }) {
           <div>
             <PrimaryButton
               label="Send Receipt"
-              loading={false}
-              onClickAction={null}
+              loading={sendInvoiceLoading}
+              onClickAction={() => handleSendInvoice(order.id)}
             />
           </div>
           <div>
@@ -209,12 +239,12 @@ function Accordion({ orders }: { orders: any }) {
             </>
           ) : orders?.length > 0 ? (
             <>
-              {orders.map((item: any, index: number) => {
+              {orders.map((order: Order, index: number) => {
                 return (
-                  <tr key={item} className="table w-full">
+                  <tr key={order.id} className="table w-full">
                     <AccordionItem
-                      key={item.id}
-                      question={item}
+                      key={order.id}
+                      order={order}
                       isOpen={activeIndex === index}
                       onClick={() => handleItemClick(index)}
                     />

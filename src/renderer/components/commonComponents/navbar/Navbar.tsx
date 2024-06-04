@@ -7,7 +7,7 @@ function NavBar() {
 
   return (
     <header>
-      <div className="sticky z-10 top-0 h-16 border-b lg:py-2.5">
+      <div className="sticky top-0 h-16 border-b lg:py-2.5">
         <div className="px-6 flex items-center justify-between space-x-4 2xl:container">
           <div className="flex items-center gap-2">
             <h5 hidden className="text-xl text-gray-600 font-medium lg:block">
