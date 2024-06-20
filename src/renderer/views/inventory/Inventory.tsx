@@ -486,7 +486,9 @@ export default function Inventory({ isView }: { isView: boolean }) {
                               <div>
                                 <h4 className="text-gray-700 ">
                                   <span>Category: </span>
-                                  <span>{product.category.name}</span>
+                                  <span>
+                                    {product.category?.name || '----'}
+                                  </span>
                                 </h4>
                                 <p className="text-gray-500 mt-2">
                                   {product.description}

@@ -82,7 +82,7 @@ function InventoryView({
                 </div>
               ) : (
                 <>
-                  <p className="font-semibold text-center text-2xl truncate">
+                  <p className="font-semibold text-center text-wrap text-xl truncate px-8">
                     {product?.name}
                   </p>
                   <p className="border bg-green-100 w-fit p-1 mt-2">

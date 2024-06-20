@@ -176,7 +176,10 @@ function Dashboard() {
       .then((res) => {
         if (res.status === 200) {
           setTopProducts(res.data);
-          const label = res.data.map((product: any) => product.name || 'NONE');
+          const label = res.data.map((product: any) => {
+            const name = product.name || 'NONE';
+            return name.length > 10 ? name.slice(0, 10) + '...' : name;
+          });
           const data = res.data.map((product: any) =>
             parseFloat(product.sold_amount),
           );
@@ -1223,6 +1226,7 @@ function Dashboard() {
             </div>
           </div>
         </div>
+
         <BarChart
           loading={topProductsLoading}
           data={topProductsChartData}

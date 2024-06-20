@@ -66,7 +66,6 @@ function AdminInfo() {
       userInput.name.length <= 0 ||
       userInput.phone.length <= 0
     ) {
-      console.log(userInput);
       let errors = { ...errorMsg };
       if (userInput.email.length <= 0) {
         errors = { ...errors, email: 'This field is required.' };
@@ -107,7 +106,6 @@ function AdminInfo() {
       false,
     );
     if (registerRes.status === 400) {
-      console.log(registerRes);
       const firstError = Object.keys(registerRes.data)[0];
       if (firstError) {
         setTimeout(() => {

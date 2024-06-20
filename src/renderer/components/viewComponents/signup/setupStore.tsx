@@ -115,7 +115,6 @@ function SetupStore() {
       };
       const res = await validateStore('/validate-store/', payload, false);
       if (res.status === 400) {
-        console.log(res);
         const firstError = Object.keys(res.data)[0];
         if (firstError) {
           setTimeout(() => {

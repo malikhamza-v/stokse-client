@@ -54,9 +54,6 @@ function Cart() {
   const cartItems = useSelector((state: any) => state.cart.items);
   const calculations = useSelector((state: any) => state.cart.calculations);
 
-  useEffect(() => {
-    console.log(calculations);
-  }, [calculations]);
   const customer = useSelector((state: any) => state.cart.customer);
   const user = useSelector((state: any) => state.app.user);
 
@@ -278,7 +275,6 @@ function Cart() {
 
       const calculatedSubTotal = parseFloat(subTotal || 0).toFixed(2);
       const calculatedItemTax = calculateTotalTax();
-      console.log(calculations);
       dispatch(
         setCart({
           calculations: {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useFetch } from '../utils/hooks';
 import { StoreSVG } from '../utils/svg';
 import { useDispatch } from 'react-redux';
-import { setStore } from '../../store/slices/appSlice';
+import { resetAppData, setStore } from '../../store/slices/appSlice';
 import { useNavigate } from 'react-router-dom';
 import { Store } from './setting/Stores';
 
@@ -14,6 +14,8 @@ function SelectStore() {
   const navigate = useNavigate();
 
   const handleChangeStore = (store: Store) => {
+    dispatch(resetAppData());
+    localStorage.setItem('store', JSON.stringify(store));
     dispatch(setStore(store));
     navigate('/');
   };

@@ -11,7 +11,7 @@ import {
 import { useFetch } from '../../utils/hooks';
 
 function Items() {
-  const noOfItemsPerPage = 16;
+  const noOfItemsPerPage = 8;
   const [products, setProducts] = useState<any>([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedFilteredBtn, setSelectedFilteredBtn] = useState<string | null>(
@@ -95,7 +95,8 @@ function Items() {
         currentPage: (paginatedProducts.currentPage || 1) + 1,
         data: filteredProducts.slice(
           (paginatedProducts.currentPage || 1) * noOfItemsPerPage,
-          (paginatedProducts.currentPage || 1) * noOfItemsPerPage + 15,
+          (paginatedProducts.currentPage || 1) * noOfItemsPerPage +
+            noOfItemsPerPage,
         ),
       });
     } else {
@@ -179,7 +180,7 @@ function Items() {
   useEffect(() => {
     setPaginatedProducts({
       currentPage: 1,
-      totalPage: Math.ceil(searchedProducts.length / 15),
+      totalPage: Math.ceil(searchedProducts.length / noOfItemsPerPage),
       data: searchedProducts.slice(0, noOfItemsPerPage),
     });
   }, [searchedProducts]);
@@ -187,7 +188,7 @@ function Items() {
   useEffect(() => {
     setPaginatedProducts({
       currentPage: 1,
-      totalPage: Math.ceil(filteredProducts.length / 15),
+      totalPage: Math.ceil(filteredProducts.length / noOfItemsPerPage),
       data: filteredProducts.slice(0, noOfItemsPerPage),
     });
   }, [filteredProducts]);
