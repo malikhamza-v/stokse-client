@@ -98,7 +98,7 @@ function Setting() {
   };
 
   const getAppVersion = async () => {
-    const version = await window.electron.ipcRenderer.invoke('get-app-version');
+    const version = require('../../../../release/app/package.json').version;
 
     setAppVersion(version);
   };
@@ -106,6 +106,8 @@ function Setting() {
   useEffect(() => {
     if (isElectron()) {
       getAppVersion();
+    } else {
+      setAppVersion(__APP_VERSION__);
     }
   }, []);
 

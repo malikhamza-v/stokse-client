@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
+const appVersion = require('./release/app/package.json').version;
+
 export default defineConfig({
   plugins: [react()],
   root: 'src/web',
@@ -8,8 +10,6 @@ export default defineConfig({
     outDir: '../../dist/web',
   },
   define: {
-    'process.env': {
-      APP_PLATFORM: JSON.stringify('web'),
-    },
+    __APP_VERSION__: appVersion,
   },
 });
