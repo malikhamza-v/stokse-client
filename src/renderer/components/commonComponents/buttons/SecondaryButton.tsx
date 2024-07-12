@@ -12,7 +12,7 @@ function SecondaryButton({
       type="button"
       onClick={onClickAction}
       disabled={loading}
-      className={`bg-transparent border border-black px-4 py-3 w-full text-xl font-medium rounded-lg hover:scale-105 duration-150 ${
+      className={`bg-transparent border btn-sm md:btn-lg md:min-h-fit md:h-fit md:py-3 border-black px-4 w-full font-medium rounded-lg hover:scale-105 duration-150 ${
         loading && 'opacity-50'
       }`}
     >

@@ -119,7 +119,7 @@ function Setting() {
           <p className="text-gray-500">Manage you store settings here.</p>
         </div>
       </div> */}
-      <div className="px-16 py-8">
+      <div className="px-16 pr-0 md:pr-16 py-8">
         <div className="relative mx-auto break-words bg-white w-full mb-6 rounded-xl mt-16">
           <div className="px-6">
             <div className="flex flex-wrap justify-center">
@@ -127,7 +127,7 @@ function Setting() {
                 <div className="relative">
                   <img
                     src="https://placehold.co/230x230"
-                    className="shadow-xl rounded-full align-middle border-none absolute -m-16 -ml-20 max-w-[150px]"
+                    className="shadow-xl rounded-full align-middle border-none absolute -m-16 -ml-20 max-w-[100px] md:max-w-[150px]"
                     alt="business-logo"
                   />
                 </div>
@@ -142,121 +142,120 @@ function Setting() {
               </div>
             </div>
             <div className="mt-6 py-6 border-t border-slate-200 text-center">
-              <div className="flex flex-wrap justify-center">
-                <div className="w-full">
-                  <div className="bg-white rounded-2xl shadow-sm py-6 grid grid-cols-2 gap-4">
-                    <div className="">
-                      <LabelInput
-                        loading={false}
-                        errorMsg={null}
-                        label="Name"
+              <div className="w-full">
+                <div className="bg-white rounded-2xl shadow-sm py-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="col-span-1 ">
+                    <LabelInput
+                      loading={false}
+                      errorMsg={null}
+                      label="Name"
+                      required
+                    >
+                      <input
+                        type="text"
+                        id="name"
+                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 w-full py-4 px-4"
+                        placeholder="Store Name"
                         required
-                      >
-                        <input
-                          type="text"
-                          id="name"
-                          className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                          placeholder="Store Name"
-                          required
-                          // onChange={(e) =>
-                          //   handleUserInput('name', e.target.value)
-                          // }
-                        />
-                      </LabelInput>
-                    </div>
-                    <div className="">
-                      <LabelInput
-                        loading={false}
-                        errorMsg={null}
-                        label="Business Email"
-                        required
-                      >
-                        <input
-                          type="text"
-                          id="name"
-                          className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                          placeholder="Business Email"
-                          required
-                          // onChange={(e) =>
-                          //   handleUserInput('name', e.target.value)
-                          // }
-                        />
-                      </LabelInput>
-                    </div>
+                        // onChange={(e) =>
+                        //   handleUserInput('name', e.target.value)
+                        // }
+                      />
+                    </LabelInput>
+                  </div>
 
-                    <div className="">
-                      <LabelInput
-                        loading={false}
-                        errorMsg={null}
-                        label="Business Phone"
+                  <div className="col-span-1">
+                    <LabelInput
+                      loading={false}
+                      errorMsg={null}
+                      label="Business Email"
+                      required
+                    >
+                      <input
+                        type="text"
+                        id="name"
+                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 w-full  py-4 px-4"
+                        placeholder="Business Email"
                         required
-                      >
-                        <input
-                          type="number"
-                          id="name"
-                          className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                          placeholder="Business Phone"
-                          required
-                          // onChange={(e) =>
-                          //   handleUserInput('name', e.target.value)
-                          // }
-                        />
-                      </LabelInput>
-                    </div>
+                        // onChange={(e) =>
+                        //   handleUserInput('name', e.target.value)
+                        // }
+                      />
+                    </LabelInput>
+                  </div>
 
-                    <div>
-                      <LabelInput
-                        loading={false}
-                        errorMsg={null}
-                        label="Business Description"
+                  <div className="">
+                    <LabelInput
+                      loading={false}
+                      errorMsg={null}
+                      label="Business Phone"
+                      required
+                    >
+                      <input
+                        type="number"
+                        id="name"
+                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 w-full py-4 px-4"
+                        placeholder="Business Phone"
                         required
-                      >
-                        <input
-                          type="number"
-                          id="name"
-                          className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                          placeholder="Business Description"
-                          required
-                          // onChange={(e) =>
-                          //   handleUserInput('name', e.target.value)
-                          // }
-                        />
-                      </LabelInput>
-                    </div>
+                        // onChange={(e) =>
+                        //   handleUserInput('name', e.target.value)
+                        // }
+                      />
+                    </LabelInput>
+                  </div>
 
-                    <div className="col-span-2">
-                      <LabelInput
-                        loading={false}
-                        errorMsg={null}
-                        label="Business Address"
+                  <div>
+                    <LabelInput
+                      loading={false}
+                      errorMsg={null}
+                      label="Business Description"
+                      required
+                    >
+                      <input
+                        type="number"
+                        id="name"
+                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 w-full py-4 px-4"
+                        placeholder="Business Description"
                         required
-                      >
-                        <input
-                          type="number"
-                          id="name"
-                          className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4"
-                          placeholder="Business Address"
-                          required
-                          // onChange={(e) =>
-                          //   handleUserInput('name', e.target.value)
-                          // }
-                        />
-                      </LabelInput>
-                    </div>
+                        // onChange={(e) =>
+                        //   handleUserInput('name', e.target.value)
+                        // }
+                      />
+                    </LabelInput>
+                  </div>
+
+                  <div className="col-span-1 md:col-span-2">
+                    <LabelInput
+                      loading={false}
+                      errorMsg={null}
+                      label="Business Address"
+                      required
+                    >
+                      <input
+                        type="number"
+                        id="name"
+                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 w-full py-4 px-4"
+                        placeholder="Business Address"
+                        required
+                        // onChange={(e) =>
+                        //   handleUserInput('name', e.target.value)
+                        // }
+                      />
+                    </LabelInput>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="px-6 flex flex-col">
+          <div className="px-6 pr-2  flex flex-col">
             <div>
               <h2 className="font-bold text-2xl">Settings</h2>
               <p className="text-gray-500">
                 Manage your store settings effortlessly.
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               {settingsOptions.map((option) => {
                 if (option.onlyForAdmin && user?.role !== 'Admin') {
                   return (
@@ -306,7 +305,7 @@ function Setting() {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
           <p className="text-green-800 text-sm font-medium">
             Current app version is{' '}
             <span className="badge badge-neutral cursor-pointer ml-2">
