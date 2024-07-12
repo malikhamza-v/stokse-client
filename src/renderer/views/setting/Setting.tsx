@@ -10,9 +10,9 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetAppData } from '../../../store/slices/appSlice';
 import { resetCart } from '../../../store/slices/cartSlice';
+import { isElectron } from '../../utils/methods';
 
 function Setting() {
-  // const { appVersion } = window as any;
   const [appVersion, setAppVersion] = useState<any>(null);
 
   const user = useSelector((state: any) => state.app.user);
@@ -87,23 +87,26 @@ function Setting() {
       });
   };
 
-  const { ipcRenderer } = window as any;
-
   const checkForUpdate = async () => {
-    const response = await ipcRenderer.invoke('check-for-updates');
-    if (response.error) {
-      toast.error(response.message);
+    if (isElectron()) {
+      const response =
+        await window.electron.ipcRenderer.invoke('check-for-updates');
+      if (response.error) {
+        toast.error(response.message);
+      }
     }
   };
 
   const getAppVersion = async () => {
-    const version = await ipcRenderer.invoke('get-app-version');
+    const version = await window.electron.ipcRenderer.invoke('get-app-version');
 
     setAppVersion(version);
   };
 
   useEffect(() => {
-    getAppVersion();
+    if (isElectron()) {
+      getAppVersion();
+    }
   }, []);
 
   return (
@@ -283,18 +286,21 @@ function Setting() {
                   );
                 }
               })}
-              <div
-                onClick={checkForUpdate}
-                className="border p-4 rounded-xl flex items-center justify-between cursor-pointer hover:bg-slate-50"
-              >
-                <div>
-                  <p className="font-bold">Check for updates</p>
-                  <p className="text-gray-600">
-                    Always update your app to latest version.
-                  </p>
+
+              {isElectron() && (
+                <div
+                  onClick={checkForUpdate}
+                  className="border p-4 rounded-xl flex items-center justify-between cursor-pointer hover:bg-slate-50"
+                >
+                  <div>
+                    <p className="font-bold">Check for updates</p>
+                    <p className="text-gray-600">
+                      Always update your app to latest version.
+                    </p>
+                  </div>
+                  <ArrowRight />
                 </div>
-                <ArrowRight />
-              </div>
+              )}
             </div>
           </div>
         </div>
