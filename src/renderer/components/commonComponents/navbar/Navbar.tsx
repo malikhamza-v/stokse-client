@@ -11,7 +11,7 @@ function NavBar() {
         <div className="px-6 flex items-center justify-between space-x-4 2xl:container">
           <div className="flex items-center gap-2">
             <h5 hidden className="text-xl text-gray-600 font-medium lg:block">
-              {store.name}
+              {store?.name}
             </h5>
             <Link to="/select-store">
               <div className="cursor-pointer">
