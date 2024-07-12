@@ -10,6 +10,6 @@ export default defineConfig({
     outDir: '../../dist/web',
   },
   define: {
-    __APP_VERSION__: appVersion,
+    __APP_VERSION__: JSON.stringify(appVersion),
   },
 });
