@@ -1,8 +1,9 @@
+@import 'react-toastify/dist/ReactToastify.css';
+@import 'flatpickr/dist/themes/material_green.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import 'react-toastify/dist/ReactToastify.css';
-@import 'flatpickr/dist/themes/material_green.css';
 
 @layer base {
   input[type='number']::-webkit-inner-spin-button,

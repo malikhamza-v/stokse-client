@@ -39,20 +39,22 @@ import { toast } from 'react-toastify';
 import SelectStore from './views/SelectStore';
 
 export default function App() {
-  const { ipcRenderer } = window as any;
   const toastId = useRef<any>(null);
 
   useEffect(() => {
-    ipcRenderer.on('update-download-status', (message: string) => {
-      if (toastId.current) {
-        toast.update(toastId.current, {
-          render: message,
-          isLoading: true,
-        });
-      } else {
-        toastId.current = toast.info(message, { isLoading: true });
-      }
-    });
+    if (window.electron) {
+      const { ipcRenderer, environment } = window.electron;
+      ipcRenderer.on('update-download-status', (message: any) => {
+        if (toastId.current) {
+          toast.update(toastId.current, {
+            render: message,
+            isLoading: true,
+          });
+        } else {
+          toastId.current = toast.info(message, { isLoading: true });
+        }
+      });
+    }
   }, []);
   return (
     <Provider store={store}>
