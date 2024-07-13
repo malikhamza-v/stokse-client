@@ -294,7 +294,7 @@ function Cart() {
   }, [cartItems]);
 
   return (
-    <div className="border h-screen flex flex-col justify-between">
+    <div className="border h-screen flex flex-col justify-between pb-20 lg:pb-0">
       <p className="font-bold text-2xl px-12 pb-4 pt-8 border-b">Cart</p>
       <div className="overflow-y-scroll h-full">
         {cartItems.length > 0 ? (
