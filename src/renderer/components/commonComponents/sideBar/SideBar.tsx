@@ -105,7 +105,7 @@ function SideBar() {
                       <input type="checkbox" id="options-accordian" />
                       <div className="collapse-title text-xl font-medium">
                         <div className="relative flex flex-col">
-                          <p className="font-semibold">{nav.label}</p>
+                          <p className="font-semibold text-base">{nav.label}</p>
                           <p className="text-gray-500 text-sm">
                             {nav.description}
                           </p>

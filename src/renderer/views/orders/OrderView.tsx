@@ -71,27 +71,27 @@ function OrderView({
 
   return (
     <Drawer id="inventory_view" isOpen={isViewOpen} close={handleCloseView}>
-      <div className="grid grid-cols-3 h-full">
-        <div className="bg-white col-span-1 border-r h-full">
+      <div className="flex flex-col md:flex-row h-full pt-12 md:pt-0">
+        <div className="bg-white w-full md:w-1/3 border-r flex-shrink-0">
           <div className="flex flex-col justify-between h-full py-12">
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-row px-4 md:flex-col gap-4">
               <div
-                className={`p-4 rounded-lg mx-4 cursor-pointer hover:bg-gray-100 ${
+                className={`p-4 rounded-lg cursor-pointer hover:bg-gray-100 ${
                   currentView === 'detail'
                     ? 'bg-purple-200 hover:bg-purple-200'
                     : 'bg-transparent'
-                }`}
+                } w-full min-w-fit`}
                 onClick={() => handleSelectView('detail')}
               >
                 <p className="">Sale details</p>
               </div>
 
               <div
-                className={`p-4 rounded-lg mx-4 cursor-pointer hover:bg-gray-100 ${
+                className={`p-4 rounded-lg cursor-pointer hover:bg-gray-100 ${
                   currentView === 'activity'
                     ? 'bg-purple-200 hover:bg-purple-200'
                     : 'bg-transparent'
-                }`}
+                } w-full min-w-fit`}
                 onClick={() => handleSelectView('activity')}
               >
                 <p>Sale Activity</p>
@@ -100,7 +100,7 @@ function OrderView({
           </div>
         </div>
 
-        <div className="bg-gray-50 col-span-2 overflow-y-auto">
+        <div className="bg-gray-50 w-full md:w-2/3 h-full overflow-y-auto hide-scrollbar mb-[4.5rem] md:mb-0">
           {currentView === 'detail' ? (
             <div>
               <p className="font-semibold text-2xl pl-8 pt-8">Sale Details</p>
