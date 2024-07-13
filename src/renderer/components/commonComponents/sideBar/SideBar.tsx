@@ -65,9 +65,10 @@ function SideBar() {
                   to={nav.link}
                   onMouseEnter={() => setToolTip(nav.label)}
                   onMouseLeave={() => setToolTip('')}
+                  onClick={() => setIsMoreOptionsOpen(false)}
                   className={`p-4 h-14 w-14 flex justify-center items-center text-white transition-colors duration-200 bg-slate-100 rounded-full hover:bg-slate-200 dark:hover:text-light dark:bg-dark focus:outline-none ${
                     nav.isHiddenForMobile ? 'hidden md:flex' : ''
-                  }`}
+                  } ${nav.label === 'Settings' ? 'absolute bottom-4' : ''} `}
                 >
                   <div className="relative flex items-center">
                     <nav.icon stroke="#000000" />
@@ -80,21 +81,6 @@ function SideBar() {
                 </Link>
               ),
           )}
-          <div className=" hidden md:flex items-center absolute bottom-4">
-            <Link
-              to="/setting"
-              onMouseEnter={() => setToolTip('Setting')}
-              onMouseLeave={() => setToolTip('')}
-              className="p-4 h-14 w-14 flex justify-center items-center text-white transition-colors duration-200 bg-slate-100 rounded-full hover:bg-slate-200 dark:hover:text-light dark:bg-dark focus:outline-none"
-            >
-              <SettingSVG stroke="#000000" />
-            </Link>
-            {toolTip === 'Setting' && window.innerWidth > 600 && (
-              <div className="popover absolute bg-gray-600 border shadow-md ml-[4.5rem] px-4 py-2 rounded-lg w-fit">
-                <p className="text-white">Setting</p>
-              </div>
-            )}
-          </div>
 
           <div
             onClick={handleOpenMoreOptions}
@@ -107,20 +93,23 @@ function SideBar() {
 
           <div
             ref={moreOptionsContainer}
-            className="absolute bg-white divide-y border pt-4 pb-24 bottom-0 left-0 right-0 w-full -z-10 px-4 translate-y-full transition-all duration-300"
+            className="absolute bg-zinc-50 divide-y border pt-4 pb-24 bottom-0 left-0 right-0 w-full -z-10 px-4 translate-y-full transition-all duration-300 md:hidden"
           >
             {Navbar.map(
               (nav) =>
-                nav.link && (
+                nav.link &&
+                nav.isHiddenForMobile && (
                   <Link
                     key={nav.label}
                     to={nav.link}
                     onMouseEnter={() => setToolTip(nav.label)}
                     onMouseLeave={() => setToolTip('')}
-                    className="p-4 h-14 w-full flex justify-start text-black transition-colors duration-200 hover:bg-slate-200 dark:hover:text-light dark:bg-dark focus:outline-none"
+                    onClick={() => setIsMoreOptionsOpen(false)}
+                    className="p-4  w-full flex justify-start text-black transition-colors duration-200 hover:bg-slate-200 dark:hover:text-light dark:bg-dark focus:outline-none"
                   >
-                    <div className="relative flex items-center">
-                      {nav.label}
+                    <div className="relative flex flex-col">
+                      <p className="font-semibold">{nav.label}</p>
+                      <p className="text-gray-500 text-sm">{nav.description}</p>
                     </div>
                   </Link>
                 ),

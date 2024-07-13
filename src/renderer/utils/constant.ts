@@ -5,6 +5,7 @@ import {
   SaleSVG,
   TableSVG,
   MoreSVG,
+  SettingSVG,
 } from './svg';
 
 const Navbar = [
@@ -30,8 +31,16 @@ const Navbar = [
   },
   {
     label: 'Catalogue',
+    description: 'Explore all the catalogues of your store',
     icon: TableSVG,
     link: '/catalogue',
+    isHiddenForMobile: true,
+  },
+  {
+    label: 'Settings',
+    description: 'Explore all the settings of your store',
+    icon: SettingSVG,
+    link: '/setting',
     isHiddenForMobile: true,
   },
 ];
