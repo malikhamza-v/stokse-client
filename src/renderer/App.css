@@ -87,7 +87,8 @@ body {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 3px;
   cursor: pointer;
   /* background-color: rgba(229, 231, 235, var(--bg-opacity)); */
 }

@@ -208,7 +208,7 @@ function Items() {
   }, [selectedFilteredBtn, products]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-screen">
       <div className="px-16 pt-16 flex items-center justify-between">
         <div>
           <h2 className="font-bold text-2xl">Making Orders</h2>
@@ -241,9 +241,9 @@ function Items() {
       ) : (
         <div>
           {categories.length > 0 ? (
-            <div className="px-16 flex flex-wrap items-center gap-2 my-8">
+            <div className="px-16 flex overflow-x-auto hide-scrollbar items-center gap-2 my-8">
               <div
-                className="px-4 py-2 border cursor-pointer rounded-lg hover:bg-slate-50 font-light"
+                className="px-4 py-2 border min-w-fit text-center truncate cursor-pointer rounded-lg hover:bg-slate-50 font-light"
                 onClick={() => setSelectedFilteredBtn('all')}
               >
                 All
@@ -251,7 +251,7 @@ function Items() {
               {categories.map((item: any) => (
                 <div
                   key={item.name}
-                  className="px-4 py-2 border cursor-pointer rounded-lg hover:bg-slate-50 font-light"
+                  className="px-4 py-2 border min-w-fit text-center cursor-pointer rounded-lg hover:bg-slate-50 font-light"
                   onClick={() => setSelectedFilteredBtn(item.id)}
                 >
                   {item.name}
