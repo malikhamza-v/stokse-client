@@ -119,7 +119,7 @@ function Setting() {
           <p className="text-gray-500">Manage you store settings here.</p>
         </div>
       </div> */}
-      <div className="px-16 pr-0 md:pr-16 py-8">
+      <div className="px-4 md:px-16 py-8">
         <div className="relative mx-auto break-words bg-white w-full mb-6 rounded-xl mt-16">
           <div className="px-6">
             <div className="flex flex-wrap justify-center">

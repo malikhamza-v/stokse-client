@@ -1,4 +1,11 @@
-import { HomeSVG, InventorySVG, ProfileSVG, SaleSVG, TableSVG } from './svg';
+import {
+  HomeSVG,
+  InventorySVG,
+  ProfileSVG,
+  SaleSVG,
+  TableSVG,
+  MoreSVG,
+} from './svg';
 
 const Navbar = [
   {
@@ -25,6 +32,7 @@ const Navbar = [
     label: 'Catalogue',
     icon: TableSVG,
     link: '/catalogue',
+    isHiddenForMobile: true,
   },
 ];
 

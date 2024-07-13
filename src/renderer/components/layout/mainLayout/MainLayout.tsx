@@ -38,7 +38,7 @@ function MainLayout({ children }: any) {
         <div
           className={`${
             location.pathname !== '/sale' ? 'overflow-y-auto' : ''
-          } `}
+          } pb-20 md:pb-0 `}
         >
           {children}
         </div>
