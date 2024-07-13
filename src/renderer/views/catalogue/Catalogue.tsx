@@ -11,7 +11,7 @@ export default function Catalogue({ children }: { children: any }) {
 
   return (
     <div className="grid grid-cols-12 w-full">
-      <div className="col-span-2 border-r ">
+      <div className="col-span-2 border-r hidden md:block">
         <p className="font-medium pt-8 px-8">Catalogue</p>
         <div className="px-2 mt-4">
           <div
@@ -36,7 +36,7 @@ export default function Catalogue({ children }: { children: any }) {
           </div>
         </div>
       </div>
-      <div className="col-span-10 ">{children}</div>
+      <div className="col-span-full md:col-span-10 ">{children}</div>
     </div>
   );
 }
