@@ -174,7 +174,7 @@ export default function Orders({ isView }: { isView: boolean }) {
   }, [selectedFilteredBtn, products]);
 
   return (
-    <section className="container p-10 mx-auto">
+    <section className="container py-10 px-4 mx-auto">
       <div className="sm:flex sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-x-3">
@@ -190,10 +190,10 @@ export default function Orders({ isView }: { isView: boolean }) {
           </p>
         </div>
 
-        <div className="flex items-center mt-4 gap-x-3">
+        <div className="flex items-center mt-4 gap-x-3 text-xs md:text-sm">
           <button
             type="button"
-            className="flex items-center justify-center w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto hover:bg-gray-100"
+            className="flex items-center justify-center px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto hover:bg-gray-100"
           >
             <svg
               width="20"
@@ -223,7 +223,7 @@ export default function Orders({ isView }: { isView: boolean }) {
           <Link to="/sale">
             <button
               type="button"
-              className="flex items-center justify-center w-1/2 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-500 rounded-lg shrink-0 sm:w-auto gap-x-2 hover:bg-blue-600"
+              className="flex items-center justify-center px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-500 rounded-lg shrink-0 sm:w-auto gap-x-2 hover:bg-blue-600"
             >
               <div className="border border-white rounded-full p-[1px]">
                 <AddSVG />
@@ -235,13 +235,13 @@ export default function Orders({ isView }: { isView: boolean }) {
         </div>
       </div>
 
-      <div className="mt-6 md:flex md:items-center md:justify-between">
-        <div className="inline-flex overflow-hidden bg-white border divide-x rounded-lg rtl:flex-row-reverse">
+      <div className="mt-6 grid grid-cols-2 md:grid-cols-12">
+        <div className="col-span-12 lg:col-span-8 grid grid-cols-4 md:grid-cols-8 overflow-hidden border divide-x rounded-lg">
           <button
             type="button"
             className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 ${
               (!userInput.filter || userInput.filter === 'all') && 'bg-gray-100'
-            } sm:text-sm`}
+            } sm:text-sm col-span-2`}
             onClick={() => handleFilter('all')}
           >
             View all
@@ -251,7 +251,7 @@ export default function Orders({ isView }: { isView: boolean }) {
             type="button"
             className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 ${
               userInput.filter === 'known' && 'bg-gray-100'
-            } sm:text-sm`}
+            } sm:text-sm col-span-2`}
             onClick={() => handleFilter('known')}
           >
             Completed
@@ -261,7 +261,7 @@ export default function Orders({ isView }: { isView: boolean }) {
             type="button"
             className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 ${
               userInput.filter === 'walk-in' && 'bg-gray-100'
-            } sm:text-sm`}
+            } sm:text-sm col-span-2`}
             onClick={() => handleFilter('walk-in')}
           >
             Cancelled
@@ -271,7 +271,7 @@ export default function Orders({ isView }: { isView: boolean }) {
             type="button"
             className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 ${
               userInput.filter === 'walk-in' && 'bg-gray-100'
-            } sm:text-sm`}
+            } sm:text-sm col-span-2`}
             onClick={() => handleFilter('walk-in')}
           >
             Refunded
@@ -280,11 +280,11 @@ export default function Orders({ isView }: { isView: boolean }) {
       </div>
 
       <div className="flex flex-col mt-6">
-        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-            <div className="overflow-hidden border border-gray-200 md:rounded-lg">
+        <div className="overflow-x-auto">
+          <div className="inline-block min-w-full py-2 align-middle">
+            <div className="overflow-hidden border border-gray-200">
               <table className="min-w-full divide-y divide-gray-200 table w-full">
-                <thead className="bg-gray-50 table w-full">
+                <thead className="bg-gray-50 table w-full rounded-none">
                   <tr>
                     <th
                       scope="col"

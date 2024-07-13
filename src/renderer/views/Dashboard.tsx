@@ -252,7 +252,7 @@ function Dashboard() {
   return (
     <div className="w-full overflow-y-auto h-full">
       <div>
-        <div className="px-4 md:px-6 pt-6 2xl:container">
+        <div className="px-4 md:px-6 pt-6">
           <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
             <div className="col-span-1">
               <div className="h-full py-8 px-6 space-y-6 rounded-xl border border-gray-200 bg-white">
