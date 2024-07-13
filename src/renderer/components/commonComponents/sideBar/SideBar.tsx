@@ -20,6 +20,9 @@ function SideBar() {
     if (isMoreOptionsOpen && moreOptionsContainer.current) {
       moreOptionsContainer.current.style.transform = 'translateY(0%)';
     } else if (moreOptionsContainer.current) {
+      document.querySelectorAll('#options-accordian').forEach((radio) => {
+        radio.checked = false;
+      });
       moreOptionsContainer.current.style.transform = 'translateY(100%)';
     }
   }, [isMoreOptionsOpen]);
@@ -98,7 +101,41 @@ function SideBar() {
             {Navbar.map(
               (nav) =>
                 nav.link &&
-                nav.isHiddenForMobile && (
+                nav.isHiddenForMobile &&
+                (nav.label === 'Catalogue' ? (
+                  <div className="w-full">
+                    <div className="collapse collapse-arrow">
+                      <input type="checkbox" id="options-accordian" />
+                      <div className="collapse-title text-xl font-medium">
+                        <div className="relative flex flex-col">
+                          <p className="font-semibold">{nav.label}</p>
+                          <p className="text-gray-500 text-sm">
+                            {nav.description}
+                          </p>
+                        </div>{' '}
+                      </div>
+                      <div className="collapse-content">
+                        {nav.options?.map((option) => (
+                          <Link
+                            key={option.label}
+                            to={option.link}
+                            onMouseEnter={() => setToolTip(option.label)}
+                            onMouseLeave={() => setToolTip('')}
+                            onClick={() => setIsMoreOptionsOpen(false)}
+                            className="p-4  w-full flex justify-start text-black transition-colors duration-200 hover:bg-slate-200 dark:hover:text-light dark:bg-dark focus:outline-none"
+                          >
+                            <div className="relative flex flex-col">
+                              <p className="font-semibold">{option.label}</p>
+                              <p className="text-gray-500 text-sm">
+                                {option.description}
+                              </p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
                   <Link
                     key={nav.label}
                     to={nav.link}
@@ -112,7 +149,7 @@ function SideBar() {
                       <p className="text-gray-500 text-sm">{nav.description}</p>
                     </div>
                   </Link>
-                ),
+                )),
             )}
           </div>
         </div>

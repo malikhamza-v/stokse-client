@@ -6,6 +6,8 @@ import {
   TableSVG,
   MoreSVG,
   SettingSVG,
+  OrderBox,
+  CustomerSVG,
 } from './svg';
 
 const Navbar = [
@@ -35,6 +37,20 @@ const Navbar = [
     icon: TableSVG,
     link: '/catalogue',
     isHiddenForMobile: true,
+    options: [
+      {
+        label: 'Orders',
+        description: 'Explore all the orders of your store',
+        icon: OrderBox,
+        link: '/catalogue/order-list',
+      },
+      {
+        label: 'Customers',
+        description: 'Explore all the customers of your store',
+        icon: CustomerSVG,
+        link: '/catalogue/customers',
+      },
+    ],
   },
   {
     label: 'Settings',
