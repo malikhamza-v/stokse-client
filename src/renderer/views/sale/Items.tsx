@@ -241,7 +241,7 @@ function Items() {
       ) : (
         <div>
           {categories.length > 0 ? (
-            <div className="px-16 flex overflow-x-auto hide-scrollbar items-center gap-2 my-8">
+            <div className="px-16 flex overflow-x-auto items-center gap-2 my-8">
               <div
                 className="px-4 py-2 border min-w-fit text-center truncate cursor-pointer rounded-lg hover:bg-slate-50 font-light"
                 onClick={() => setSelectedFilteredBtn('all')}

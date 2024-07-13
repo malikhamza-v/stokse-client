@@ -31,13 +31,17 @@ function MainLayout({ children }: any) {
       <SideBar />
       <div
         className={`w-full flex flex-col  ${
-          location.pathname === '/sale' ? 'overflow-y-auto' : ''
+          location.pathname === '/sale'
+            ? 'overflow-y-auto hide-scrollbar sale_window'
+            : ''
         }`}
       >
         <NavBar />
         <div
           className={`${
-            location.pathname !== '/sale' ? 'overflow-y-auto' : ''
+            location.pathname !== '/sale'
+              ? 'overflow-y-auto hide-scrollbar'
+              : ''
           } pb-20 md:pb-0 `}
         >
           {children}
