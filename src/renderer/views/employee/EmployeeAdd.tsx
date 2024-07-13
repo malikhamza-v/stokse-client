@@ -134,21 +134,21 @@ export default function EmployeeAdd() {
   };
 
   return (
-    <div className=" flex flex-col gap-4 px-10 py-10 h-full w-full bg-slate-50 overflow-y-scroll">
+    <div className=" flex flex-col gap-4 px-4 md:px-10 py-10 h-full w-full bg-slate-50 overflow-y-scroll">
       <BackButton />
       <h2 className="mb-5 text-left  text-4xl font-semibold font-sans">
         Add employee for your store:
       </h2>
 
       <div className="flex flex-col gap-4">
-        <div className="flex bg-slate-100 rounded-3xl border border-gray-400">
-          <div className="w-2/5 p-8">
+        <div className="flex flex-col md:flex-row bg-slate-100 rounded-3xl border border-gray-400">
+          <div className="w-full md:w-2/5 p-8">
             <span className="text-xl font-semibold block">Employee Info</span>
             <span className="text-gray-600">
               This information will be linked to your employee
             </span>
           </div>
-          <div className="w-3/5 p-8">
+          <div className="w-full md:w-3/5 p-4 md:p-8">
             <div className="bg-white rounded-2xl shadow-sm border border-pink-500 p-6">
               <div className="pb-6">
                 <LabelInput
@@ -253,17 +253,17 @@ export default function EmployeeAdd() {
           </div>
         </div>
 
-        <div className="flex bg-slate-100 rounded-3xl border border-gray-400">
-          <div className="w-2/5 p-8">
+        <div className="flex flex-col md:flex-row bg-slate-100 rounded-3xl border border-gray-400">
+          <div className="w-full md:w-2/5 p-8">
             <span className="text-xl font-semibold block">Additional Info</span>
             <span className="text-gray-600">
               Add additional info of your employee
             </span>
           </div>
-          <div className="w-3/5 p-8">
+          <div className="w-full md:w-3/5 p-4 md:p-8">
             <div className="bg-white rounded-2xl shadow-sm border border-pink-500 p-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="">
+                <div className="col-span-2 md:col-span-1">
                   <LabelInput
                     errorMsg={errorMsg.date_of_birth}
                     label="Date of birth"
@@ -282,7 +282,7 @@ export default function EmployeeAdd() {
                   </LabelInput>
                 </div>
 
-                <div className="">
+                <div className="col-span-2 md:col-span-1">
                   <LabelInput
                     errorMsg={null}
                     label="Joining date"
