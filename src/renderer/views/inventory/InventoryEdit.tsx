@@ -282,70 +282,73 @@ export default function InventoryEdit() {
 
   // [info]: lifecycle
   useEffect(() => {
-    if (Object.keys(product).length > 0) {
-      setUserInput({
-        name: product.name,
-        category: product.category.id,
-        brand: product.brand?.id || null,
-        description: product.description || '',
-        cost_price: parseFloat(product.cost_price || 0),
-        sale_price: parseFloat(product.sale_price || 0),
-        stock_quantity: parseFloat(product.stock_quantity || 0),
-        enable_low_stock_notification: product.enable_low_stock_notification,
-        taxes: product.taxes || [],
-        low_stock_level: parseFloat(product.low_stock_level || 0),
-        reorder_quantity: parseFloat(product.reorder_quantity || 0),
-        additional_notes: product.additional_notes || '',
-      });
-      if (product.taxes && product.taxes.length > 0) {
-        setIsTaxesInclude(true);
-      } else {
-        setIsTaxesInclude(false);
+    if (product) {
+      if (Object.keys(product).length > 0) {
+        setUserInput({
+          name: product.name,
+          category: product.category.id,
+          brand: product.brand?.id || null,
+          description: product.description || '',
+          cost_price: parseFloat(product.cost_price || 0),
+          sale_price: parseFloat(product.sale_price || 0),
+          stock_quantity: parseFloat(product.stock_quantity || 0),
+          enable_low_stock_notification: product.enable_low_stock_notification,
+          taxes: product.taxes || [],
+          low_stock_level: parseFloat(product.low_stock_level || 0),
+          reorder_quantity: parseFloat(product.reorder_quantity || 0),
+          additional_notes: product.additional_notes || '',
+        });
+        if (product.taxes && product.taxes.length > 0) {
+          setIsTaxesInclude(true);
+        } else {
+          setIsTaxesInclude(false);
+        }
+        setIsLowLevelStock(product.enable_low_stock_notification);
       }
-      setIsLowLevelStock(product.enable_low_stock_notification);
-    }
 
-    if (globalCategories.length > 0) {
-      setCategories(globalCategories);
-      dispatch(setGlobalCategories(globalCategories));
-    } else {
-      fetchCategories();
-    }
+      if (globalCategories.length > 0) {
+        setCategories(globalCategories);
+        dispatch(setGlobalCategories(globalCategories));
+      } else {
+        fetchCategories();
+      }
 
-    if (globalBrands.length > 0) {
-      setBrands(globalBrands);
-      dispatch(setGlobalBrands(globalBrands));
-    } else {
-      fetchBrands();
+      if (globalBrands.length > 0) {
+        setBrands(globalBrands);
+        dispatch(setGlobalBrands(globalBrands));
+      } else {
+        fetchBrands();
+      }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [product]);
 
   useEffect(() => {
-    JsBarcode('#barcode', `${product.id}-@${userInput.name}`, {
-      format: 'CODE128',
-      lineColor: '#0aa',
-      fontSize: 12,
-      width: 3,
-      displayValue: false,
-      // textMargin: 10,
-    });
-  }, [userInput.name, product.id]);
+    if (product && userInput)
+      JsBarcode('#barcode', `${product.id}-@${userInput.name}`, {
+        format: 'CODE128',
+        lineColor: '#0aa',
+        fontSize: 12,
+        width: 3,
+        displayValue: false,
+        // textMargin: 10,
+      });
+  }, [userInput.name, product?.id]);
   return (
-    <div className=" flex flex-col gap-4 px-10 py-10 h-full w-full bg-slate-50 overflow-y-scroll">
+    <div className=" flex flex-col gap-4 px-4 md:px-10 py-10 h-full w-full bg-slate-50 overflow-y-scroll">
       <BackButton />
       <h2 className="mb-5 text-left  text-4xl font-semibold font-sans">
-        Edit {product.name}:
+        Edit {product?.name}:
       </h2>
-      <div className="flex bg-slate-100 rounded-3xl border border-gray-400">
-        <div className="w-2/5 p-8">
+      <div className="flex flex-col md:flex-row bg-slate-100 rounded-3xl border border-gray-400">
+        <div className="w-full md:w-2/5 p-4 md:p-8">
           <span className="text-xl font-semibold block">Product Info</span>
           <span className="text-gray-600">
             This information is linked to your product
           </span>
         </div>
-        <div className="w-3/5 p-8">
+        <div className="w-full md:w-3/5 p-4 md:p-8">
           <div className="bg-white rounded-2xl shadow-sm border border-pink-500 p-6">
             <div className="pb-6">
               <LabelInput
@@ -360,7 +363,7 @@ export default function InventoryEdit() {
                   className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full py-4 px-4 pointer-events-none"
                   placeholder="Product Name"
                   required
-                  value={product.product_id}
+                  value={product?.product_id}
                   disabled
                 />
               </LabelInput>
@@ -504,8 +507,8 @@ export default function InventoryEdit() {
         </div>
       </div>
 
-      <div className="flex bg-slate-100 rounded-3xl border border-gray-400">
-        <div className="w-2/5 p-8">
+      <div className="flex flex-col md:flex-row bg-slate-100 rounded-3xl border border-gray-400">
+        <div className="w-full md:w-2/5 p-4 md:p-8">
           <span className="text-xl font-semibold block">
             Pricing & Inventory
           </span>
@@ -513,10 +516,10 @@ export default function InventoryEdit() {
             Specify your product pricing and stock levels
           </span>
         </div>
-        <div className="w-3/5 p-8">
+        <div className="w-full md:w-3/5 p-4 md:p-8">
           <div className="bg-white rounded-2xl shadow-sm border border-pink-500 p-6">
             <div className="grid grid-cols-2 gap-4">
-              <div className="">
+              <div className="col-span-2 md:col-span-1">
                 <LabelInput
                   errorMsg={errorMsg.cost_price}
                   loading={false}
@@ -536,7 +539,7 @@ export default function InventoryEdit() {
                   />
                 </LabelInput>
               </div>
-              <div>
+              <div className="col-span-2 md:col-span-1">
                 <LabelInput
                   required
                   label="Sale Price"
@@ -556,7 +559,7 @@ export default function InventoryEdit() {
                   />
                 </LabelInput>
               </div>
-              <div className="pb-6 pt-2">
+              <div className="pb-6 pt-2 col-span-2 md:col-span-1">
                 <LabelInput
                   errorMsg={errorMsg.stock_quantity}
                   loading={false}
@@ -577,7 +580,7 @@ export default function InventoryEdit() {
                 </LabelInput>
               </div>
               {isLowLevelStock && (
-                <div className="pb-6 pt-2">
+                <div className="pb-6 pt-2 col-span-2 md:col-span-1">
                   <LabelInput
                     errorMsg={errorMsg.low_stock_level}
                     label="Low Stock Level"
@@ -599,7 +602,7 @@ export default function InventoryEdit() {
                 </div>
               )}
             </div>
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-4 items-center col-span-2 md:col-span-1">
               <label className="switch">
                 <input
                   type="checkbox"
@@ -613,7 +616,7 @@ export default function InventoryEdit() {
               <p>Enable Low Stock Notification</p>
             </div>
 
-            <div className="flex gap-4 items-center mb-4 mt-8">
+            <div className="flex gap-4 items-center mb-4 mt-8 col-span-2 md:col-span-1">
               <label className="switch">
                 <input
                   type="checkbox"
@@ -669,7 +672,7 @@ export default function InventoryEdit() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                      <div>
+                      <div className="col-span-2 md:col-span-1">
                         <LabelInput
                           required
                           label="Tax Percent (%)"
@@ -694,7 +697,7 @@ export default function InventoryEdit() {
                         </LabelInput>
                       </div>
 
-                      <div>
+                      <div className="col-span-2 md:col-span-1">
                         <LabelInput
                           required
                           label="Tax Amount"
@@ -735,17 +738,17 @@ export default function InventoryEdit() {
         </div>
       </div>
 
-      <div className="flex bg-slate-100 rounded-3xl border border-gray-400">
-        <div className="w-2/5 p-8">
+      <div className="flex flex-col md:flex-row bg-slate-100 rounded-3xl border border-gray-400">
+        <div className="w-full md:w-2/5 p-4 md:p-8">
           <span className="text-xl font-semibold block">Additional Info</span>
           <span className="text-gray-600">
             Edit additional info of your product
           </span>
         </div>
-        <div className="w-3/5 p-8">
+        <div className="w-full md:w-3/5 p-4 md:p-8">
           <div className="bg-white rounded-2xl shadow-sm border border-pink-500 p-6">
             <div className="grid grid-cols-2 gap-4">
-              <div className="">
+              <div className="col-span-2 md:col-span-1">
                 <LabelInput
                   errorMsg={null}
                   label="Reorder Quantity"
@@ -792,14 +795,14 @@ export default function InventoryEdit() {
         </div>
       </div>
 
-      <div className="flex bg-slate-100 rounded-3xl border border-gray-400">
-        <div className="w-2/5 p-8">
+      <div className="flex flex-col md:flex-row bg-slate-100 rounded-3xl border border-gray-400">
+        <div className="w-full md:w-2/5 p-4 md:p-8">
           <span className="text-xl font-semibold block">Barcode</span>
           <span className="text-gray-600">
             Use this barcode to scan your product hassle free
           </span>
         </div>
-        <div className="w-3/5 p-8">
+        <div className="w-full md:w-3/5 p-4 md:p-8">
           <div className="bg-white rounded-2xl shadow-sm border border-pink-500 p-6">
             <canvas id="barcode" className="w-full h-40" />
           </div>
