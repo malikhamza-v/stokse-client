@@ -111,14 +111,7 @@ body {
 }
 
 /* Accordian */
-.container {
-  /* max-width: 650px; */
-  /* width: 100%; */
-  /* position: relative; */
-  /* top: 50%; */
-  /* left: 50%; */
-  /* transform: translate(-50%, -50%); */
-}
+
 .wrapper {
   border-bottom: 1px solid black;
   overflow: hidden;
@@ -207,4 +200,9 @@ body {
 /* Charts */
 .apexcharts-toolbar {
   z-index: 0 !important;
+}
+
+table {
+  table-layout: fixed;
+  width: 100%;
 }
