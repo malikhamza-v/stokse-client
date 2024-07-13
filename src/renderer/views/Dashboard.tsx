@@ -258,7 +258,7 @@ function Dashboard() {
               <div className="h-full py-8 px-6 space-y-6 rounded-xl border border-gray-200 bg-white">
                 <div className="flex items-center justify-between">
                   <h5 className="text-xl text-purple-800 font-medium">Sales</h5>
-                  <div className="flex items-center gap-2 z-20">
+                  <div className="flex items-center gap-2">
                     <button
                       type="button"
                       className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
@@ -392,7 +392,7 @@ function Dashboard() {
                   <h5 className="text-xl text-purple-800 font-medium">
                     Customers
                   </h5>
-                  <div className="flex items-center gap-2 z-20">
+                  <div className="flex items-center gap-2">
                     <button
                       type="button"
                       className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
@@ -529,7 +529,7 @@ function Dashboard() {
                   <h5 className="text-xl text-purple-800 font-medium">
                     Sales Volumn
                   </h5>
-                  <div className="flex items-center gap-2 z-20">
+                  <div className="flex items-center gap-2 ">
                     <button
                       type="button"
                       className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
@@ -675,7 +675,7 @@ function Dashboard() {
                     ? 'This Week'
                     : 'This Month'}
                 </h6>
-                <div className="flex items-center gap-2 z-20">
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
                     className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
@@ -865,7 +865,7 @@ function Dashboard() {
                     ? 'This Week'
                     : 'This Month'}
                 </h6>
-                <div className="flex items-center gap-2 z-20">
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
                     className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
@@ -1063,7 +1063,7 @@ function Dashboard() {
                     ? 'This Week'
                     : 'This Month'}
                 </h6>
-                <div className="flex items-center gap-2 z-20">
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
                     className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
@@ -1234,7 +1234,7 @@ function Dashboard() {
         />
       </div>
       <div className="px-10 pb-5 mt-20">
-        <div className="flex items-center justify-end z-20 gap-2 py-5">
+        <div className="flex items-center justify-end gap-2 py-5">
           <button type="button" className="bg-slate-50 p-2 rounded-full">
             <ArrowLeft />
           </button>

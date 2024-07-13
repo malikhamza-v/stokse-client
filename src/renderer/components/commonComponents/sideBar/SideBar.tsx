@@ -1,13 +1,53 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MoreSVG, SettingSVG } from '../../../utils/svg';
 import { Navbar } from '../../../utils/constant';
 
 function SideBar() {
-  const [toolTip, setToolTip] = useState('');
+  const [toolTip, setToolTip] = useState<string>('');
+  const moreOptionsContainer = useRef<HTMLDivElement>(null);
+  const sideBarRef = useRef<HTMLElement>(null); // Ref for the SideBar component
+  const [isMoreOptionsOpen, setIsMoreOptionsOpen] = useState<boolean>(false);
+
+  const handleOpenMoreOptions = () => {
+    setIsMoreOptionsOpen(!isMoreOptionsOpen);
+  };
+
+  useEffect(() => {
+    if (isMoreOptionsOpen && moreOptionsContainer.current) {
+      moreOptionsContainer.current.style.transform = 'translateY(0%)';
+    } else if (moreOptionsContainer.current) {
+      moreOptionsContainer.current.style.transform = 'translateY(100%)';
+    }
+  }, [isMoreOptionsOpen]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sideBarRef.current &&
+        !sideBarRef.current.contains(event.target as Node) &&
+        moreOptionsContainer.current &&
+        !moreOptionsContainer.current.contains(event.target as Node)
+      ) {
+        setIsMoreOptionsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <aside className="absolute bottom-0 md:static h-fit md:h-full w-full md:w-fit md:inset-y-0 z-10 flex flex-shrink-0 bg-white border-t md:border-r focus:outline-none">
+    <aside
+      ref={sideBarRef}
+      className="absolute bottom-0 md:static h-fit md:h-full w-full md:w-fit md:inset-y-0 z-10 flex flex-shrink-0 bg-white border-t md:border-r focus:outline-none"
+    >
       <nav className="flex md:flex-col justify-around w-full flex-shrink-0 h-full px-2 py-2 md:py-4">
         <div className="flex-shrink-0 hidden md:block">
           <img
@@ -56,10 +96,35 @@ function SideBar() {
             )}
           </div>
 
-          <div className="p-4 h-14 w-14 flex justify-center items-center text-white transition-colors duration-200 bg-slate-100 rounded-full hover:bg-slate-200 dark:hover:text-light dark:bg-dark focus:outline-none md:hidden">
+          <div
+            onClick={handleOpenMoreOptions}
+            className="p-4 h-14 w-14 flex justify-center items-center text-white transition-colors duration-200 bg-slate-100 rounded-full hover:bg-slate-200 dark:hover:text-light dark:bg-dark focus:outline-none md:hidden"
+          >
             <div className="relative flex items-center">
               <MoreSVG stroke="#000000" />
             </div>
+          </div>
+
+          <div
+            ref={moreOptionsContainer}
+            className="absolute bg-white divide-y border pt-4 pb-24 bottom-0 left-0 right-0 w-full -z-10 px-4 translate-y-full transition-all duration-300"
+          >
+            {Navbar.map(
+              (nav) =>
+                nav.link && (
+                  <Link
+                    key={nav.label}
+                    to={nav.link}
+                    onMouseEnter={() => setToolTip(nav.label)}
+                    onMouseLeave={() => setToolTip('')}
+                    className="p-4 h-14 w-full flex justify-start text-black transition-colors duration-200 hover:bg-slate-200 dark:hover:text-light dark:bg-dark focus:outline-none"
+                  >
+                    <div className="relative flex items-center">
+                      {nav.label}
+                    </div>
+                  </Link>
+                ),
+            )}
           </div>
         </div>
       </nav>
