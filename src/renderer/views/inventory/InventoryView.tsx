@@ -68,11 +68,11 @@ function InventoryView({
   }, [isViewOpen]);
   return (
     <Drawer id="inventory_view" isOpen={isViewOpen} close={handleCloseView}>
-      <div className="grid grid-cols-3 h-full">
-        <div className="bg-white col-span-1 border-r h-full">
-          <div className="flex flex-col justify-between h-full py-12">
+      <div className="flex flex-col md:flex-row h-full pt-12 md:pt-0">
+        <div className="bg-white w-full md:w-1/3 border-r flex-shrink-0">
+          <div className="flex flex-col justify-between h-full py-4 md:py-12">
             <div className="flex flex-col gap-4 items-center">
-              <div className="h-28 w-28">
+              <div className="h-28 w-28 hidden md:block">
                 <OrderBox />
               </div>
               {singleProductFetchLoading ? (
@@ -85,53 +85,53 @@ function InventoryView({
                   <p className="font-semibold text-center text-wrap text-xl truncate px-8">
                     {product?.name}
                   </p>
-                  <p className="border bg-green-100 w-fit p-1 mt-2">
+                  <p className="border bg-green-100 w-fit p-1 mt-2 mb-4 md:mb-0">
                     {parseFloat(product?.stock_quantity || '0')} in stock
                   </p>
                 </>
               )}
             </div>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex items-start w-screen px-4 md:w-full overflow-x-auto hide-scrollbar md:flex-col gap-4">
               <div
-                className={`p-4 rounded-lg mx-4 cursor-pointer hover:bg-gray-100 ${
+                className={`p-4 rounded-lg  cursor-pointer hover:bg-gray-100 ${
                   currentView === 'detail'
                     ? 'bg-purple-200 hover:bg-purple-200'
                     : 'bg-transparent'
-                }`}
+                } w-full min-w-fit`}
                 onClick={() => handleSelectView('detail')}
               >
                 <p className="">Product details</p>
               </div>
 
               <div
-                className={`p-4 rounded-lg mx-4 cursor-pointer hover:bg-gray-100 ${
+                className={`p-4 rounded-lg cursor-pointer hover:bg-gray-100 ${
                   currentView === 'order'
                     ? 'bg-purple-200 hover:bg-purple-200'
                     : 'bg-transparent'
-                }`}
+                } w-full min-w-fit`}
                 onClick={() => handleSelectView('order')}
               >
                 <p>Stock Order</p>
               </div>
 
               <div
-                className={`p-4 rounded-lg mx-4 cursor-pointer hover:bg-gray-100 ${
+                className={`p-4 rounded-lg cursor-pointer hover:bg-gray-100 ${
                   currentView === 'sale'
                     ? 'bg-purple-200 hover:bg-purple-200'
                     : 'bg-transparent'
-                }`}
+                } w-full min-w-fit`}
                 onClick={() => handleSelectView('sale')}
               >
                 <p>Sales</p>
               </div>
 
               <div
-                className={`p-4 rounded-lg mx-4 cursor-pointer hover:bg-gray-100 ${
+                className={`p-4 rounded-lg cursor-pointer hover:bg-gray-100 ${
                   currentView === 'history'
                     ? 'bg-purple-200 hover:bg-purple-200'
                     : 'bg-transparent'
-                }`}
+                } w-full min-w-fit`}
                 onClick={() => handleSelectView('history')}
               >
                 <p>Stock History</p>
@@ -140,7 +140,7 @@ function InventoryView({
           </div>
         </div>
 
-        <div className="bg-gray-50 col-span-2 overflow-y-auto">
+        <div className="bg-gray-50 w-full md:w-2/3 h-full overflow-y-auto hide-scrollbar mb-[4.5rem] md:mb-0">
           {currentView === 'detail' ? (
             <div>
               <p className="font-semibold text-2xl pl-8 pt-8">
@@ -317,19 +317,22 @@ function InventoryView({
             </div>
           ) : currentView === 'sale' ? (
             <div className="flex flex-col h-full">
-              <p className="font-semibold text-2xl pl-8 pt-8">Sales</p>
+              <p className="font-semibold text-2xl pl-4 md:pl-8 pt-8">Sales</p>
               {singleProductSaleFetchLoading ? (
-                <div className="flex flex-col gap-4 m-12">
+                <div className="flex flex-col gap-4 m-4 xl:m-12">
                   <div className="skeleton h-16 w-full" />
                   <div className="skeleton h-16 w-full" />
                   <div className="skeleton h-16 w-full" />
                   <div className="skeleton h-16 w-full" />
                 </div>
               ) : productSale?.length > 0 ? (
-                <div className="bg-white m-12 divide-y">
+                <div className="bg-white m-4 md:m-8 xl:m-12 divide-y">
                   {productSale?.map((sale: any) => {
                     return (
-                      <div className="p-4 cursor-pointer flex flex-col gap-1">
+                      <div
+                        key={sale?.id}
+                        className="p-4 cursor-pointer flex flex-col gap-1"
+                      >
                         <p>{sale?.id}</p>
                         <p>Created on {formatTimestamp(sale?.created_at)}</p>
                         <p>{sale?.created_by?.name || '- -'}</p>
@@ -350,8 +353,10 @@ function InventoryView({
             </div>
           ) : (
             <div className="flex flex-col h-full">
-              <p className="font-semibold text-2xl pl-8 pt-8">Stock History</p>
-              <div className="border border-gray-300 rounded-lg flex flex-col gap-2 justify-center items-center h-1/2 m-12">
+              <p className="font-semibold text-2xl pl-4 md:pl-8 pt-8">
+                Stock History
+              </p>
+              <div className="border border-gray-300 rounded-lg flex flex-col gap-2 justify-center items-center h-1/2 m-4 md:m-12">
                 <NotFound />
                 <p className="font-medium">No stock history here yet</p>
               </div>

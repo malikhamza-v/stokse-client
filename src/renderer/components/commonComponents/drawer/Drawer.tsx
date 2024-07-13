@@ -22,7 +22,7 @@ function Drawer({
     setIsDrawerOpen(isOpen);
   }, [isOpen]);
   return (
-    <div className="drawer drawer-end ">
+    <div className="drawer drawer-end">
       <input
         id={id}
         type="checkbox"
@@ -31,7 +31,7 @@ function Drawer({
         readOnly
       />
 
-      <div className="drawer-side">
+      <div className="drawer-side min-h-screen">
         <label
           htmlFor={id}
           aria-label="close sidebar"

@@ -176,9 +176,8 @@ body {
     width: 65vw !important;
   }
 }
-/*
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 768px) {
   .category-drawer {
     width: 100% !important;
   }
@@ -186,7 +185,7 @@ body {
     left: 0% !important;
     top: 1%;
   }
-} */
+}
 
 .category-close-btn {
   left: -12%;
