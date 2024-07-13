@@ -1,8 +1,9 @@
 import {
-  MemoryRouter as Router,
   Routes,
   Route,
   Navigate,
+  MemoryRouter,
+  BrowserRouter,
 } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import MainLayout from './components/layout';
@@ -37,13 +38,16 @@ import Logs from './views/setting/Logs';
 import { useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 import SelectStore from './views/SelectStore';
+import { isElectron } from './utils/methods';
+
+const RouterComponent = isElectron() ? MemoryRouter : BrowserRouter;
 
 export default function App() {
   const toastId = useRef<any>(null);
 
   useEffect(() => {
     if (window.electron) {
-      const { ipcRenderer, environment } = window.electron;
+      const { ipcRenderer } = window.electron;
       ipcRenderer.on('update-download-status', (message: any) => {
         if (toastId.current) {
           toast.update(toastId.current, {
@@ -58,7 +62,7 @@ export default function App() {
   }, []);
   return (
     <Provider store={store}>
-      <Router>
+      <RouterComponent>
         <Toast />
         <Routes>
           <Route path="/sign-in" element={<Signin />} />
@@ -290,7 +294,7 @@ export default function App() {
             />
           </Route>
         </Routes>
-      </Router>
+      </RouterComponent>
     </Provider>
   );
 }
