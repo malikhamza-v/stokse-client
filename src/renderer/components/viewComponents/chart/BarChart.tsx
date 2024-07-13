@@ -45,13 +45,32 @@ function BarChart({
       labels: [],
       responsive: [
         {
-          breakpoint: 480,
+          breakpoint: 1310,
+          options: {
+            legend: {
+              position: 'top',
+            },
+          },
+        },
+        {
+          breakpoint: 768,
           options: {
             chart: {
-              width: 200,
+              width: 380,
             },
             legend: {
               position: 'bottom',
+            },
+          },
+        },
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 320,
+            },
+            legend: {
+              position: 'top',
             },
           },
         },
@@ -87,7 +106,7 @@ function BarChart({
     <div className="p-4 relative flex-1">
       {loading ? (
         <div
-          className="h-96 w-96 rounded-full mx-auto bg-gray-300 animate-pulse"
+          className="h-52 md:h-96 w-52 md:w-96 rounded-full mx-auto bg-gray-300 animate-pulse"
           style={{ animationDelay: '0.2s' }}
         />
       ) : (
@@ -96,7 +115,7 @@ function BarChart({
             <>
               <button
                 type="button"
-                className={`absolute bottom-0 text-sm font-medium ${
+                className={`absolute -bottom-4 text-sm font-medium ${
                   position === 'right' ? 'right-0' : 'left-0'
                 } bg-amber-200 px-4 py-1 rounded-lg z-30`}
                 onClick={handleDownload}
@@ -112,7 +131,7 @@ function BarChart({
               />
             </>
           ) : (
-            <div className="border mx-auto rounded-full h-96 w-96 flex items-center justify-center">
+            <div className="border mx-auto rounded-full h-52 md:h-96 w-52 md:w-96 flex items-center justify-center">
               <div className="flex items-center justify-center gap-2 my-2">
                 <ErrorSVG />
                 <h2 className="font-medium text-gray-800  ">

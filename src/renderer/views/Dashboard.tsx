@@ -252,13 +252,13 @@ function Dashboard() {
   return (
     <div className="w-full overflow-y-auto h-full">
       <div>
-        <div className="px-6 pt-6 2xl:container">
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <div className="md:col-span-2 lg:col-span-1">
+        <div className="px-4 md:px-6 pt-6 2xl:container">
+          <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
+            <div className="col-span-1">
               <div className="h-full py-8 px-6 space-y-6 rounded-xl border border-gray-200 bg-white">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row items-center justify-between">
                   <h5 className="text-xl text-purple-800 font-medium">Sales</h5>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 mt-2 md:mt-0">
                     <button
                       type="button"
                       className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
@@ -386,13 +386,13 @@ function Dashboard() {
               </div>
             </div>
 
-            <div className="md:col-span-2 lg:col-span-1">
+            <div className="col-span-1">
               <div className="h-full py-8 px-6 space-y-6 rounded-xl border border-gray-200 bg-white">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row items-center justify-between">
                   <h5 className="text-xl text-purple-800 font-medium">
                     Customers
                   </h5>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 mt-2 md:mt-0">
                     <button
                       type="button"
                       className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
@@ -523,13 +523,13 @@ function Dashboard() {
               </div>
             </div>
 
-            <div className="md:col-span-2 lg:col-span-1">
+            <div className="col-span-1">
               <div className="h-full py-8 px-6 space-y-6 rounded-xl border border-gray-200 bg-white">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row items-center justify-between">
                   <h5 className="text-xl text-purple-800 font-medium">
                     Sales Volumn
                   </h5>
-                  <div className="flex items-center gap-2 ">
+                  <div className="flex items-center gap-2 mt-2 md:mt-0">
                     <button
                       type="button"
                       className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
@@ -662,11 +662,11 @@ function Dashboard() {
           </div>
         </div>
       </div>
-      <div className="px-6 mt-20 flex items-center justify-between">
-        <div className="w-3/5">
+      <div className="px-4 md:px-6 mt-20 flex flex-col xl:flex-row items-center justify-between">
+        <div className="w-full lg:w-3/5">
           <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden xl:col-span-3 w-full">
             <div className="relative bg-clip-border rounded-xl overflow-hidden bg-transparent text-gray-700 shadow-none m-0 flex items-center justify-between p-6">
-              <div className="flex items-center justify-between w-full">
+              <div className="flex flex-col md:flex-row items-center justify-between w-full">
                 <h6 className="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-blue-gray-900 mb-1">
                   Top Transactions{' '}
                   {selectedButton.topTransactions === 1
@@ -675,7 +675,7 @@ function Dashboard() {
                     ? 'This Week'
                     : 'This Month'}
                 </h6>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mt-2 md:mt-0">
                   <button
                     type="button"
                     className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
@@ -847,16 +847,16 @@ function Dashboard() {
         />
       </div>
 
-      <div className="px-6 mt-20 flex items-center justify-between">
+      <div className="px-4 md:px-6 mt-20 flex flex-col xl:flex-row items-center justify-between">
         <BarChart
           loading={analyticsTopCustomersLoading}
           data={topCustomersChartData}
           position="left"
         />
-        <div className="w-3/5">
+        <div className="w-full lg:w-3/5 mt-4 md:mt-0">
           <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden xl:col-span-3 w-full">
             <div className="relative bg-clip-border rounded-xl overflow-hidden bg-transparent text-gray-700 shadow-none m-0 flex items-center justify-between p-6">
-              <div className="flex items-center justify-between w-full">
+              <div className="flex flex-col md:flex-row items-center justify-between w-full">
                 <h6 className="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-blue-gray-900 mb-1">
                   Top Customers{' '}
                   {selectedButton.topCustomers === 1
@@ -865,7 +865,7 @@ function Dashboard() {
                     ? 'This Week'
                     : 'This Month'}
                 </h6>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mt-2 md:mt-0">
                   <button
                     type="button"
                     className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
@@ -1050,11 +1050,11 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="px-6 mt-20 flex items-center justify-between">
-        <div className="w-3/5">
+      <div className="px-4 md:px-6 mt-20 flex flex-col xl:flex-row items-center justify-between">
+        <div className="w-full lg:w-3/5">
           <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden xl:col-span-3 w-full">
             <div className="relative bg-clip-border rounded-xl overflow-hidden bg-transparent text-gray-700 shadow-none m-0 flex items-center justify-between p-6">
-              <div className="flex items-center justify-between w-full">
+              <div className="flex flex-col md:flex-row items-center justify-between w-full">
                 <h6 className="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-blue-gray-900 mb-1">
                   Top Products{' '}
                   {selectedButton.topProducts === 1
@@ -1063,7 +1063,7 @@ function Dashboard() {
                     ? 'This Week'
                     : 'This Month'}
                 </h6>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mt-2 md:mt-0">
                   <button
                     type="button"
                     className={`bg-slate-50 px-2 py-1 rounded-lg border text-sm ${
@@ -1233,7 +1233,8 @@ function Dashboard() {
           position="right"
         />
       </div>
-      <div className="px-10 pb-5 mt-20">
+
+      <div className="px-4 md:px-10 pb-5 mt-20">
         <div className="flex items-center justify-end gap-2 py-5">
           <button type="button" className="bg-slate-50 p-2 rounded-full">
             <ArrowLeft />
