@@ -31,6 +31,8 @@ function Items() {
 
   const itemContainer = useRef<HTMLTableSectionElement>(null);
 
+  const categoryContainer = useRef<HTMLDivElement | null>(null);
+
   const { loading: fetchLoading, fetchData: productsFetch } = useFetch();
   const { loading: categoryFetchLoading, fetchData: categoriesFetch } =
     useFetch();
@@ -178,6 +180,49 @@ function Items() {
   }, []);
 
   useEffect(() => {
+    if (categoryContainer.current) {
+      let mouseDown = false;
+      let startX: number;
+      let scrollLeft: number;
+
+      const startDragging = (e: MouseEvent) => {
+        mouseDown = true;
+        startX = e.pageX - categoryContainer.current!.offsetLeft;
+        scrollLeft = categoryContainer.current!.scrollLeft;
+      };
+
+      const stopDragging = () => {
+        mouseDown = false;
+      };
+
+      const move = (e: MouseEvent) => {
+        e.preventDefault();
+        if (!mouseDown) {
+          return;
+        }
+        const x = e.pageX - categoryContainer.current!.offsetLeft;
+        const scroll = x - startX;
+        categoryContainer.current!.scrollLeft = scrollLeft - scroll;
+      };
+
+      // Add the event listeners
+      const container = categoryContainer.current;
+      container.addEventListener('mousemove', move, false);
+      container.addEventListener('mousedown', startDragging, false);
+      container.addEventListener('mouseup', stopDragging, false);
+      container.addEventListener('mouseleave', stopDragging, false);
+
+      // Cleanup function to remove the event listeners
+      return () => {
+        container.removeEventListener('mousemove', move, false);
+        container.removeEventListener('mousedown', startDragging, false);
+        container.removeEventListener('mouseup', stopDragging, false);
+        container.removeEventListener('mouseleave', stopDragging, false);
+      };
+    }
+  }, [categoryContainer.current]);
+
+  useEffect(() => {
     setPaginatedProducts({
       currentPage: 1,
       totalPage: Math.ceil(searchedProducts.length / noOfItemsPerPage),
@@ -241,7 +286,10 @@ function Items() {
       ) : (
         <div>
           {categories.length > 0 ? (
-            <div className="px-16 flex overflow-x-auto items-center gap-2 my-8">
+            <div
+              ref={categoryContainer}
+              className="px-16 flex overflow-x-auto hide-scrollbar items-center gap-2 my-8"
+            >
               <div
                 className="px-4 py-2 border min-w-fit text-center truncate cursor-pointer rounded-lg hover:bg-slate-50 font-light"
                 onClick={() => setSelectedFilteredBtn('all')}
