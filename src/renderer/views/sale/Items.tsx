@@ -254,7 +254,7 @@ function Items() {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="px-16 pt-16 flex items-center justify-between">
+      <div className="px-4 md:px-16 pt-10 flex flex-col xl:flex-row justify-between">
         <div>
           <h2 className="font-bold text-2xl">Making Orders</h2>
           <p className="text-gray-500">Quick orders, even quicker service.</p>
@@ -273,7 +273,7 @@ function Items() {
         </div>
       </div>
       {categoryFetchLoading ? (
-        <div className="px-16 flex flex-wrap items-center gap-2 my-8">
+        <div className="px-4 md:px-16 flex flex-wrap items-center gap-2 my-8">
           {[...Array(5).keys()].map((skeleton) => (
             <div key={skeleton}>
               <div
@@ -288,7 +288,7 @@ function Items() {
           {categories.length > 0 ? (
             <div
               ref={categoryContainer}
-              className="px-16 flex overflow-x-auto hide-scrollbar items-center gap-2 my-8"
+              className="px-4 md:px-16 flex overflow-x-auto hide-scrollbar items-center gap-2 my-8"
             >
               <div
                 className="px-4 py-2 border min-w-fit text-center truncate cursor-pointer rounded-lg hover:bg-slate-50 font-light"
@@ -307,7 +307,7 @@ function Items() {
               ))}
             </div>
           ) : (
-            <div className="px-16 flex flex-wrap items-center gap-2 my-8">
+            <div className="px-4 md:px-16 flex flex-wrap items-center gap-2 my-8">
               <div className="px-4 py-2 border cursor-pointer rounded-lg hover:bg-slate-50 font-light">
                 Not Category Found
               </div>
@@ -316,9 +316,12 @@ function Items() {
         </div>
       )}
       {/* [info]: Items */}
-      <div className="px-16 flex-grow overflow-y-auto" ref={itemContainer}>
+      <div
+        className="px-4 md:px-16 flex-grow overflow-y-auto"
+        ref={itemContainer}
+      >
         {fetchLoading ? (
-          <div className="grid grid-cols-4 gap-4 ">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 ">
             {[...Array(8).keys()].map((skeleton) => (
               <div key={skeleton} className="w-full ">
                 <div
@@ -329,7 +332,7 @@ function Items() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
             {paginatedProducts.data.length > 0 ? (
               paginatedProducts.data.map((product: any) => (
                 <div
@@ -397,7 +400,7 @@ function Items() {
         )}
       </div>
       {paginatedProducts?.totalPage && paginatedProducts.totalPage > 1 ? (
-        <div className="px-16 pb-8 mt-4 sm:flex sm:items-center sm:justify-between ">
+        <div className="px-4 md:px-16 pb-8 mt-4 sm:flex sm:items-center sm:justify-between ">
           <div className="text-sm text-gray-500 ">
             Page{' '}
             <span className="font-medium text-gray-700 ">

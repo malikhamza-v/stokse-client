@@ -60,30 +60,27 @@ function SideBar() {
           />
         </div>
         <div className="flex md:flex-col items-center justify-around md:justify-center flex-1 md:space-y-4">
-          {Navbar.map(
-            (nav) =>
-              nav.link && (
-                <Link
-                  key={nav.label}
-                  to={nav.link}
-                  onMouseEnter={() => setToolTip(nav.label)}
-                  onMouseLeave={() => setToolTip('')}
-                  onClick={() => setIsMoreOptionsOpen(false)}
-                  className={`p-4 h-14 w-14 flex justify-center items-center text-white transition-colors duration-200 bg-slate-100 rounded-full hover:bg-slate-200 dark:hover:text-light dark:bg-dark focus:outline-none ${
-                    nav.isHiddenForMobile ? 'hidden md:flex' : ''
-                  } ${nav.label === 'Settings' ? 'absolute bottom-4' : ''} `}
-                >
-                  <div className="relative flex items-center">
-                    <nav.icon stroke="#000000" />
-                    {toolTip === nav.label && window.innerWidth > 600 && (
-                      <div className="popover absolute left-0 bg-gray-600 border shadow-md px-4 ml-[3.5rem] py-2 rounded-lg">
-                        <p className="text-white">{nav.label}</p>
-                      </div>
-                    )}
+          {Navbar.map((nav) => (
+            <Link
+              key={nav.label}
+              to={nav.link}
+              onMouseEnter={() => setToolTip(nav.label)}
+              onMouseLeave={() => setToolTip('')}
+              onClick={() => setIsMoreOptionsOpen(false)}
+              className={`p-4 h-14 w-14 flex justify-center items-center text-white transition-colors duration-200 bg-slate-100 rounded-full hover:bg-slate-200 dark:hover:text-light dark:bg-dark focus:outline-none ${
+                nav.isHiddenForMobile ? 'hidden md:flex' : ''
+              } ${nav.label === 'Settings' ? 'absolute bottom-4' : ''} `}
+            >
+              <div className="relative flex items-center">
+                <nav.icon stroke="#000000" />
+                {toolTip === nav.label && window.innerWidth > 600 && (
+                  <div className="popover absolute left-0 bg-gray-600 border shadow-md px-4 ml-[3.5rem] py-2 rounded-lg">
+                    <p className="text-white">{nav.label}</p>
                   </div>
-                </Link>
-              ),
-          )}
+                )}
+              </div>
+            </Link>
+          ))}
 
           <div
             onClick={handleOpenMoreOptions}
@@ -103,7 +100,7 @@ function SideBar() {
                 nav.link &&
                 nav.isHiddenForMobile &&
                 (nav.label === 'Catalogue' ? (
-                  <div className="w-full">
+                  <div className="w-full" key={nav.link}>
                     <div className="collapse collapse-arrow">
                       <input type="checkbox" id="options-accordian" />
                       <div className="collapse-title text-xl font-medium">

@@ -13,11 +13,11 @@ function Sale() {
   }, []);
 
   return (
-    <div className="flex justify-between w-full">
-      <div className="flex-1">
+    <div className="grid grid-cols-12">
+      <div className="col-span-12 lg:col-span-8">
         <Items />
       </div>
-      <div className="w-[30%]">
+      <div className="col-span-4 hidden lg:block">
         <Cart />
       </div>
     </div>
