@@ -42,6 +42,7 @@ import { isElectron } from './utils/methods';
 import Calendar from './views/appointments/Calendar';
 import Inventory from './views/inventory/Inventory';
 import Service from './views/services/Services';
+import ServiceAdd from './views/services/ServiceAdd';
 
 const RouterComponent = isElectron() ? MemoryRouter : BrowserRouter;
 
@@ -123,11 +124,11 @@ export default function App() {
             />
             <Route
               path="/inventory/"
-              element={<Navigate to="/inventory/products" replace />}
+              element={<Navigate to="/inventory/product-list" replace />}
             />
 
             <Route
-              path="/inventory/products"
+              path="/inventory/product-list"
               element={
                 <MainLayout>
                   <Inventory>
@@ -137,7 +138,7 @@ export default function App() {
               }
             />
             <Route
-              path="/inventory/products/view/:id"
+              path="/inventory/product-list/view/:id"
               element={
                 <MainLayout>
                   <Product isView={true} />
@@ -145,7 +146,7 @@ export default function App() {
               }
             />
             <Route
-              path="/inventory/products/add"
+              path="/inventory/product-list/add"
               element={
                 <MainLayout>
                   <ProductAdd />
@@ -153,7 +154,7 @@ export default function App() {
               }
             />
             <Route
-              path="/inventory/products/edit/:id"
+              path="/inventory/product-list/edit/:id"
               element={
                 <MainLayout>
                   <ProductEdit />
@@ -162,12 +163,21 @@ export default function App() {
             />
 
             <Route
-              path="/inventory/services"
+              path="/inventory/service-list"
               element={
                 <MainLayout>
                   <Inventory>
                     <Service isView={false} />
                   </Inventory>
+                </MainLayout>
+              }
+            />
+
+            <Route
+              path="/inventory/service-list/add"
+              element={
+                <MainLayout>
+                  <ServiceAdd />
                 </MainLayout>
               }
             />

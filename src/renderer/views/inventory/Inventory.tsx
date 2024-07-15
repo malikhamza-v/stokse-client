@@ -16,21 +16,21 @@ export default function Inventory({ children }: { children: any }) {
         <div className="px-2 mt-4">
           <div
             className={`hover:bg-slate-100 cursor-pointer transition-all duration-300 p-4 rounded-lg px-6 ${
-              pathname.includes('products')
+              pathname.includes('product-list')
                 ? 'bg-purple-100 hover:bg-purple-100'
                 : 'bg-transparent'
             }`}
-            onClick={() => navigate('/inventory/products')}
+            onClick={() => navigate('/inventory/product-list')}
           >
             <p className="font-light text-sm">Products</p>
           </div>
           <div
             className={`hover:bg-slate-100 mt-2 cursor-pointer transition-all duration-300 p-4 rounded-lg px-6 ${
-              pathname.includes('services')
+              pathname.includes('service-list')
                 ? 'bg-purple-100 hover:bg-purple-100'
                 : 'bg-transparent'
             }`}
-            onClick={() => navigate('/inventory/services')}
+            onClick={() => navigate('/inventory/service-list')}
           >
             <p className="font-light text-sm">Services</p>
           </div>

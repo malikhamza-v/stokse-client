@@ -245,7 +245,7 @@ export default function Service({ isView }: { isView: boolean }) {
 
             <span>Export</span>
           </button>
-          <Link to="/inventory/add">
+          <Link to="/inventory/service-list/add">
             <button
               type="button"
               className="flex items-center justify-center px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 bg-blue-500 rounded-lg shrink-0 sm:w-auto gap-x-2 hover:bg-blue-600"
