@@ -207,7 +207,7 @@ export default function Inventory({ isView }: { isView: boolean }) {
   }, [navigate]);
 
   return (
-    <section className="container py-10 px-4 mx-auto">
+    <section className="container py-10 px-4 mx-auto flex flex-col h-full">
       <div className="sm:flex sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-x-3">
@@ -267,7 +267,6 @@ export default function Inventory({ isView }: { isView: boolean }) {
           </Link>
         </div>
       </div>
-
       <div className="mt-6 md:flex md:items-center md:justify-between">
         <div className="inline-flex overflow-hidden bg-white border divide-x rounded-lg rtl:flex-row-reverse">
           <button
@@ -316,249 +315,189 @@ export default function Inventory({ isView }: { isView: boolean }) {
         </div>
       </div>
 
-      <div className="flex flex-col mt-6">
-        <div className="overflow-x-auto">
-          <div className="inline-block min-w-full py-2 align-middle">
-            <div className="overflow-hidden border border-gray-200">
-              <table className="min-w-full divide-y divide-gray-200 table w-full">
-                <thead className="bg-gray-50 table w-full rounded-none">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="py-3.5 px-4 text-sm font-normal text-gray-500 w-[25%]"
-                    >
-                      <button
-                        type="button"
-                        className="flex items-center gap-x-3 focus:outline-none"
-                      >
-                        <span>Name</span>
-
-                        <svg
-                          className="h-3"
-                          viewBox="0 0 10 11"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M2.13347 0.0999756H2.98516L5.01902 4.79058H3.86226L3.45549 3.79907H1.63772L1.24366 4.79058H0.0996094L2.13347 0.0999756ZM2.54025 1.46012L1.96822 2.92196H3.11227L2.54025 1.46012Z"
-                            fill="currentColor"
-                            stroke="currentColor"
-                            strokeWidth="0.1"
-                          />
-                          <path
-                            d="M0.722656 9.60832L3.09974 6.78633H0.811638V5.87109H4.35819V6.78633L2.01925 9.60832H4.43446V10.5617H0.722656V9.60832Z"
-                            fill="currentColor"
-                            stroke="currentColor"
-                            strokeWidth="0.1"
-                          />
-                          <path
-                            d="M8.45558 7.25664V7.40664H8.60558H9.66065C9.72481 7.40664 9.74667 7.42274 9.75141 7.42691C9.75148 7.42808 9.75146 7.42993 9.75116 7.43262C9.75001 7.44265 9.74458 7.46304 9.72525 7.49314C9.72522 7.4932 9.72518 7.49326 9.72514 7.49332L7.86959 10.3529L7.86924 10.3534C7.83227 10.4109 7.79863 10.418 7.78568 10.418C7.77272 10.418 7.73908 10.4109 7.70211 10.3534L7.70177 10.3529L5.84621 7.49332C5.84617 7.49325 5.84612 7.49318 5.84608 7.49311C5.82677 7.46302 5.82135 7.44264 5.8202 7.43262C5.81989 7.42993 5.81987 7.42808 5.81994 7.42691C5.82469 7.42274 5.84655 7.40664 5.91071 7.40664H6.96578H7.11578V7.25664V0.633865C7.11578 0.42434 7.29014 0.249976 7.49967 0.249976H8.07169C8.28121 0.249976 8.45558 0.42434 8.45558 0.633865V7.25664Z"
-                            fill="currentColor"
-                            stroke="currentColor"
-                            strokeWidth="0.3"
-                          />
-                        </svg>
-                      </button>
-                    </th>
-
-                    <th
-                      scope="col"
-                      className="py-3.5 px-8 text-sm font-normal text-left text-gray-500 w-[15%]"
-                    >
-                      Status
-                    </th>
-
-                    <th
-                      scope="col"
-                      className="py-3.5 pl-4 pr-8 text-sm font-normal text-left rtl:text-right text-gray-500 w-[30%] "
-                    >
-                      About
-                    </th>
-
-                    <th
-                      scope="col"
-                      className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 w-[10%] "
-                    >
+      <div className="mt-6 h-full overflow-auto border rounded-lg">
+        <div className=" h-full">
+          <table className="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg">
+            <thead className="text-white">
+              {paginatedProducts?.data?.map((product: any) => {
+                return (
+                  <tr className=" text-gray-500 divide-x text-sm flex flex-col flex-no wrap md:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
+                    <th className="p-4 text-left">Name</th>
+                    <th className="p-4 text-left">Status</th>
+                    <th className="p-4 text-left">About</th>
+                    <th className="p-4 text-left" style={{ width: '150px' }}>
                       Cost Price
                     </th>
-
-                    <th
-                      scope="col"
-                      className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 w-[10%]"
-                    >
+                    <th className="p-4 text-left" style={{ width: '150px' }}>
                       Sale Price
                     </th>
-
-                    <th scope="col" className="relative py-3.5 px-4">
-                      <span className="sr-only">Edit</span>
-                    </th>
+                    <th className="p-3 text-left"></th>
                   </tr>
-                </thead>
-                <tbody
-                  ref={tableBody}
-                  className="bg-white block h-[450px] divide-y divide-gray-200 overflow-y-scroll"
-                >
-                  {fetchLoading ? (
-                    <>
-                      {[...Array(5).keys()].map((index) => (
-                        <tr className="table w-full" key={index}>
-                          <td className="px-4 py-4 text-sm font-medium whitespace-pre-wrap w-[25%]">
-                            <div>
-                              <h2 className="font-medium text-gray-800  ">
-                                <div
-                                  className="h-2 bg-gray-300 rounded-2xl animate-pulse"
-                                  style={{ animationDelay: '0.2s' }}
-                                />
-                              </h2>
-                              <div className="text-sm text-wrap  font-normal text-gray-600 mt-2">
-                                <div
-                                  className="h-2 bg-gray-300 rounded-2xl animate-pulse"
-                                  style={{ animationDelay: '0.2s' }}
-                                />
-                              </div>
-                            </div>
-                          </td>
-                          <td className="py-4 px-4 text-sm font-medium w-[15%]">
-                            <div
-                              className="h-2 bg-gray-300 rounded-2xl animate-pulse"
-                              style={{ animationDelay: '0.2s' }}
-                            />
-                          </td>
-                          <td className="py-4 pl-4 pr-8 text-sm w-[30%]">
-                            <div className="flex flex-col gap-2">
-                              <div
-                                className="h-2 bg-gray-300 rounded-2xl animate-pulse"
-                                style={{ animationDelay: '0.2s' }}
-                              />
-                              <div
-                                className="h-2 bg-gray-300 rounded-2xl animate-pulse"
-                                style={{ animationDelay: '0.2s' }}
-                              />
-                            </div>
-                          </td>
-                          <td className="px-4 py-4 text-sm w-[10%]">
-                            <div
-                              className="h-2 bg-gray-300 rounded-2xl animate-pulse"
-                              style={{ animationDelay: '0.2s' }}
-                            />
-                          </td>
-
-                          <td className="px-4 py-4 text-sm whitespace-nowrap w-[10%]">
-                            <div
-                              className="h-2 bg-gray-300 rounded-2xl animate-pulse"
-                              style={{ animationDelay: '0.2s' }}
-                            />
-                          </td>
-
-                          <td className="px-4 py-4 text-sm whitespace-nowrap" />
-                        </tr>
-                      ))}
-                    </>
-                  ) : paginatedProducts.data.length > 0 ? (
-                    <>
-                      {paginatedProducts.data.map((product: any) => {
-                        return (
-                          <tr key={product.id} className="table w-full">
-                            <td className="px-4 py-4 text-sm font-medium whitespace-pre-wrap w-[25%]">
-                              <div>
-                                <h2 className="font-medium text-gray-800  ">
-                                  {product.name}
-                                </h2>
-                                <p className="text-sm text-wrap  font-normal text-gray-600 mt-2">
-                                  <span className="font-semibold text-gray-600">
-                                    Brand:{' '}
-                                  </span>
-                                  <span>{product.brand?.name || 'NONE'}</span>
-                                </p>
-                              </div>
-                            </td>
-                            <td className="py-4 px-4 text-sm font-medium w-[15%]">
-                              <div className="py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 w-32 text-center">
-                                {product.stock_quantity <= 0
-                                  ? 'Out Of Stock'
-                                  : product.stock_quantity <=
-                                    product.low_stock_level
-                                  ? 'Low Stock Level'
-                                  : 'In Stock'}
-                              </div>
-                            </td>
-                            <td className="py-4 pl-4 pr-8 text-sm w-[30%]">
-                              <div>
-                                <h4 className="text-gray-700 ">
-                                  <span>Category: </span>
-                                  <span>
-                                    {product.category?.name || '----'}
-                                  </span>
-                                </h4>
-                                <p className="text-gray-500 mt-2">
-                                  {product.description}
-                                </p>
-                              </div>
-                            </td>
-                            <td className="px-4 py-4 text-sm w-[10%]">
-                              <div className="flex items-center">
-                                {product.cost_price}
-                              </div>
-                            </td>
-
-                            <td className="px-4 py-4 text-sm whitespace-nowrap w-[10%]">
-                              <div>{product.sale_price}</div>
-                            </td>
-
-                            <td className="px-4 py-4 text-sm whitespace-nowrap">
-                              <div className="flex items-center gap-2">
-                                <button
-                                  type="button"
-                                  className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
-                                  onClick={() =>
-                                    navigate(`/inventory/view/${product.id}`)
-                                  }
-                                >
-                                  <ViewSVG />
-                                </button>
-
-                                <button
-                                  type="button"
-                                  className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
-                                  onClick={() => handleProductForEdit(product)}
-                                >
-                                  <EditSVG />
-                                </button>
-
-                                <button
-                                  type="button"
-                                  className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
-                                  onClick={() =>
-                                    handleSelectProductForDelete(product)
-                                  }
-                                >
-                                  <DeleteSVG />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </>
-                  ) : (
-                    <tr className="table w-full">
-                      <td
-                        colSpan={6}
-                        className="px-4 py-4 text-sm font-medium whitespace-pre-wrap w-[25%] text-center"
-                      >
-                        <div className="flex items-center justify-center gap-2 my-2">
-                          <ErrorSVG />
+                );
+              })}
+            </thead>
+            <tbody
+              className={`flex-1 md:flex-none overflow-auto h-full 
+              ${paginatedProducts?.data?.length >= 15 && 'divide-y'}
+              `}
+            >
+              {fetchLoading ? (
+                <>
+                  {[...Array(5).keys()].map((index) => (
+                    <tr className="table w-full" key={index}>
+                      <td className="px-4 py-4 text-sm font-medium whitespace-pre-wrap w-[25%]">
+                        <div>
                           <h2 className="font-medium text-gray-800  ">
-                            No Product Found
+                            <div
+                              className="h-2 bg-gray-300 rounded-2xl animate-pulse"
+                              style={{ animationDelay: '0.2s' }}
+                            />
                           </h2>
+                          <div className="text-sm text-wrap  font-normal text-gray-600 mt-2">
+                            <div
+                              className="h-2 bg-gray-300 rounded-2xl animate-pulse"
+                              style={{ animationDelay: '0.2s' }}
+                            />
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-4 px-4 text-sm font-medium w-[15%]">
+                        <div
+                          className="h-2 bg-gray-300 rounded-2xl animate-pulse"
+                          style={{ animationDelay: '0.2s' }}
+                        />
+                      </td>
+                      <td className="py-4 pl-4 pr-8 text-sm w-[30%]">
+                        <div className="flex flex-col gap-2">
+                          <div
+                            className="h-2 bg-gray-300 rounded-2xl animate-pulse"
+                            style={{ animationDelay: '0.2s' }}
+                          />
+                          <div
+                            className="h-2 bg-gray-300 rounded-2xl animate-pulse"
+                            style={{ animationDelay: '0.2s' }}
+                          />
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 text-sm w-[10%]">
+                        <div
+                          className="h-2 bg-gray-300 rounded-2xl animate-pulse"
+                          style={{ animationDelay: '0.2s' }}
+                        />
+                      </td>
+
+                      <td className="px-4 py-4 text-sm whitespace-nowrap w-[10%]">
+                        <div
+                          className="h-2 bg-gray-300 rounded-2xl animate-pulse"
+                          style={{ animationDelay: '0.2s' }}
+                        />
+                      </td>
+
+                      <td className="px-4 py-4 text-sm whitespace-nowrap" />
+                    </tr>
+                  ))}
+                </>
+              ) : paginatedProducts.data.length > 0 ? (
+                paginatedProducts?.data?.map((product: any) => {
+                  return (
+                    <tr
+                      className={`flex flex-col flex-no wrap md:table-row sm:mb-0 divide-x ${
+                        paginatedProducts?.data?.length < 15 && 'border-b'
+                      }`}
+                    >
+                      <td className="hover:bg-gray-100 p-3 ">
+                        <div>
+                          <h2 className="font-medium text-gray-800 ">
+                            {product.name}
+                          </h2>
+                          <p className="text-sm text-wrap  font-normal text-gray-600 mt-2">
+                            <span className="font-semibold text-gray-600">
+                              Brand:{' '}
+                            </span>
+                            <span>{product.brand?.name || 'NONE'}</span>
+                          </p>
+                        </div>{' '}
+                      </td>
+                      <td className="hover:bg-gray-100 p-3">
+                        <div className="py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 w-32 text-center">
+                          {product.stock_quantity <= 0
+                            ? 'Out Of Stock'
+                            : product.stock_quantity <= product.low_stock_level
+                            ? 'Low Stock Level'
+                            : 'In Stock'}
+                        </div>{' '}
+                      </td>
+                      <td className="hover:bg-gray-100 p-3 ">
+                        <div>
+                          <h4 className="text-gray-700 ">
+                            <span>Category: </span>
+                            <span>{product.category?.name || '----'}</span>
+                          </h4>
+                          <p className="text-gray-500 mt-2">
+                            {product.description}
+                          </p>
+                        </div>
+                      </td>
+                      <td className="hover:bg-gray-100 p-3">
+                        <div className="flex items-center">
+                          {product.cost_price}
+                        </div>
+                      </td>
+
+                      <td className="hover:bg-gray-100 p-3">
+                        <div>{product.sale_price}</div>
+                      </td>
+                      <td className="hover:bg-gray-100">
+                        <div className="flex items-center gap-2 p-3 h-full">
+                          <button
+                            type="button"
+                            className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
+                            onClick={() =>
+                              navigate(`/inventory/view/${product.id}`)
+                            }
+                          >
+                            <ViewSVG />
+                          </button>
+
+                          <button
+                            type="button"
+                            className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
+                            onClick={() => handleProductForEdit(product)}
+                          >
+                            <EditSVG />
+                          </button>
+
+                          <button
+                            type="button"
+                            className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
+                            onClick={() =>
+                              handleSelectProductForDelete(product)
+                            }
+                          >
+                            <DeleteSVG />
+                          </button>
                         </div>
                       </td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                  );
+                })
+              ) : (
+                <tr className="table w-full">
+                  <td
+                    colSpan={6}
+                    className="px-4 py-4 text-sm font-medium whitespace-pre-wrap w-[25%] text-center"
+                  >
+                    <div className="flex items-center justify-center gap-2 my-2">
+                      <ErrorSVG />
+                      <h2 className="font-medium text-gray-800  ">
+                        No Product Found
+                      </h2>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -625,7 +564,6 @@ export default function Inventory({ isView }: { isView: boolean }) {
           </div>
         </div>
       ) : null}
-
       {showDeleteModal && (
         <div className="flex items-center justify-center">
           <div>
@@ -702,7 +640,6 @@ export default function Inventory({ isView }: { isView: boolean }) {
           </div>
         </div>
       )}
-
       {isView && (
         <>
           <InventoryView

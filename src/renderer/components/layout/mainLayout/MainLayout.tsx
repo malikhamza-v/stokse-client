@@ -42,7 +42,7 @@ function MainLayout({ children }: any) {
             location.pathname !== '/sale'
               ? 'overflow-y-auto hide-scrollbar'
               : ''
-          } pb-20 md:pb-0 `}
+          } pb-20 md:pb-0 h-full`}
         >
           {children}
         </div>

@@ -202,7 +202,102 @@ body {
   z-index: 0 !important;
 }
 
-table {
-  table-layout: fixed;
-  width: 100%;
+/* Tables */
+
+@media (min-width: 768px) {
+  table {
+    display: inline-table !important;
+  }
+
+  thead tr:not(:first-child) {
+    display: none;
+  }
+}
+
+th {
+  position: sticky;
+  top: 0;
+  background-color: rgb(249 250 251);
+}
+
+@media screen and (max-width: 768px) {
+  th {
+    position: relative;
+  }
+
+  tr:not(:first-child) {
+    margin-top: 16px;
+  }
+
+  th:first-child {
+    height: 150px;
+    max-height: 150px;
+    min-height: 150px;
+  }
+
+  tbody tr td:first-child {
+    height: 149px;
+    max-height: 149px;
+    min-height: 149px;
+  }
+
+  th:nth-child(2) {
+    height: 50px;
+    max-height: 50px;
+    min-height: 50px;
+  }
+
+  tbody tr td:nth-child(2) {
+    height: 50px;
+    max-height: 50px;
+    min-height: 50px;
+  }
+
+  th:nth-child(3) {
+    height: 200px;
+    max-height: 200px;
+    min-height: 200px;
+  }
+
+  tbody tr td:nth-child(3) {
+    height: 200px;
+    max-height: 200px;
+    min-height: 200px;
+  }
+
+  th:nth-child(4) {
+    height: 50px;
+    max-height: 50px;
+    min-height: 50px;
+  }
+
+  tbody tr td:nth-child(4) {
+    height: 50px;
+    max-height: 50px;
+    min-height: 50px;
+  }
+
+  th:nth-child(5) {
+    height: 50px;
+    max-height: 50px;
+    min-height: 50px;
+  }
+
+  tbody tr td:nth-child(5) {
+    height: 50px;
+    max-height: 50px;
+    min-height: 50px;
+  }
+
+  th:nth-child(6) {
+    height: 80px;
+    max-height: 80px;
+    min-height: 80px;
+  }
+
+  tbody tr td:nth-child(6) {
+    height: 80px;
+    max-height: 80px;
+    min-height: 80px;
+  }
 }
