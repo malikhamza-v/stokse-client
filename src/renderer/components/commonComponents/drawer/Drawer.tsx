@@ -22,7 +22,7 @@ function Drawer({
     setIsDrawerOpen(isOpen);
   }, [isOpen]);
   return (
-    <div className="drawer drawer-end">
+    <div className="drawer drawer-end z-40">
       <input
         id={id}
         type="checkbox"
