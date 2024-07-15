@@ -41,6 +41,7 @@ import SelectStore from './views/SelectStore';
 import { isElectron } from './utils/methods';
 import Calendar from './views/appointments/Calendar';
 import Inventory from './views/inventory/Inventory';
+import Service from './views/services/Services';
 
 const RouterComponent = isElectron() ? MemoryRouter : BrowserRouter;
 
@@ -156,6 +157,17 @@ export default function App() {
               element={
                 <MainLayout>
                   <ProductEdit />
+                </MainLayout>
+              }
+            />
+
+            <Route
+              path="/inventory/services"
+              element={
+                <MainLayout>
+                  <Inventory>
+                    <Service isView={false} />
+                  </Inventory>
                 </MainLayout>
               }
             />

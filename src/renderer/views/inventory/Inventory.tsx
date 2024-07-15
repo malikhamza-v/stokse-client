@@ -30,7 +30,7 @@ export default function Inventory({ children }: { children: any }) {
                 ? 'bg-purple-100 hover:bg-purple-100'
                 : 'bg-transparent'
             }`}
-            onClick={() => navigate('/invetory/services')}
+            onClick={() => navigate('/inventory/services')}
           >
             <p className="font-light text-sm">Services</p>
           </div>
