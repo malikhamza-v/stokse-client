@@ -1,6 +1,8 @@
 @import 'react-toastify/dist/ReactToastify.css';
 @import 'flatpickr/dist/themes/material_green.css';
 
+@import 'react-big-calendar/lib/css/react-big-calendar.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -300,4 +302,21 @@ th {
     max-height: 80px;
     min-height: 80px;
   }
+}
+
+/* Calendar */
+
+.rbc-month-header {
+  height: 50px;
+  min-height: 50px;
+  max-height: 50px;
+  .rbc-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.rbc-day-bg:hover {
+  background-color: #a0aec0;
 }

@@ -8,7 +8,7 @@ import {
 import { Provider } from 'react-redux';
 import MainLayout from './components/layout';
 import Dashboard from './views/Dashboard';
-import './App.css';
+import './App.scss';
 import Inventory from './views/inventory/Inventory';
 import { CustomerEdit, Customers } from './views/customer';
 import InventoryAdd from './views/inventory/InventoryAdd';
@@ -39,6 +39,7 @@ import { useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 import SelectStore from './views/SelectStore';
 import { isElectron } from './utils/methods';
+import Calendar from './views/appointments/Calendar';
 
 const RouterComponent = isElectron() ? MemoryRouter : BrowserRouter;
 
@@ -83,6 +84,14 @@ export default function App() {
               element={
                 <MainLayout>
                   <Dashboard />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/calendar"
+              element={
+                <MainLayout>
+                  <Calendar />
                 </MainLayout>
               }
             />
