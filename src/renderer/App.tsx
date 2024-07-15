@@ -9,12 +9,12 @@ import { Provider } from 'react-redux';
 import MainLayout from './components/layout';
 import Dashboard from './views/Dashboard';
 import './App.scss';
-import Inventory from './views/inventory/Inventory';
+import Product from './views/products/Product';
 import { CustomerEdit, Customers } from './views/customer';
-import InventoryAdd from './views/inventory/InventoryAdd';
+import ProductAdd from './views/products/ProductAdd';
 import Signin from './views/Signin';
 import PrivateRoute from './utils/PrivateRoute';
-import InventoryEdit from './views/inventory/InventoryEdit';
+import ProductEdit from './views/products/ProductEdit';
 import store from '../store';
 import Sale from './views/sale/Sale';
 import Setting from './views/setting/Setting';
@@ -40,6 +40,7 @@ import { toast } from 'react-toastify';
 import SelectStore from './views/SelectStore';
 import { isElectron } from './utils/methods';
 import Calendar from './views/appointments/Calendar';
+import Inventory from './views/inventory/Inventory';
 
 const RouterComponent = isElectron() ? MemoryRouter : BrowserRouter;
 
@@ -120,34 +121,41 @@ export default function App() {
               }
             />
             <Route
-              path="/inventory"
+              path="/inventory/"
+              element={<Navigate to="/inventory/products" replace />}
+            />
+
+            <Route
+              path="/inventory/products"
               element={
                 <MainLayout>
-                  <Inventory isView={false} />
+                  <Inventory>
+                    <Product isView={false} />
+                  </Inventory>
                 </MainLayout>
               }
             />
             <Route
-              path="/inventory/view/:id"
+              path="/inventory/products/view/:id"
               element={
                 <MainLayout>
-                  <Inventory isView={true} />
+                  <Product isView={true} />
                 </MainLayout>
               }
             />
             <Route
-              path="/inventory/add"
+              path="/inventory/products/add"
               element={
                 <MainLayout>
-                  <InventoryAdd />
+                  <ProductAdd />
                 </MainLayout>
               }
             />
             <Route
-              path="/inventory/edit/:id"
+              path="/inventory/products/edit/:id"
               element={
                 <MainLayout>
-                  <InventoryEdit />
+                  <ProductEdit />
                 </MainLayout>
               }
             />
