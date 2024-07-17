@@ -23,6 +23,8 @@ api.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 403) {
       // window.location.href = '/';
+    } else if (error.response && error.response.status === 500) {
+      // localStorage.clear(); // [info]: this is temporary for logout users
     }
     return Promise.reject(error);
   },

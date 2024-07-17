@@ -222,7 +222,7 @@ function Categories() {
 
   return (
     <div className="flex flex-col h-full w-full">
-      <div className="px-16 pt-16">
+      <div className="px-16 pt-8">
         <BackButton />
       </div>
       <div className="px-16 py-8 flex items-center justify-between">
@@ -243,8 +243,8 @@ function Categories() {
           />
         </div>
       </div>
-      <div className="px-16 grid grid-cols-2 gap-4">
-        <div>
+      <div className="flex px-16 gap-4 w-full h-full overflow-y-auto flex-1">
+        <div className="flex-1 h-full overflow-y-auto pb-20">
           {fetchLoading ? (
             [...Array(5).keys()].map((skeleton) => (
               <div key={skeleton} className="w-full ">
@@ -254,50 +254,44 @@ function Categories() {
                 />
               </div>
             ))
-          ) : (
-            <div>
-              {categories.length > 0 ? (
-                categories.map((category: any) => {
-                  return (
-                    <div
-                      key={category.id}
-                      className="border flex items-center justify-between p-4 rounded-lg mb-2"
+          ) : categories.length > 0 ? (
+            categories.map((category: any) => {
+              return (
+                <div
+                  key={category.id}
+                  className="border flex items-center justify-between p-4 rounded-lg mb-2"
+                >
+                  <div>
+                    <p>{category.name}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
+                      onClick={() => handleCategoryForEdit(category)}
                     >
-                      <div>
-                        <p>{category.name}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
-                          onClick={() => handleCategoryForEdit(category)}
-                        >
-                          <EditSVG />
-                        </button>
+                      <EditSVG />
+                    </button>
 
-                        <button
-                          type="button"
-                          className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
-                          onClick={() => handleSelectProductForDelete(category)}
-                        >
-                          <DeleteSVG />
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="border flex items-center justify-center gap-2 p-4 rounded-lg mb-2">
-                  <ErrorSVG />
-                  <h2 className="font-medium text-gray-800  ">
-                    No Category Found
-                  </h2>
+                    <button
+                      type="button"
+                      className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
+                      onClick={() => handleSelectProductForDelete(category)}
+                    >
+                      <DeleteSVG />
+                    </button>
+                  </div>
                 </div>
-              )}
+              );
+            })
+          ) : (
+            <div className="border flex items-center justify-center gap-2 p-4 rounded-lg mb-2">
+              <ErrorSVG />
+              <h2 className="font-medium text-gray-800  ">No Category Found</h2>
             </div>
           )}
         </div>
-        <div className="border p-4 rounded-lg flex flex-col justify-between h-fit">
+        <div className="border p-4 rounded-lg flex flex-col justify-between h-fit w-2/5">
           <h2 className="font-bold text-xl mb-8 text-gray-500">
             {preEditItem ? 'Edit Category' : 'Add New Category'}
           </h2>
