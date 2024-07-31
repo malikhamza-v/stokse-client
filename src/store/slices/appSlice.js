@@ -8,7 +8,10 @@ const initialState = {
   business: JSON.parse(localStorage.getItem('business')) || null,
   store: JSON.parse(localStorage.getItem('store') || null) || null,
 
-  categories: [],
+  categories: {
+    product: [],
+    service: [],
+  },
   brands: [],
   taxes: [],
   managers: [],

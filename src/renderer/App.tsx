@@ -265,6 +265,18 @@ export default function App() {
             />
             <Route
               path="/setting/categories"
+              element={<Navigate to="/setting/categories/product" replace />}
+            />
+            <Route
+              path="/setting/categories/product"
+              element={
+                <MainLayout>
+                  <Categories />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/setting/categories/service"
               element={
                 <MainLayout>
                   <Categories />

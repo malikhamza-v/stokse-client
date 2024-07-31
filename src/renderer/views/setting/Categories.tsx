@@ -10,6 +10,7 @@ import {
 } from '../../components/commonComponents/buttons';
 import { useCreate, useEdit, useFetch, useRemove } from '../../utils/hooks';
 import { DeleteSVG, EditSVG, ErrorSVG, SearchSVG } from '../../utils/svg';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function Categories() {
   const [categories, setCategories] = useState<any>([]);
@@ -24,6 +25,8 @@ function Categories() {
     name: null,
   });
 
+  const selectedFilteredBtn: string = '';
+
   const { loading: fetchLoading, fetchData: categoriesFetch } = useFetch();
   const { createData: createCategory, loading: cCategoryLoading } = useCreate();
   const { loading: rCategoryLoading, removeData: removeCategory } = useRemove();
@@ -31,7 +34,8 @@ function Categories() {
 
   const dispatch = useDispatch();
   const globalCategories = useSelector((state: any) => state.app.categories);
-
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
   //   [info]: methods
   const resetErrorMsg = () => {
     setErrorMsg({
@@ -52,8 +56,8 @@ function Categories() {
     }
   };
 
-  const fetchCategories = () => {
-    categoriesFetch('/category/')
+  const fetchCategories = (type: string) => {
+    categoriesFetch(`/category/?type=${type}`)
       .then((res) => {
         if (res?.status === 200) {
           setCategories(res?.data);
@@ -109,7 +113,14 @@ function Categories() {
 
   const handleEditCategory = () => {
     resetErrorMsg();
-    editCategory(`/category/${preEditItem.id}/`, userInput, false)
+    editCategory(
+      `/category/${preEditItem.id}/`,
+      {
+        ...userInput,
+        type: pathname.includes('product') ? 'product' : 'service',
+      },
+      false,
+    )
       .then((res) => {
         if (res.status === 400) {
           const firstError = Object.keys(res.data)[0];
@@ -157,6 +168,17 @@ function Categories() {
     }
   };
 
+  const handleChangeTab = (type: string) => {
+    if (type === 'product') {
+      navigate('/setting/categories/product');
+      fetchCategories('product');
+    } else if (type === 'service') {
+      navigate('/setting/categories/service');
+      fetchCategories('service');
+    }
+    handleCancelEdit();
+  };
+
   const handleUserInput = (key: string, value: string) => {
     setUserInput({
       ...userInput,
@@ -182,7 +204,14 @@ function Categories() {
   const handleCreateCategory = () => {
     resetErrorMsg();
     // eslint-disable-next-line promise/catch-or-return
-    createCategory('/category/', userInput, false)
+    createCategory(
+      '/category/',
+      {
+        ...userInput,
+        type: pathname.includes('product') ? 'product' : 'service',
+      },
+      false,
+    )
       .then(async (res) => {
         if (res.status === 400) {
           const firstError = Object.keys(res.data)[0];
@@ -215,7 +244,7 @@ function Categories() {
       setCategories(globalCategories);
       dispatch(setGlobalCategories(globalCategories));
     } else {
-      fetchCategories();
+      fetchCategories(pathname.includes('product') ? 'product' : 'service');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -228,8 +257,9 @@ function Categories() {
       <div className="px-16 py-8 flex items-center justify-between">
         <div>
           <h2 className="font-bold text-2xl">Categories</h2>
-          <p className="text-gray-500">Manage categories of your products.</p>
+          <p className="text-gray-500">Manage categories of your store.</p>
         </div>
+
         <div className="relative flex items-center mt-4 md:mt-0">
           <span className="absolute">
             <SearchSVG />
@@ -243,6 +273,31 @@ function Categories() {
           />
         </div>
       </div>
+
+      <div className="px-16 mb-4 md:flex md:items-center md:justify-between">
+        <div className="inline-flex overflow-hidden bg-white border divide-x rounded-lg rtl:flex-row-reverse">
+          <button
+            type="button"
+            className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 ${
+              pathname.includes('product') && 'bg-gray-100'
+            } sm:text-sm`}
+            onClick={() => handleChangeTab('product')}
+          >
+            Products
+          </button>
+
+          <button
+            type="button"
+            className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 ${
+              pathname.includes('service') && 'bg-gray-100'
+            } sm:text-sm`}
+            onClick={() => handleChangeTab('service')}
+          >
+            Services
+          </button>
+        </div>
+      </div>
+
       <div className="flex px-16 gap-4 w-full h-full overflow-y-auto flex-1">
         <div className="flex-1 h-full overflow-y-auto pb-20">
           {fetchLoading ? (
