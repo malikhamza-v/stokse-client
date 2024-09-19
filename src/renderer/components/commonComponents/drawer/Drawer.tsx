@@ -41,6 +41,7 @@ function Drawer({
         <ul className="menu p-0 bg-base-200 text-base-content category-drawer min-h-full h-full">
           {isOpen && (
             <button
+              aria-label="Save"
               type="button"
               onClick={close}
               className="btn bg-transparent m-4 sm:bg-base-200 sm:btn-circle shadow-none sm:shadow-xl border-0 z-50 sm:border absolute category-close-btn"

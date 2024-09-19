@@ -59,7 +59,7 @@ export default function Inventory({ isView }: { isView: boolean }) {
   // [info]: method
   const handleProductForEdit = (product: any) => {
     dispatch(setEditProduct(product));
-    navigate(`/inventory/edit/${product.id}`);
+    navigate(`/inventory/product-list/edit/${product.id}`);
   };
 
   const fetchProducts = () => {
@@ -453,7 +453,9 @@ export default function Inventory({ isView }: { isView: boolean }) {
                             type="button"
                             className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
                             onClick={() =>
-                              navigate(`/inventory/view/${product.id}`)
+                              navigate(
+                                `/inventory/product-list/view/${product.id}`,
+                              )
                             }
                           >
                             <ViewSVG />

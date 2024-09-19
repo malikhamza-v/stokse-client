@@ -45,13 +45,13 @@ function Sale() {
   }, []);
 
   return (
-    <div className="grid grid-cols-12 ">
+    <div className="grid grid-cols-12">
       <div className="col-span-12 lg:col-span-8">
         <Items />
       </div>
       <div
         ref={cartContainer}
-        className="col-span-4 absolute -translate-x-full lg:translate-x-0 w-full md:w-[92%] lg:w-full bg-white top-0 lg:block lg:relative transition-all duration-300"
+        className="col-span-4 absolute w-full md:w-[92%] lg:w-full bg-white top-0 lg:block lg:relative transition-all duration-300"
       >
         <Cart />
       </div>

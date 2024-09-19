@@ -141,7 +141,9 @@ export default function App() {
               path="/inventory/product-list/view/:id"
               element={
                 <MainLayout>
-                  <Product isView={true} />
+                  <Inventory>
+                    <Product isView={true} />
+                  </Inventory>
                 </MainLayout>
               }
             />
