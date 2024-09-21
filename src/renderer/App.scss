@@ -175,6 +175,10 @@ body {
   font-style: italic;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 /* Drawer */
 .category-drawer {
   width: 45vw;

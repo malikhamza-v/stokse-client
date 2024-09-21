@@ -59,12 +59,18 @@ function CreateAppointment() {
     fetchServices();
   }, []);
   return (
-    <div className="flex h-full transition-all duration-300">
-      <div className="flex-1 border-r transition-all duration-300">
+    <div
+      className="flex h-full transition-all duration-300 box-border"
+      id="create_appoint_container"
+    >
+      <div
+        className="flex-1 border-r transition-all duration-300 box-border"
+        id="left_container"
+      >
         <SelectCustomer />
       </div>
 
-      <div className="w-[35vw] overflow-y-auto">
+      <div className="min-w-[35vw] w-[35vw] max-w-[35vw]  overflow-y-auto">
         {selectedServices.length > 0 && !isIntendedToAddService ? (
           <div className="h-full flex flex-col">
             <div className="p-8 border-b">
