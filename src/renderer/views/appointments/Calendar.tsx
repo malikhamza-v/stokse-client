@@ -2,6 +2,7 @@ import { Calendar as Calendaroo, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import Drawer from '../../components/commonComponents/drawer/Drawer';
 import { useState } from 'react';
+import { CreateAppointment } from '../../components/viewComponents/drawerContent';
 
 const localizer = momentLocalizer(moment);
 function Calendar() {
@@ -28,7 +29,9 @@ function Calendar() {
         id="create-appointment-drawer"
         isOpen={isCreateAppoinmentDrawerOpen}
         close={() => setIsCreateAppoinmentDrawerOpen(false)}
-      ></Drawer>
+      >
+        <CreateAppointment />
+      </Drawer>
     </div>
   );
 }

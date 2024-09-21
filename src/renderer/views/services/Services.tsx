@@ -27,16 +27,9 @@ export default function Service({ isView }: { isView: boolean }) {
   const tableBody = useRef<HTMLTableSectionElement>(null);
   const [products, setProducts] = useState<any>([]);
   const [preDeleteItem, setPreDeleteItem] = useState<any>({});
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchedProducts, setSearchedProducts] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedProductID, setSelectedProductID] = useState<number | null>(
-    null,
-  );
-  const [selectedFilteredBtn, setSelectedFilteredBtn] = useState<string | null>(
-    null,
-  );
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
   const [paginatedProducts, setPaginatedProducts] = useState<{
     currentPage: number | null;
     totalPage: number | null;
@@ -52,8 +45,6 @@ export default function Service({ isView }: { isView: boolean }) {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const params = useParams();
-  const globalProducts = useSelector((state: any) => state.app.products);
 
   // [info]: method
   const handleProductForEdit = (product: any) => {
@@ -67,7 +58,6 @@ export default function Service({ isView }: { isView: boolean }) {
         if (res?.status === 200) {
           setProducts(res?.data);
           dispatch(setGlobalProducts(res?.data));
-          setFilteredProducts(res?.data);
         }
         return true;
       })
@@ -79,9 +69,9 @@ export default function Service({ isView }: { isView: boolean }) {
   const handleSearch = (event: { target: { value: any } }) => {
     const { value } = event.target;
     if (!value) {
-      setSearchedProducts(filteredProducts);
+      setSearchedProducts(products);
     } else {
-      const foundItems = filteredProducts.filter((product: any) =>
+      const foundItems = products.filter((product: any) =>
         product.name.toLowerCase().includes(value.toLowerCase()),
       );
 
@@ -100,7 +90,7 @@ export default function Service({ isView }: { isView: boolean }) {
       setPaginatedProducts({
         ...paginatedProducts,
         currentPage: (paginatedProducts.currentPage || 1) + 1,
-        data: filteredProducts.slice(
+        data: products.slice(
           (paginatedProducts.currentPage || 1) * noOfItemsPerPage,
           (paginatedProducts.currentPage || 1) * noOfItemsPerPage + 15,
         ),
@@ -109,7 +99,7 @@ export default function Service({ isView }: { isView: boolean }) {
       setPaginatedProducts({
         ...paginatedProducts,
         currentPage: (paginatedProducts.currentPage || 2) - 1, // Ensure currentPage is at least 1
-        data: filteredProducts.slice(
+        data: products.slice(
           ((paginatedProducts.currentPage || 2) - 2) * noOfItemsPerPage,
           ((paginatedProducts.currentPage || 2) - 1) * noOfItemsPerPage,
         ),
@@ -145,22 +135,16 @@ export default function Service({ isView }: { isView: boolean }) {
 
   // [info]: lifecyles
   useEffect(() => {
-    // if (globalProducts.length > 0) {
-    // setProducts(globalProducts);
-    // setFilteredProducts(globalProducts);
-    // } else {
     fetchProducts();
-    // }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     setPaginatedProducts({
       currentPage: 1,
-      totalPage: Math.ceil(filteredProducts.length / 15),
-      data: filteredProducts.slice(0, noOfItemsPerPage),
+      totalPage: Math.ceil(products.length / 15),
+      data: products.slice(0, noOfItemsPerPage),
     });
-  }, [filteredProducts]);
+  }, [products]);
 
   useEffect(() => {
     setPaginatedProducts({
@@ -170,34 +154,6 @@ export default function Service({ isView }: { isView: boolean }) {
     });
   }, [searchedProducts]);
 
-  useEffect(() => {
-    if (selectedFilteredBtn) {
-      let data;
-      if (selectedFilteredBtn === 'in-stock') {
-        data = products.filter((product: any) => {
-          return product.stock_quantity > 0;
-        });
-        setFilteredProducts(data);
-      } else if (selectedFilteredBtn === 'out-of-stock') {
-        data = products.filter((product: any) => {
-          return product.stock_quantity <= 0;
-        });
-        setFilteredProducts(data);
-      } else {
-        setFilteredProducts(products);
-      }
-    }
-  }, [selectedFilteredBtn, products]);
-
-  useEffect(() => {
-    if (isView) {
-      setIsDrawerOpen(true);
-      if (params.id) {
-        setSelectedProductID(parseInt(params.id));
-      }
-    }
-  }, [navigate]);
-
   return (
     <section className="container py-10 px-4 mx-auto flex flex-col h-full">
       <div className="sm:flex sm:items-center sm:justify-between">
@@ -206,7 +162,7 @@ export default function Service({ isView }: { isView: boolean }) {
             <h2 className="text-gray-800 font-bold text-2xl">Services</h2>
 
             <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full  ">
-              {filteredProducts?.length} services
+              {products?.length} services
             </span>
           </div>
 
@@ -259,40 +215,7 @@ export default function Service({ isView }: { isView: boolean }) {
           </Link>
         </div>
       </div>
-      <div className="mt-6 md:flex md:items-center md:justify-between">
-        <div className="inline-flex overflow-hidden bg-white border divide-x rounded-lg rtl:flex-row-reverse">
-          <button
-            type="button"
-            className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 ${
-              (!selectedFilteredBtn || selectedFilteredBtn === 'all') &&
-              'bg-gray-100'
-            } sm:text-sm`}
-            onClick={() => setSelectedFilteredBtn('all')}
-          >
-            View all
-          </button>
-
-          <button
-            type="button"
-            className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 ${
-              selectedFilteredBtn === 'in-stock' && 'bg-gray-100'
-            } sm:text-sm`}
-            onClick={() => setSelectedFilteredBtn('in-stock')}
-          >
-            In Stock
-          </button>
-
-          <button
-            type="button"
-            className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 ${
-              selectedFilteredBtn === 'out-of-stock' && 'bg-gray-100'
-            } sm:text-sm`}
-            onClick={() => setSelectedFilteredBtn('out-of-stock')}
-          >
-            Out Of Stock
-          </button>
-        </div>
-
+      <div className="mt-6 md:flex md:items-center md:justify-end">
         <div className="relative flex items-center mt-4 md:mt-0">
           <span className="absolute">
             <SearchSVG />
