@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { handleAddServiceToCreatedAppointment } from '../../../../../store/slices/appSlice';
 import { ServiceCard } from '../../../commonComponents/drawerContent';
 import { AddSVG } from '../../../../utils/svg';
+import SelectCustomer from '../selectCustomer/SelectCustomer';
 
 function CreateAppointment() {
   const [services, setServices] = useState<any>([]);
@@ -59,8 +60,8 @@ function CreateAppointment() {
   }, []);
   return (
     <div className="grid grid-cols-4 h-full">
-      <div className="col-span-1 border-r p-8">
-        <p>Select Customer</p>
+      <div className="col-span-1 border-r">
+        <SelectCustomer />
       </div>
 
       <div className="col-span-3 overflow-y-auto">
