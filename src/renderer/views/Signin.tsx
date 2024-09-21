@@ -65,7 +65,7 @@ function Signin() {
       <div className="h-screen w-1/2 bg-white text-black">
         <div className="mx-auto flex h-full w-2/3 flex-col justify-center  xl:w-1/2">
           <div>
-            <p className="text-3xl font-bold text-blue-600">Welcomee Back</p>
+            <p className="text-3xl font-bold text-blue-600">Welcome Back</p>
             <p>Enter your email and password to sign in</p>
           </div>
 

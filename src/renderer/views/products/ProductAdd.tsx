@@ -150,7 +150,7 @@ export default function InventoryAdd() {
   };
 
   const fetchCategories = () => {
-    categoriesFetch('/category/')
+    categoriesFetch('/category/?type=product')
       .then((res: any) => {
         if (res?.status === 200) {
           setCategories(res?.data);

@@ -62,7 +62,7 @@ export default function Service({ isView }: { isView: boolean }) {
   };
 
   const fetchProducts = () => {
-    productsFetch('/products/')
+    productsFetch('/services/')
       .then((res) => {
         if (res?.status === 200) {
           setProducts(res?.data);
@@ -145,12 +145,12 @@ export default function Service({ isView }: { isView: boolean }) {
 
   // [info]: lifecyles
   useEffect(() => {
-    if (globalProducts.length > 0) {
-      setProducts(globalProducts);
-      setFilteredProducts(globalProducts);
-    } else {
-      fetchProducts();
-    }
+    // if (globalProducts.length > 0) {
+    // setProducts(globalProducts);
+    // setFilteredProducts(globalProducts);
+    // } else {
+    fetchProducts();
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -315,13 +315,13 @@ export default function Service({ isView }: { isView: boolean }) {
                 return (
                   <tr className=" text-gray-500 divide-x text-sm flex flex-col flex-no wrap md:table-row rounded-l-lg sm:rounded-none mb-2 sm:mb-0">
                     <th className="p-4 text-left">Name</th>
-                    <th className="p-4 text-left">Status</th>
+                    <th className="p-4 text-left">Duration</th>
                     <th className="p-4 text-left">About</th>
                     <th className="p-4 text-left" style={{ width: '150px' }}>
-                      Cost Price
+                      Price
                     </th>
                     <th className="p-4 text-left" style={{ width: '150px' }}>
-                      Sale Price
+                      Team Members
                     </th>
                     <th className="p-3 text-left"></th>
                   </tr>
@@ -390,7 +390,7 @@ export default function Service({ isView }: { isView: boolean }) {
                   ))}
                 </>
               ) : paginatedProducts.data.length > 0 ? (
-                paginatedProducts?.data?.map((product: any) => {
+                paginatedProducts?.data?.map((service: any) => {
                   return (
                     <tr
                       className={`flex flex-col flex-no wrap md:table-row sm:mb-0 divide-x ${
@@ -400,44 +400,42 @@ export default function Service({ isView }: { isView: boolean }) {
                       <td className="hover:bg-gray-100 p-3 ">
                         <div>
                           <h2 className="font-medium text-gray-800 ">
-                            {product.name}
+                            {service.name}
                           </h2>
-                          <p className="text-sm text-wrap  font-normal text-gray-600 mt-2">
-                            <span className="font-semibold text-gray-600">
-                              Brand:{' '}
-                            </span>
-                            <span>{product.brand?.name || 'NONE'}</span>
-                          </p>
                         </div>{' '}
                       </td>
                       <td className="hover:bg-gray-100 p-3">
-                        <div className="py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 w-32 text-center">
-                          {product.stock_quantity <= 0
-                            ? 'Out Of Stock'
-                            : product.stock_quantity <= product.low_stock_level
-                              ? 'Low Stock Level'
-                              : 'In Stock'}
+                        <div className="py-1 font-normal w-32 text-left">
+                          {service.duration}
                         </div>{' '}
                       </td>
                       <td className="hover:bg-gray-100 p-3 ">
                         <div>
                           <h4 className="text-gray-700 ">
                             <span>Category: </span>
-                            <span>{product.category?.name || '----'}</span>
+                            <span>{service.category?.name || '----'}</span>
                           </h4>
                           <p className="text-gray-500 mt-2">
-                            {product.description}
+                            {service.description}
                           </p>
                         </div>
                       </td>
                       <td className="hover:bg-gray-100 p-3">
-                        <div className="flex items-center">
-                          {product.cost_price}
+                        <div className="flex flex-col gap-2">
+                          <span className="py-1 text-sm font-normal rounded-full w-fit badge badge-neutral text-center">
+                            {service.price_type}
+                          </span>
+                          {service.price}
                         </div>
                       </td>
 
                       <td className="hover:bg-gray-100 p-3">
-                        <div>{product.sale_price}</div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="badge badge-outline">
+                            {service.team.length}
+                          </span>
+                          <span className="font-medium">members</span>
+                        </div>
                       </td>
                       <td className="hover:bg-gray-100">
                         <div className="flex items-center gap-2 p-3 h-full">
@@ -445,7 +443,9 @@ export default function Service({ isView }: { isView: boolean }) {
                             type="button"
                             className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
                             onClick={() =>
-                              navigate(`/inventory/view/${product.id}`)
+                              navigate(
+                                `/inventory/service-list/edit/${service.id}`,
+                              )
                             }
                           >
                             <ViewSVG />
@@ -454,7 +454,7 @@ export default function Service({ isView }: { isView: boolean }) {
                           <button
                             type="button"
                             className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
-                            onClick={() => handleProductForEdit(product)}
+                            onClick={() => handleProductForEdit(service)}
                           >
                             <EditSVG />
                           </button>
@@ -463,7 +463,7 @@ export default function Service({ isView }: { isView: boolean }) {
                             type="button"
                             className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100"
                             onClick={() =>
-                              handleSelectProductForDelete(product)
+                              handleSelectProductForDelete(service)
                             }
                           >
                             <DeleteSVG />

@@ -113,6 +113,14 @@ body {
   padding: 0.4rem;
 }
 
+.service_team > div:nth-of-type(1) {
+  background-color: white;
+  /* border: gray; */
+  border-radius: 1rem;
+  padding: 0.4rem;
+  // padding-block: 1rem;
+}
+
 /* Accordian */
 
 .wrapper {
