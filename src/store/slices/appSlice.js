@@ -17,6 +17,9 @@ const initialState = {
   managers: [],
   stores: [],
   paymentMethods: [],
+  createdAppointment: {
+    services: [],
+  },
 };
 
 const appSlice = createSlice({
@@ -62,6 +65,14 @@ const appSlice = createSlice({
     resetAppData() {
       return initialState;
     },
+
+    // [info]: create appointment
+    handleAddServiceToCreatedAppointment: (state, action) => {
+      state.createdAppointment.services = [
+        ...state.createdAppointment.services,
+        action.payload,
+      ];
+    },
   },
 });
 
@@ -79,6 +90,8 @@ export const {
   setStores,
   setPaymentMethods,
   resetAppData,
+
+  handleAddServiceToCreatedAppointment,
 } = appSlice.actions;
 
 export default appSlice.reducer;
