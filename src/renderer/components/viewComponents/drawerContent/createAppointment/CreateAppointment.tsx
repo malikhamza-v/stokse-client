@@ -59,12 +59,12 @@ function CreateAppointment() {
     fetchServices();
   }, []);
   return (
-    <div className="grid grid-cols-4 h-full">
-      <div className="col-span-1 border-r">
+    <div className="flex h-full transition-all duration-300">
+      <div className="flex-1 border-r transition-all duration-300">
         <SelectCustomer />
       </div>
 
-      <div className="col-span-3 overflow-y-auto">
+      <div className="w-[35vw] overflow-y-auto">
         {selectedServices.length > 0 && !isIntendedToAddService ? (
           <div className="h-full flex flex-col">
             <div className="p-8 border-b">

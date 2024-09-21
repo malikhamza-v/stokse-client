@@ -177,13 +177,14 @@ body {
 
 /* Drawer */
 .category-drawer {
-  width: 45vw !important;
+  width: 45vw;
   background-color: white;
+  transition: 0.5s !important;
 }
 
 @media screen and (max-width: 1100px) {
   .category-drawer {
-    width: 65vw !important;
+    width: 65vw;
   }
 }
 
