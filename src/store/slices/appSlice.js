@@ -20,6 +20,7 @@ const initialState = {
   createdAppointment: {
     services: [],
     customer: null,
+    total: 0,
   },
 };
 
@@ -78,6 +79,10 @@ const appSlice = createSlice({
     handleAddCustomerToCreateAppointment: (state, action) => {
       state.createdAppointment.customer = action.payload;
     },
+
+    handleTotalOfCreateAppointment: (state, action) => {
+      state.createdAppointment.total = action.payload;
+    },
   },
 });
 
@@ -98,6 +103,7 @@ export const {
 
   handleAddServiceToCreatedAppointment,
   handleAddCustomerToCreateAppointment,
+  handleTotalOfCreateAppointment,
 } = appSlice.actions;
 
 export default appSlice.reducer;

@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useFetch } from '../../../../utils/hooks';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleAddServiceToCreatedAppointment } from '../../../../../store/slices/appSlice';
+import {
+  handleAddServiceToCreatedAppointment,
+  handleTotalOfCreateAppointment,
+} from '../../../../../store/slices/appSlice';
 import { ServiceCard } from '../../../commonComponents/drawerContent';
 import { AddSVG } from '../../../../utils/svg';
 import SelectCustomer from '../selectCustomer/SelectCustomer';
@@ -16,6 +19,7 @@ function CreateAppointment() {
   const selectedServices = useSelector(
     (state: any) => state.app.createdAppointment.services,
   );
+  const total = useSelector((state: any) => state.app.createdAppointment.total);
 
   //   [methods]:
   const handleAddService = (service: any) => {
@@ -55,6 +59,13 @@ function CreateAppointment() {
   };
 
   //   [info]: lifecyles
+  useEffect(() => {
+    console.log(selectedServices);
+    const totalAmount = selectedServices.reduce((sum, service) => {
+      return sum + parseFloat(service.price);
+    }, 0);
+    dispatch(handleTotalOfCreateAppointment(totalAmount));
+  }, [selectedServices]);
   useEffect(() => {
     fetchServices();
   }, []);
@@ -111,7 +122,7 @@ function CreateAppointment() {
                 <p className="font-medium">Total</p>
                 <div className="flex items-center gap-4 text-base">
                   <p className="text-gray-500">10min</p>
-                  <p className="font-semibold">PKR 200</p>
+                  <p className="font-semibold">PKR {total}</p>
                 </div>
               </div>
 
