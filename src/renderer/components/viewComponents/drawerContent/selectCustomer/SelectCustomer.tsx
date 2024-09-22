@@ -1,28 +1,52 @@
 import { useEffect, useState } from 'react';
 import { useFetch } from '../../../../utils/hooks';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleAddCustomerToCreateAppointment } from '../../../../../store/slices/appSlice';
 
 function SelectCustomer() {
   const [isIntendedToAddCustomer, setIsIntendedToAddCustomer] = useState(false);
   const [customers, setCustomers] = useState([]);
+
   const { loading: customerFetchLoading, fetchData: customerFetch } =
     useFetch();
 
+  const dispatch = useDispatch();
+  const selectedCustomer = useSelector(
+    (state: any) => state.app.createdAppointment.customer,
+  );
   // [info]: methods
-  const handleAddCustomer = () => {
-    if (!isIntendedToAddCustomer) {
+
+  const handleSelectCustomer = (customer: any) => {
+    dispatch(handleAddCustomerToCreateAppointment(customer));
+
+    handleCloseCustomerSection(customer);
+  };
+
+  const handleCloseCustomerSection = (customer: any) => {
+    if (!customer) {
       const drawer = document.querySelector('.category-drawer');
       if (drawer) {
-        if (isIntendedToAddCustomer) {
-          drawer.style.width = '45vw';
-        } else {
-          drawer.style.width = '55vw';
-        }
+        drawer.style.width = '45vw';
       }
-      setTimeout(() => {
-        setIsIntendedToAddCustomer(!isIntendedToAddCustomer);
-      }, 550);
+    }
+    setIsIntendedToAddCustomer(false);
+  };
+
+  const handleOpenCustomerSection = () => {
+    const drawer = document.querySelector('.category-drawer');
+    if (drawer) {
+      drawer.style.width = '55vw';
+    }
+    setTimeout(() => {
+      setIsIntendedToAddCustomer(true);
+    }, 500);
+  };
+
+  const handleAddCustomer = () => {
+    if (!isIntendedToAddCustomer && !selectedCustomer) {
+      handleOpenCustomerSection();
+      // handleCloseCustomerSection();
     } else {
-      //   setIsIntendedToAddCustomer(!isIntendedToAddCustomer);
     }
   };
 
@@ -46,14 +70,14 @@ function SelectCustomer() {
 
   return (
     <div
-      className={`h-full ${isIntendedToAddCustomer ? '' : 'hover:bg-purple-100 cursor-pointer'}  max-w-[20vw]`}
+      className={`h-full ${isIntendedToAddCustomer ? '' : 'hover:bg-purple-100 cursor-pointer'} overflow-y-auto  max-w-[20vw]`}
       onClick={handleAddCustomer}
       role="button"
       tabIndex={0}
       aria-hidden="true"
     >
       {isIntendedToAddCustomer ? (
-        <div className="py-8 w-full box-border block">
+        <div className="py-8 w-full box-border block overflow-y-auto">
           <p className="font-semibold text-xl px-4">Select Customer</p>
 
           <div className="mt-4 px-4 w-full box-border max-w-full">
@@ -86,8 +110,24 @@ function SelectCustomer() {
           </div>
 
           <div className="px-4 mt-4">
+            <div
+              className="flex items-center gap-3 bg-purple-100 mb-4 p-4 rounded-lg cursor-pointer"
+              onClick={() => handleSelectCustomer(null)}
+            >
+              <img
+                src="https://api.dicebear.com/9.x/fun-emoji/svg?seed=Eliza&radius=50"
+                alt="customer image"
+                className="w-10 h-10"
+              />
+              <div className="flex flex-col gap-1.5">
+                <p>Walk In</p>
+              </div>
+            </div>
             {customers?.map((customer) => (
-              <div className="flex items-center gap-3 bg-purple-100 mb-4 p-4 rounded-lg cursor-pointer">
+              <div
+                className="flex items-center gap-3 bg-purple-100 mb-4 p-4 rounded-lg cursor-pointer"
+                onClick={() => handleSelectCustomer(customer)}
+              >
                 <img
                   src={`https://api.dicebear.com/9.x/initials/svg?seed=${customer.name}&radius=50`}
                   alt="customer image"
@@ -102,18 +142,57 @@ function SelectCustomer() {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col gap-2 justify-center items-center py-8 px-4">
-          <div>
-            <img
-              src="https://api.dicebear.com/9.x/fun-emoji/svg?seed=Eliza&radius=50"
-              alt="customer_avatar"
-              className="w-16 h-16"
-            />
-          </div>
-          <p className="font-medium mt-2">Add Customer</p>
-          <p className="text-center text-gray-500">
-            Or leave empty for walk-ins
-          </p>
+        <div className="flex flex-col gap-2 justify-center items-center py-8 ">
+          {!selectedCustomer ? (
+            <div className="flex flex-col items-center justify-center px-4">
+              <div>
+                <img
+                  src="https://api.dicebear.com/9.x/fun-emoji/svg?seed=Eliza&radius=50"
+                  alt="customer_avatar"
+                  className="w-14 h-14"
+                />
+              </div>
+              <p className="font-medium mt-2">Add Customer</p>
+              <p className="text-center text-gray-500">
+                Or leave empty for walk-ins
+              </p>
+            </div>
+          ) : (
+            <div className="w-full px-4">
+              <div className="flex flex-col items-center justify-center border-b w-full pb-8">
+                <img
+                  src={`https://api.dicebear.com/9.x/initials/svg?seed=${selectedCustomer?.name}&radius=50`}
+                  alt="customer image"
+                  className="w-16 h-16"
+                />
+                <div className="flex flex-col justify-center items-center gap-1.5 mt-4">
+                  <p className="font-medium">{selectedCustomer?.name}</p>
+                  <p className="text-gray-500">{selectedCustomer?.email}</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <button
+                    className="btn btn-neutral btn-sm text-xs"
+                    onClick={() => handleSelectCustomer(null)}
+                  >
+                    Cancel Customer
+                  </button>
+                  <button className="btn btn-outline btn-sm text-xs">
+                    View Profile
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-8 flex flex-col gap-3">
+                <p className="font-medium">
+                  Total Spent {selectedCustomer.total_spent}
+                </p>
+                <p className="font-medium">
+                  Created {selectedCustomer.created_at}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
