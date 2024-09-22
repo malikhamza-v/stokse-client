@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import Flatpickr from 'react-flatpickr';
 import { useFetch } from '../../../../utils/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   handleAddServiceToCreatedAppointment,
+  handleAddSlotToCreateAppointment,
   handleTotalOfCreateAppointment,
 } from '../../../../../store/slices/appSlice';
 import { ServiceCard } from '../../../commonComponents/drawerContent';
@@ -26,6 +28,10 @@ function CreateAppointment() {
   const handleAddService = (service: any) => {
     dispatch(handleAddServiceToCreatedAppointment(service));
     setIsIntendedToAddService(false);
+  };
+
+  const handleAppointmentTimeChange = (time) => {
+    dispatch(handleAddSlotToCreateAppointment({ time: time }));
   };
 
   const fetchServices = () => {
@@ -88,7 +94,19 @@ function CreateAppointment() {
             <div className="p-8 border-b">
               <p className="text-2xl font-semibold">{slot?.date || 'NONE'}</p>
               <div className="flex items-center gap-2">
-                <p>{slot?.time || 'None'}</p>
+                {/* <p>{slot?.time || 'None'}</p> */}
+                <div className="time_picker hover:underline">
+                  <Flatpickr
+                    placeholder="DOB"
+                    value={slot?.time || ''}
+                    options={{
+                      enableTime: true,
+                      noCalendar: true,
+                      dateFormat: 'h:i K',
+                    }}
+                    onChange={handleAppointmentTimeChange}
+                  />
+                </div>
                 <span className="mb-2">.</span>
                 <p>Doesn't repeat</p>
               </div>

@@ -89,7 +89,10 @@ const appSlice = createSlice({
     },
 
     handleAddSlotToCreateAppointment: (state, action) => {
-      state.createdAppointment.slot = action.payload;
+      state.createdAppointment.slot = {
+        ...state.createdAppointment.slot,
+        ...action.payload,
+      };
     },
   },
 });

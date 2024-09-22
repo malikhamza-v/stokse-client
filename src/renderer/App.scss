@@ -212,6 +212,12 @@ body {
   @apply border border-gray-300 w-full h-12 rounded-full block p-2.5 px-4 text-sm text-gray-900 bg-white resize-none;
 }
 
+.time_picker {
+  .flatpickr-input {
+    @apply border-none rounded-none !outline-none p-0 m-0 w-14;
+  }
+}
+
 /* Charts */
 .apexcharts-toolbar {
   z-index: 0 !important;
