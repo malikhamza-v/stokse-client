@@ -1,15 +1,23 @@
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Calendar as Calendaroo, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import Drawer from '../../components/commonComponents/drawer/Drawer';
-import { useState } from 'react';
 import { CreateAppointment } from '../../components/viewComponents/drawerContent';
+import { handleAddSlotToCreateAppointment } from '../../../store/slices/appSlice';
+import { getDateAndTimeFromSlot } from '../../utils/methods';
 
 const localizer = momentLocalizer(moment);
 function Calendar() {
   const [isCreateAppoinmentDrawerOpen, setIsCreateAppoinmentDrawerOpen] =
     useState(false);
-  const handleSelectSlot = (e) => {
-    // console.log('===event', e);
+
+  const dispatch = useDispatch();
+
+  const handleSelectSlot = (e: any) => {
+    dispatch(
+      handleAddSlotToCreateAppointment(getDateAndTimeFromSlot(e.slots[0])),
+    );
     setIsCreateAppoinmentDrawerOpen(true);
   };
 

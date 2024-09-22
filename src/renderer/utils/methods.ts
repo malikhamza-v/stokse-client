@@ -111,3 +111,20 @@ export const formatDateIntoYYMMDD = (inputDate: string) => {
 export const isElectron = () => {
   return window.electron;
 };
+
+export const getDateAndTimeFromSlot = (slot: string) => {
+  const date = new Date(slot);
+
+  const optionsDate = { weekday: 'short', day: 'numeric', month: 'short' };
+  const formattedDate = date.toLocaleDateString('en-US', optionsDate);
+
+  const hours = date.getHours() % 12 || 12; // Convert 24-hour time to 12-hour time
+  const minutes = date.getMinutes().toString().padStart(2, '0'); // Ensure two digits for minutes
+  const ampm = date.getHours() >= 12 ? 'pm' : 'am';
+  const formattedTime = `${hours}:${minutes} ${ampm}`;
+
+  return {
+    date: formattedDate.replace(',', ''), // "Tue 10 Sep"
+    time: formattedTime, // "01:00 am"
+  };
+};

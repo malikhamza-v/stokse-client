@@ -20,6 +20,7 @@ function CreateAppointment() {
     (state: any) => state.app.createdAppointment.services,
   );
   const total = useSelector((state: any) => state.app.createdAppointment.total);
+  const slot = useSelector((state: any) => state.app.createdAppointment.slot);
 
   //   [methods]:
   const handleAddService = (service: any) => {
@@ -85,9 +86,9 @@ function CreateAppointment() {
         {selectedServices.length > 0 && !isIntendedToAddService ? (
           <div className="h-full flex flex-col">
             <div className="p-8 border-b">
-              <p className="text-2xl font-semibold">Wed 18 Sep</p>
+              <p className="text-2xl font-semibold">{slot?.date || 'NONE'}</p>
               <div className="flex items-center gap-2">
-                <p>2.05pm</p>
+                <p>{slot?.time || 'None'}</p>
                 <span className="mb-2">.</span>
                 <p>Doesn't repeat</p>
               </div>

@@ -21,6 +21,10 @@ const initialState = {
     services: [],
     customer: null,
     total: 0,
+    slot: {
+      data: null,
+      time: null,
+    },
   },
 };
 
@@ -83,6 +87,10 @@ const appSlice = createSlice({
     handleTotalOfCreateAppointment: (state, action) => {
       state.createdAppointment.total = action.payload;
     },
+
+    handleAddSlotToCreateAppointment: (state, action) => {
+      state.createdAppointment.slot = action.payload;
+    },
   },
 });
 
@@ -104,6 +112,7 @@ export const {
   handleAddServiceToCreatedAppointment,
   handleAddCustomerToCreateAppointment,
   handleTotalOfCreateAppointment,
+  handleAddSlotToCreateAppointment,
 } = appSlice.actions;
 
 export default appSlice.reducer;
