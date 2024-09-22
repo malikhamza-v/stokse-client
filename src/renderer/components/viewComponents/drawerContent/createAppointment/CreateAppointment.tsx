@@ -67,7 +67,6 @@ function CreateAppointment() {
 
   //   [info]: lifecyles
   useEffect(() => {
-    console.log(selectedServices);
     const totalAmount = selectedServices.reduce((sum, service) => {
       return sum + parseFloat(service.price);
     }, 0);
@@ -91,7 +90,7 @@ function CreateAppointment() {
       <div className="min-w-[35vw] w-[35vw] max-w-[35vw]  overflow-y-auto">
         {selectedServices.length > 0 && !isIntendedToAddService ? (
           <div className="h-full flex flex-col">
-            <div className="p-8 border-b">
+            <div className="px-8 pt-6 pb-2 border-b">
               <p className="text-2xl font-semibold">{slot?.date || 'NONE'}</p>
               <div className="flex items-center gap-2">
                 {/* <p>{slot?.time || 'None'}</p> */}
@@ -119,6 +118,7 @@ function CreateAppointment() {
                     <ServiceCard
                       key={index}
                       service={service}
+                      isAdded
                       onClickAction={() => {}}
                     />
                   );

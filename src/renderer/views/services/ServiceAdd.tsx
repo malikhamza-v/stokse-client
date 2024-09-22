@@ -32,7 +32,7 @@ interface UserInputInterface {
   description: string | null;
   price: number | null;
   price_type: string;
-  duraion: string;
+  duration: string;
   team: Employee[];
 }
 
@@ -60,7 +60,7 @@ export default function ServiceAdd() {
     description: null,
     price: null,
     price_type: 'fixed',
-    duraion: '1h',
+    duration: '1h',
     team: [],
   });
   const [categories, setCategories] = useState([]);
@@ -148,13 +148,10 @@ export default function ServiceAdd() {
       description: userInput.description,
       price: userInput.price,
       price_type: userInput.price_type,
-      duration: userInput.duraion,
+      duration: userInput.duration,
       team: userInput.team.map((employee) => employee.value),
     };
 
-    console.log('===payload', payload);
-
-    // return;
     // eslint-disable-next-line promise/catch-or-return
     createProduct('/services/', payload, false)
       .then(async (res) => {
@@ -426,7 +423,7 @@ export default function ServiceAdd() {
                         onChange={(e) =>
                           handleUserInput('duration', e.target.value)
                         }
-                        value={userInput.duraion}
+                        value={userInput.duration}
                         className="appearance-none hover:placeholder-shown:bg-emerald-500 relative text-pink-400 bg-transparent ring-0 outline-none  placeholder-violet-700 text-sm font-bold rounded-full p-4 focus:ring-violet-500 focus:border-violet-500 block w-full"
                         id="duration"
                       >

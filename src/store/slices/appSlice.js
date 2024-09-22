@@ -1,4 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
+import {
+  addTimeAndDuration,
+  formatDateIntoYYMMDD,
+} from '../../renderer/utils/methods';
 
 const initialState = {
   products: [], // [info]: store products data
@@ -74,9 +78,20 @@ const appSlice = createSlice({
 
     // [info]: create appointment
     handleAddServiceToCreatedAppointment: (state, action) => {
+      const allServices = state.createdAppointment.services;
+      const selectedService = {
+        ...action.payload,
+        start_time: addTimeAndDuration(
+          allServices[allServices.length - 1]?.start_time
+            ? `${formatDateIntoYYMMDD(state.createdAppointment.slot.time)} ${allServices[allServices.length - 1]?.start_time}`
+            : state.createdAppointment.slot.time?.toString(),
+          allServices[allServices.length - 1]?.duration || '0min',
+        ),
+      };
+
       state.createdAppointment.services = [
         ...state.createdAppointment.services,
-        action.payload,
+        selectedService,
       ];
     },
 

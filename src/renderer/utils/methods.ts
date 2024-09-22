@@ -123,3 +123,33 @@ export const getDateAndTimeFromSlot = (slot: string) => {
     time: slot,
   };
 };
+
+export const convertTimeInto12h = (time: string) => {
+  const date = new Date(time);
+
+  const hours = date.getHours() % 12 || 12;
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const ampm = date.getHours() >= 12 ? 'pm' : 'am';
+  return `${hours}:${minutes} ${ampm}`;
+};
+
+export const addTimeAndDuration = (time: string, duration: string) => {
+  const date = new Date(time);
+  const [hours, minutes] = duration.split(' ').reduce(
+    (acc, part: any) => {
+      if (part.includes('h')) {
+        acc[0] += parseInt(part || '0');
+      } else if (part.includes('min')) {
+        acc[1] += parseInt(part);
+      }
+      return acc;
+    },
+    [0, 0],
+  );
+  date.setHours(date.getHours() + hours);
+  date.setMinutes(date.getMinutes() + minutes);
+  const newHours = date.getHours() % 12 || 12;
+  const newMinutes = date.getMinutes().toString().padStart(2, '0');
+  const ampm = date.getHours() >= 12 ? 'pm' : 'am';
+  return `${newHours}:${newMinutes} ${ampm}`;
+};

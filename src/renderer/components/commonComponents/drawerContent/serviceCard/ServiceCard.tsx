@@ -1,8 +1,12 @@
+import { convertTimeInto12h } from '../../../../utils/methods';
+
 function ServiceCard({
   service,
+  isAdded,
   onClickAction,
 }: {
   service: any;
+  isAdded: boolean;
   onClickAction: any;
 }) {
   return (
@@ -15,7 +19,15 @@ function ServiceCard({
     >
       <div className="flex flex-col gap-2">
         <p className="font-semibold">{service.name}</p>
-        <p className="text-gray-500">{service.duration}</p>
+        <div className="flex items-center gap-2 text-gray-500">
+          {isAdded ? (
+            <>
+              <p>{service?.start_time || 'N/A'}</p>
+              <span className="h-1.5 w-1.5 bg-slate-400 rounded-full" />
+            </>
+          ) : null}
+          <p className="">{service.duration}</p>
+        </div>
       </div>
       <p className="font-semibold">{service.price}</p>
     </div>
