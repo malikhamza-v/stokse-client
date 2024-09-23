@@ -133,6 +133,38 @@ export const convertTimeInto12h = (time: string) => {
   return `${hours}:${minutes} ${ampm}`;
 };
 
+export const handleTimeForAPI = (time: string) => {
+  const date = new Date(time);
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+
+  return `${hours}:${minutes}`;
+};
+
+export const handleCalculateTotalDuration = (services: any) => {
+  let totalHours = 0;
+  let totalMinutes = 0;
+
+  services.forEach((service: any) => {
+    const duration = service.duration;
+
+    // Extract hours and minutes from the duration string
+    const hoursMatch = duration.match(/(\d+)h/);
+    const minutesMatch = duration.match(/(\d+)min/);
+
+    if (hoursMatch) {
+      totalHours += parseInt(hoursMatch[1]);
+    }
+    if (minutesMatch) {
+      totalMinutes += parseInt(minutesMatch[1]);
+    }
+  });
+
+  totalHours += Math.floor(totalMinutes / 60);
+  totalMinutes = totalMinutes % 60;
+  return `${totalHours}:${totalMinutes}`;
+};
+
 export const addTimeAndDuration = (time: string, duration: string) => {
   const date = new Date(time);
   const [hours, minutes] = duration.split(' ').reduce(

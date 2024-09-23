@@ -25,8 +25,8 @@ const initialState = {
     services: [],
     customer: null,
     total: 0,
+    total_duration: null,
     slot: {
-      data: null,
       time: null,
     },
   },
@@ -103,6 +103,10 @@ const appSlice = createSlice({
       state.createdAppointment.total = action.payload;
     },
 
+    handleTotalDurationOfCreateAppointment: (state, action) => {
+      state.createdAppointment.total_duration = action.payload;
+    },
+
     handleAddSlotToCreateAppointment: (state, action) => {
       state.createdAppointment.slot = {
         ...state.createdAppointment.slot,
@@ -130,6 +134,7 @@ export const {
   handleAddServiceToCreatedAppointment,
   handleAddCustomerToCreateAppointment,
   handleTotalOfCreateAppointment,
+  handleTotalDurationOfCreateAppointment,
   handleAddSlotToCreateAppointment,
 } = appSlice.actions;
 

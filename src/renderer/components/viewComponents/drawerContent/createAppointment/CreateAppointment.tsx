@@ -1,27 +1,41 @@
 import { useEffect, useState } from 'react';
 import Flatpickr from 'react-flatpickr';
-import { useFetch } from '../../../../utils/hooks';
+import { useCreate, useFetch } from '../../../../utils/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   handleAddServiceToCreatedAppointment,
   handleAddSlotToCreateAppointment,
+  handleTotalDurationOfCreateAppointment,
   handleTotalOfCreateAppointment,
 } from '../../../../../store/slices/appSlice';
 import { ServiceCard } from '../../../commonComponents/drawerContent';
 import { AddSVG } from '../../../../utils/svg';
 import SelectCustomer from '../selectCustomer/SelectCustomer';
+import {
+  formatDateIntoYYMMDD,
+  handleCalculateTotalDuration,
+  handleTimeForAPI,
+} from '../../../../utils/methods';
 
 function CreateAppointment() {
   const [services, setServices] = useState<any>([]);
   const [isIntendedToAddService, setIsIntendedToAddService] = useState(false);
 
   const { loading: fetchLoading, fetchData: servicesFetch } = useFetch();
+  const { loading: cAppointmentLoading, createData: appointmentCreate } =
+    useCreate();
 
   const dispatch = useDispatch();
   const selectedServices = useSelector(
     (state: any) => state.app.createdAppointment.services,
   );
+  const selectedCustomer = useSelector(
+    (state: any) => state.app.createdAppointment.customer,
+  );
   const total = useSelector((state: any) => state.app.createdAppointment.total);
+  const totalDuration = useSelector(
+    (state: any) => state.app.createdAppointment.total_duration,
+  );
   const slot = useSelector((state: any) => state.app.createdAppointment.slot);
 
   //   [methods]:
@@ -30,8 +44,35 @@ function CreateAppointment() {
     setIsIntendedToAddService(false);
   };
 
-  const handleAppointmentTimeChange = (time) => {
+  const handleAppointmentTimeChange = (time: string) => {
     dispatch(handleAddSlotToCreateAppointment({ time: time }));
+  };
+
+  const handleSaveAppointment = () => {
+    console.log('=customer', selectedCustomer);
+    console.log('==date', slot.time);
+    console.log('=services', selectedServices);
+    console.log('===totls', total);
+
+    const payload = {
+      customer: null,
+      // store: null,
+      employee: 1, // [todo]: fix this employee
+      // created_by: null,
+      date: formatDateIntoYYMMDD(slot.time),
+      start_time: handleTimeForAPI(slot.time),
+      frequency_value: null,
+      frequency_unit: null,
+      frequency_end_value: null,
+      services: selectedServices,
+      total_price: total,
+      total_duration: totalDuration,
+      payment_status: 'unpaid',
+      appointment_status: 'booked',
+      notes: null,
+    };
+
+    appointmentCreate('/appointments/', payload, false);
   };
 
   const fetchServices = () => {
@@ -70,8 +111,11 @@ function CreateAppointment() {
     const totalAmount = selectedServices.reduce((sum, service) => {
       return sum + parseFloat(service.price);
     }, 0);
+    const totalDuration = handleCalculateTotalDuration(selectedServices);
     dispatch(handleTotalOfCreateAppointment(totalAmount));
+    dispatch(handleTotalDurationOfCreateAppointment(totalDuration));
   }, [selectedServices]);
+
   useEffect(() => {
     fetchServices();
   }, []);
@@ -140,14 +184,19 @@ function CreateAppointment() {
               <div className="flex items-center justify-between mb-3">
                 <p className="font-medium">Total</p>
                 <div className="flex items-center gap-4 text-base">
-                  <p className="text-gray-500">10min</p>
+                  <p className="text-gray-500">{totalDuration}</p>
                   <p className="font-semibold">PKR {total}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <button className="btn btn-outline">Checkout</button>
-                <button className="btn btn-neutral">Save</button>
+                <button
+                  className="btn btn-neutral"
+                  onClick={handleSaveAppointment}
+                >
+                  Save
+                </button>
               </div>
             </div>
           </div>

@@ -4,18 +4,22 @@ export default function LabelInput({
   errorMsg,
   loading,
   required,
+  isInline,
+  htmlfor,
   children,
 }: {
   label: string;
   errorMsg: string | null;
   loading: boolean;
   required: boolean;
+  isInline: boolean;
+  htmlfor: string;
   children: any;
 }) {
   return (
-    <div className="w-full">
+    <div className={`w-full ${isInline ? 'flex' : ''}`}>
       <label
-        htmlFor="first_name"
+        htmlFor={htmlfor}
         className="block mb-2 font-medium text-gray-900 text-left"
       >
         {label}

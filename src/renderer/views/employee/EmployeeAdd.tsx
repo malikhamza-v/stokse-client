@@ -19,6 +19,7 @@ interface UserInputInterface {
   email: string;
   phone: string;
   role: string | null;
+  can_perform_services: boolean;
   address: string | null;
   date_of_birth: string | null;
   date_joined: string | null;
@@ -29,6 +30,7 @@ interface ErrorMsgInterface {
   email: string | null;
   phone: string | null;
   role: string | null;
+  can_perform_services: string | null;
   address: string | null;
   date_of_birth: string | null;
   date_joined: string | null;
@@ -42,6 +44,7 @@ export default function EmployeeAdd() {
     email: null,
     phone: null,
     role: null,
+    can_perform_services: null,
     address: null,
     date_of_birth: null,
     date_joined: null,
@@ -53,6 +56,7 @@ export default function EmployeeAdd() {
     email: '',
     phone: '',
     role: null,
+    can_perform_services: false,
     address: null,
     date_joined: null,
     date_of_birth: null,
@@ -68,6 +72,7 @@ export default function EmployeeAdd() {
       email: null,
       phone: null,
       role: null,
+      can_perform_services: null,
       address: null,
       date_of_birth: null,
       date_joined: null,
@@ -89,6 +94,7 @@ export default function EmployeeAdd() {
       email: userInput.email || null,
       phone: userInput.phone || null,
       role: userInput.role,
+      can_perform_services: userInput.can_perform_services,
       address: userInput.address,
       date_of_birth: userInput.date_of_birth
         ? formatDateIntoYYMMDD(userInput.date_of_birth)
@@ -204,7 +210,7 @@ export default function EmployeeAdd() {
                 </LabelInput>
               </div>
 
-              <div>
+              <div className="pb-6">
                 <LabelInput
                   errorMsg={errorMsg.role}
                   label="Employee role"
@@ -247,6 +253,26 @@ export default function EmployeeAdd() {
                       ))}
                     </select>
                   </div>
+                </LabelInput>
+              </div>
+
+              <div className="form-control w-fit ">
+                <LabelInput
+                  label="Can perform services?"
+                  errorMsg={errorMsg.can_perform_services}
+                  loading={false}
+                  required={false}
+                  isInline={true}
+                  htmlfor="can_perform_services"
+                >
+                  <input
+                    type="checkbox"
+                    id="can_perform_services"
+                    className="checkbox ml-4"
+                    onChange={(e) =>
+                      handleUserInput('can_perform_services', e.target.checked)
+                    }
+                  />
                 </LabelInput>
               </div>
             </div>
