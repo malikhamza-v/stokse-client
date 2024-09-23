@@ -124,13 +124,26 @@ export const getDateAndTimeFromSlot = (slot: string) => {
   };
 };
 
-export const convertTimeInto12h = (time: string) => {
+export const convertTime = (time: string, format: '12' | '24') => {
   const date = new Date(time);
 
-  const hours = date.getHours() % 12 || 12;
+  let hours = date.getHours();
   const minutes = date.getMinutes().toString().padStart(2, '0');
-  const ampm = date.getHours() >= 12 ? 'pm' : 'am';
-  return `${hours}:${minutes} ${ampm}`;
+
+  if (format === '12') {
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12 || 12;
+    return `${hours}:${minutes} ${ampm}`;
+  }
+
+  const [timePart, modifier] = time.split(' ');
+  let [tempHours, tempMinutes] = timePart.split(':');
+  if (modifier === 'pm' && tempHours !== '12') {
+    tempHours = parseInt(tempHours, 10) + 12;
+  } else if (modifier === 'am' && tempHours === '12') {
+    tempHours = '00';
+  }
+  return `${tempHours}:${tempMinutes}`;
 };
 
 export const handleTimeForAPI = (time: string) => {
@@ -165,8 +178,13 @@ export const handleCalculateTotalDuration = (services: any) => {
   return `${totalHours}:${totalMinutes}`;
 };
 
-export const addTimeAndDuration = (time: string, duration: string) => {
+export const addTimeAndDuration = (
+  time: string,
+  duration: string,
+  format: '12' | '24',
+) => {
   const date = new Date(time);
+
   const [hours, minutes] = duration.split(' ').reduce(
     (acc, part: any) => {
       if (part.includes('h')) {
@@ -178,10 +196,18 @@ export const addTimeAndDuration = (time: string, duration: string) => {
     },
     [0, 0],
   );
+
   date.setHours(date.getHours() + hours);
   date.setMinutes(date.getMinutes() + minutes);
-  const newHours = date.getHours() % 12 || 12;
-  const newMinutes = date.getMinutes().toString().padStart(2, '0');
-  const ampm = date.getHours() >= 12 ? 'pm' : 'am';
-  return `${newHours}:${newMinutes} ${ampm}`;
+
+  if (format === '12') {
+    const newHours = date.getHours() % 12 || 12;
+    const newMinutes = date.getMinutes().toString().padStart(2, '0');
+    const ampm = date.getHours() >= 12 ? 'pm' : 'am';
+    return `${newHours}:${newMinutes} ${ampm}`;
+  }
+
+  const newHours24 = date.getHours().toString().padStart(2, '0');
+  const newMinutes24 = date.getMinutes().toString().padStart(2, '0');
+  return `${newHours24}:${newMinutes24}`;
 };

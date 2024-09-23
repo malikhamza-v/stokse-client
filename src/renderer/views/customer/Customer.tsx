@@ -376,8 +376,10 @@ export default function Customers() {
                             </td>
                             <td className="py-4 px-4 text-sm font-medium w-[20%]">
                               <div className="py-1 text-sm font-normal rounded-full text-emerald-500 bg-emerald-100/60 w-32 text-center">
-                                <p className="text-sm text-wrap  font-normal text-gray-600 capitalize">
-                                  <span>{customer.name || 'Walk-In'}</span>
+                                <p className="text-xs w-[75%] mx-auto truncate font-normal text-gray-600 capitalize">
+                                  <span className="">
+                                    {customer.name || 'Walk-In'}
+                                  </span>
                                 </p>
                               </div>
                             </td>

@@ -21,6 +21,11 @@ const initialState = {
   managers: [],
   stores: [],
   paymentMethods: [],
+
+  calendar: {
+    selectedEmployee: null,
+  },
+
   createdAppointment: {
     services: [],
     customer: null,
@@ -76,6 +81,11 @@ const appSlice = createSlice({
       return initialState;
     },
 
+    // [info]: calendar
+    handleSelectEmployeeForCalendar: (state, action) => {
+      state.calendar.selectedEmployee = action.payload;
+    },
+
     // [info]: create appointment
     handleAddServiceToCreatedAppointment: (state, action) => {
       const allServices = state.createdAppointment.services;
@@ -86,6 +96,7 @@ const appSlice = createSlice({
             ? `${formatDateIntoYYMMDD(state.createdAppointment.slot.time)} ${allServices[allServices.length - 1]?.start_time}`
             : state.createdAppointment.slot.time?.toString(),
           allServices[allServices.length - 1]?.duration || '0min',
+          '12',
         ),
       };
 

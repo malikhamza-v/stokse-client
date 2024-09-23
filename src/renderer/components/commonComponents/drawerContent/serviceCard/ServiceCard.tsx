@@ -1,5 +1,3 @@
-import { convertTimeInto12h } from '../../../../utils/methods';
-
 function ServiceCard({
   service,
   isAdded,

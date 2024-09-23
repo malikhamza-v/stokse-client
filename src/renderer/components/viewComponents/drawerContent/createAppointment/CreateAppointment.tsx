@@ -55,7 +55,7 @@ function CreateAppointment() {
     console.log('===totls', total);
 
     const payload = {
-      customer: null,
+      customer: selectedCustomer.id,
       // store: null,
       employee: 1, // [todo]: fix this employee
       // created_by: null,
