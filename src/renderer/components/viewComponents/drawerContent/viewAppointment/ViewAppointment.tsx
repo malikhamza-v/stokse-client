@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   handleAddServiceToCreatedAppointment,
   handleAddSlotToCreateAppointment,
+  handleFillAppointmentData,
   handleTotalDurationOfCreateAppointment,
   handleTotalOfCreateAppointment,
   resetCreateAppointmentData,
@@ -14,10 +15,11 @@ import { AddSVG } from '../../../../utils/svg';
 import SelectCustomer from '../selectCustomer/SelectCustomer';
 import {
   formatDateIntoYYMMDD,
+  getYYMMDD,
   handleCalculateTotalDuration,
   handleTimeForAPI,
 } from '../../../../utils/methods';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import LoadingList from './LoadingList';
 import { toast } from 'react-toastify';
 import LoadingButton from '../../../commonComponents/loadingButton/LoadingButton';
@@ -26,6 +28,8 @@ function ViewAppointment({ isView }: { isView: boolean }) {
   const [services, setServices] = useState<any>([]);
   const [isIntendedToAddService, setIsIntendedToAddService] = useState(false);
 
+  const { loading: appointmentFetchLoading, fetchData: appointmentFetch } =
+    useFetch();
   const { loading: servicesFetchLoading, fetchData: servicesFetch } =
     useFetch();
   const { loading: cAppointmentLoading, createData: appointmentCreate } =
@@ -33,19 +37,20 @@ function ViewAppointment({ isView }: { isView: boolean }) {
 
   const dispatch = useDispatch();
   const selectedServices = useSelector(
-    (state: any) => state.app.createdAppointment.services,
+    (state: any) => state.app.appointment.services,
   );
   const selectedCustomer = useSelector(
-    (state: any) => state.app.createdAppointment.customer,
+    (state: any) => state.app.appointment.customer,
   );
-  const total = useSelector((state: any) => state.app.createdAppointment.total);
+  const total = useSelector((state: any) => state.app.appointment.total);
   const totalDuration = useSelector(
-    (state: any) => state.app.createdAppointment.total_duration,
+    (state: any) => state.app.appointment.total_duration,
   );
-  const slot = useSelector((state: any) => state.app.createdAppointment.slot);
+  const slot = useSelector((state: any) => state.app.appointment.slot);
 
   const navigate = useNavigate();
   const location = useLocation();
+  const params = useParams();
 
   //   [methods]:
   const handleAddService = (service: any) => {
@@ -54,6 +59,7 @@ function ViewAppointment({ isView }: { isView: boolean }) {
   };
 
   const handleAppointmentTimeChange = (time: string) => {
+    console.log(time);
     dispatch(handleAddSlotToCreateAppointment({ time: time }));
   };
 
@@ -116,6 +122,22 @@ function ViewAppointment({ isView }: { isView: boolean }) {
       });
   };
 
+  const fetchSingleAppointment = (id: number) => {
+    appointmentFetch(`/appointments/${id}`).then((res) => {
+      if (res.status === 200) {
+        const payloadToSet = {
+          services: res.data.services,
+          customer: res.data.customer,
+          slot: {
+            time: new Date(`${res.data.date} ${res.data.start_time}`),
+          },
+        };
+        dispatch(handleFillAppointmentData(payloadToSet));
+        console.log('====res', res.data);
+      }
+    });
+  };
+
   //   [info]: lifecyles
   useEffect(() => {
     const totalAmount = selectedServices.reduce((sum, service) => {
@@ -128,10 +150,16 @@ function ViewAppointment({ isView }: { isView: boolean }) {
 
   useEffect(() => {
     if (location.pathname.includes('create')) {
-      if (!slot?.date) {
+      if (!slot?.time) {
         navigate('/calendar');
       } else {
         fetchServices();
+      }
+    } else if (location.pathname.includes('view')) {
+      if (params.id) {
+        fetchSingleAppointment(parseInt(params?.id));
+      } else {
+        navigate('/calendar');
       }
     }
   }, [navigate]);
@@ -149,12 +177,17 @@ function ViewAppointment({ isView }: { isView: boolean }) {
         {selectedServices.length > 0 && !isIntendedToAddService ? (
           <div className="h-full flex flex-col">
             <div className="px-8 pt-6 pb-2 border-b">
-              <p className="text-2xl font-semibold">{slot?.date || 'NONE'}</p>
+              <div className="text-3xl font-semibold flex items-center gap-1.5">
+                <span>{getYYMMDD(new Date(slot?.time)).dayOfWeek},</span>
+                <span>{getYYMMDD(new Date(slot?.time)).day}</span>
+                <span>{getYYMMDD(new Date(slot?.time)).month}</span>
+              </div>
+
               <div className="flex items-center gap-2">
                 {/* <p>{slot?.time || 'None'}</p> */}
                 <div className="time_picker hover:underline">
                   <Flatpickr
-                    placeholder="DOB"
+                    placeholder="Time"
                     value={slot?.time || ''}
                     options={{
                       enableTime: true,
@@ -198,7 +231,11 @@ function ViewAppointment({ isView }: { isView: boolean }) {
               <div className="flex items-center justify-between mb-3">
                 <p className="font-medium">Total</p>
                 <div className="flex items-center gap-4 text-base">
-                  <p className="text-gray-500">{totalDuration}</p>
+                  <p className="text-gray-500">
+                    {totalDuration?.split(':')[0]}h{' '}
+                    {totalDuration?.split(':')[1]}
+                    min
+                  </p>
                   <p className="font-semibold">PKR {total}</p>
                 </div>
               </div>

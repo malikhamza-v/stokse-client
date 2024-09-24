@@ -13,7 +13,7 @@ function SelectCustomer() {
 
   const dispatch = useDispatch();
   const selectedCustomer = useSelector(
-    (state: any) => state.app.createdAppointment.customer,
+    (state: any) => state.app.appointment.customer,
   );
   // [info]: methods
 

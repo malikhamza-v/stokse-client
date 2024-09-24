@@ -47,7 +47,7 @@ export const calculateTotalTaxAmount = (
   return totalAmount.toFixed(2); // Return total amount with two decimal places
 };
 
-export const formatTimestamp = (timestamp: string) => {
+export const getYYMMDD = (date: any) => {
   const months = [
     'Jan',
     'Feb',
@@ -62,10 +62,25 @@ export const formatTimestamp = (timestamp: string) => {
     'Nov',
     'Dec',
   ];
-  const date = new Date(timestamp);
-  const day = date.getDate();
+
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  const dayOfWeek = days[date.getDay()];
+  const day = String(date.getDate()).padStart(2, '0');
   const month = months[date.getMonth()];
   const year = date.getFullYear();
+
+  return {
+    day,
+    month,
+    year,
+    dayOfWeek,
+  };
+};
+
+export const formatTimestamp = (timestamp: string) => {
+  const date = new Date(timestamp);
+  const { day, month, year } = getYYMMDD(date);
 
   // Extract time components
   let hours = date.getHours();
@@ -110,18 +125,6 @@ export const formatDateIntoYYMMDD = (inputDate: string) => {
 
 export const isElectron = () => {
   return window.electron;
-};
-
-export const getDateAndTimeFromSlot = (slot: string) => {
-  const date = new Date(slot);
-
-  const optionsDate = { weekday: 'short', day: 'numeric', month: 'short' };
-  const formattedDate = date.toLocaleDateString('en-US', optionsDate);
-
-  return {
-    date: formattedDate.replace(',', ''),
-    time: slot,
-  };
 };
 
 export const convertTime = (time: string, format: '12' | '24') => {

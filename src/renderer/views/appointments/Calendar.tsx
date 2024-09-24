@@ -8,11 +8,7 @@ import {
   handleAddSlotToCreateAppointment,
   resetCreateAppointmentData,
 } from '../../../store/slices/appSlice';
-import {
-  addTimeAndDuration,
-  convertTime,
-  getDateAndTimeFromSlot,
-} from '../../utils/methods';
+import { addTimeAndDuration, convertTime } from '../../utils/methods';
 import { useFetch } from '../../utils/hooks';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from '../../components/commonComponents';
@@ -51,9 +47,7 @@ function Calendar({
   const navigate = useNavigate();
 
   const handleSelectSlot = (e: any) => {
-    dispatch(
-      handleAddSlotToCreateAppointment(getDateAndTimeFromSlot(e.slots[0])),
-    );
+    dispatch(handleAddSlotToCreateAppointment({ time: e.slots[0] }));
     navigate('/calendar/appointment/create/');
     // setIsCreateAppoinmentDrawerOpen(true);
   };
@@ -202,7 +196,7 @@ function Calendar({
         <Modal
           title="Warning"
           description={CreateAppointmentCancelModalContent}
-          cancelText="Cancel"
+          cancelText="Go Back"
           confirmText="Confirm"
           onCancel={() => setIsCancelingCreateAppointment(false)}
           confirmLoading={false}

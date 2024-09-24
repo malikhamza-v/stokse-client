@@ -4,7 +4,7 @@ import {
   formatDateIntoYYMMDD,
 } from '../../renderer/utils/methods';
 
-const initialStateForCreateAppointment = {
+const appointmentInitialState = {
   services: [],
   customer: null,
   total: 0,
@@ -36,7 +36,7 @@ const initialState = {
     selectedEmployee: null,
   },
 
-  createdAppointment: initialStateForCreateAppointment,
+  appointment: appointmentInitialState,
 };
 
 const appSlice = createSlice({
@@ -88,46 +88,51 @@ const appSlice = createSlice({
       state.calendar.selectedEmployee = action.payload;
     },
 
+    // [info]: view appointment
+    handleFillAppointmentData: (state, action) => {
+      state.appointment = action.payload;
+    },
+
     // [info]: create appointment
     handleAddServiceToCreatedAppointment: (state, action) => {
-      const allServices = state.createdAppointment.services;
+      const allServices = state.appointment.services;
       const selectedService = {
         ...action.payload,
         start_time: addTimeAndDuration(
           allServices[allServices.length - 1]?.start_time
-            ? `${formatDateIntoYYMMDD(state.createdAppointment.slot.time)} ${allServices[allServices.length - 1]?.start_time}`
-            : state.createdAppointment.slot.time?.toString(),
+            ? `${formatDateIntoYYMMDD(state.appointment.slot.time)} ${allServices[allServices.length - 1]?.start_time}`
+            : state.appointment.slot.time?.toString(),
           allServices[allServices.length - 1]?.duration || '0min',
           '12',
         ),
       };
 
-      state.createdAppointment.services = [
-        ...state.createdAppointment.services,
+      state.appointment.services = [
+        ...state.appointment.services,
         selectedService,
       ];
     },
 
     handleAddCustomerToCreateAppointment: (state, action) => {
-      state.createdAppointment.customer = action.payload;
+      state.appointment.customer = action.payload;
     },
 
     handleTotalOfCreateAppointment: (state, action) => {
-      state.createdAppointment.total = action.payload;
+      state.appointment.total = action.payload;
     },
 
     handleTotalDurationOfCreateAppointment: (state, action) => {
-      state.createdAppointment.total_duration = action.payload;
+      state.appointment.total_duration = action.payload;
     },
 
     handleAddSlotToCreateAppointment: (state, action) => {
-      state.createdAppointment.slot = {
-        ...state.createdAppointment.slot,
+      state.appointment.slot = {
+        ...state.appointment.slot,
         ...action.payload,
       };
     },
     resetCreateAppointmentData: (state) => {
-      state.createdAppointment = initialStateForCreateAppointment;
+      state.appointment = appointmentInitialState;
     },
   },
 });
@@ -153,6 +158,8 @@ export const {
   handleTotalDurationOfCreateAppointment,
   handleAddSlotToCreateAppointment,
   resetCreateAppointmentData,
+
+  handleFillAppointmentData,
 } = appSlice.actions;
 
 export default appSlice.reducer;
