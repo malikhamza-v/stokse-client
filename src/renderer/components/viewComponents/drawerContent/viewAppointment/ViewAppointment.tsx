@@ -7,6 +7,7 @@ import {
   handleAddSlotToCreateAppointment,
   handleTotalDurationOfCreateAppointment,
   handleTotalOfCreateAppointment,
+  resetCreateAppointmentData,
 } from '../../../../../store/slices/appSlice';
 import { ServiceCard } from '../../../commonComponents/drawerContent';
 import { AddSVG } from '../../../../utils/svg';
@@ -19,6 +20,7 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import LoadingList from './LoadingList';
 import { toast } from 'react-toastify';
+import LoadingButton from '../../../commonComponents/loadingButton/LoadingButton';
 
 function ViewAppointment({ isView }: { isView: boolean }) {
   const [services, setServices] = useState<any>([]);
@@ -56,11 +58,6 @@ function ViewAppointment({ isView }: { isView: boolean }) {
   };
 
   const handleSaveAppointment = () => {
-    console.log('=customer', selectedCustomer);
-    console.log('==date', slot.time);
-    console.log('=services', selectedServices);
-    console.log('===totls', total);
-
     const payload = {
       customer: selectedCustomer?.id || null,
       // store: null,
@@ -81,6 +78,7 @@ function ViewAppointment({ isView }: { isView: boolean }) {
 
     appointmentCreate('/appointments/', payload, false).then((res) => {
       if (res.status === 200) {
+        dispatch(resetCreateAppointmentData());
         toast.success('Appointment set successfully!');
         navigate('/calendar');
       }
@@ -207,12 +205,11 @@ function ViewAppointment({ isView }: { isView: boolean }) {
 
               <div className="grid grid-cols-2 gap-4">
                 <button className="btn btn-outline">Checkout</button>
-                <button
-                  className="btn btn-neutral"
-                  onClick={handleSaveAppointment}
-                >
-                  Save
-                </button>
+                <LoadingButton
+                  text="Save"
+                  onConfirm={() => handleSaveAppointment()}
+                  loading={cAppointmentLoading}
+                />
               </div>
             </div>
           </div>
