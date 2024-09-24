@@ -66,6 +66,15 @@ function SelectCustomer() {
 
   //   [info]: lifecycles
   useEffect(() => {
+    if (selectedCustomer) {
+      const drawer = document.querySelector('.category-drawer');
+      if (drawer) {
+        drawer.style.width = '55vw';
+      }
+    }
+  }, [selectedCustomer]);
+
+  useEffect(() => {
     if (isIntendedToAddCustomer) {
       fetchCustomer();
     }
@@ -73,7 +82,7 @@ function SelectCustomer() {
 
   return (
     <div
-      className={`h-full ${isIntendedToAddCustomer ? '' : 'hover:bg-purple-100 cursor-pointer'} overflow-y-auto  max-w-[20vw]`}
+      className={`h-full ${isIntendedToAddCustomer || selectedCustomer ? '' : 'hover:bg-purple-100 cursor-pointer'} overflow-y-auto  max-w-[20vw]`}
       onClick={handleAddCustomer}
       role="button"
       tabIndex={0}

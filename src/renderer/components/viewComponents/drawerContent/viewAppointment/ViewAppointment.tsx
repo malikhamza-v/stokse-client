@@ -18,6 +18,7 @@ import {
 } from '../../../../utils/methods';
 import { useLocation, useNavigate } from 'react-router-dom';
 import LoadingList from './LoadingList';
+import { toast } from 'react-toastify';
 
 function ViewAppointment({ isView }: { isView: boolean }) {
   const [services, setServices] = useState<any>([]);
@@ -61,7 +62,7 @@ function ViewAppointment({ isView }: { isView: boolean }) {
     console.log('===totls', total);
 
     const payload = {
-      customer: selectedCustomer.id,
+      customer: selectedCustomer?.id || null,
       // store: null,
       employee: 1, // [todo]: fix this employee
       // created_by: null,
@@ -78,7 +79,12 @@ function ViewAppointment({ isView }: { isView: boolean }) {
       notes: null,
     };
 
-    appointmentCreate('/appointments/', payload, false);
+    appointmentCreate('/appointments/', payload, false).then((res) => {
+      if (res.status === 200) {
+        toast.success('Appointment set successfully!');
+        navigate('/calendar');
+      }
+    });
   };
 
   const fetchServices = () => {
@@ -124,7 +130,11 @@ function ViewAppointment({ isView }: { isView: boolean }) {
 
   useEffect(() => {
     if (location.pathname.includes('create')) {
-      fetchServices();
+      if (!slot?.date) {
+        navigate('/calendar');
+      } else {
+        fetchServices();
+      }
     }
   }, [navigate]);
 

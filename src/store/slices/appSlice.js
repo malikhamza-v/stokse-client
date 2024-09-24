@@ -4,6 +4,16 @@ import {
   formatDateIntoYYMMDD,
 } from '../../renderer/utils/methods';
 
+const initialStateForCreateAppointment = {
+  services: [],
+  customer: null,
+  total: 0,
+  total_duration: null,
+  slot: {
+    time: null,
+  },
+};
+
 const initialState = {
   products: [], // [info]: store products data
   editProduct: null, // [info]: single product data for edit
@@ -26,15 +36,7 @@ const initialState = {
     selectedEmployee: null,
   },
 
-  createdAppointment: {
-    services: [],
-    customer: null,
-    total: 0,
-    total_duration: null,
-    slot: {
-      time: null,
-    },
-  },
+  createdAppointment: initialStateForCreateAppointment,
 };
 
 const appSlice = createSlice({
@@ -124,6 +126,9 @@ const appSlice = createSlice({
         ...action.payload,
       };
     },
+    resetCreateAppointmentData: (state) => {
+      state.createdAppointment = initialStateForCreateAppointment;
+    },
   },
 });
 
@@ -147,6 +152,7 @@ export const {
   handleTotalOfCreateAppointment,
   handleTotalDurationOfCreateAppointment,
   handleAddSlotToCreateAppointment,
+  resetCreateAppointmentData,
 } = appSlice.actions;
 
 export default appSlice.reducer;

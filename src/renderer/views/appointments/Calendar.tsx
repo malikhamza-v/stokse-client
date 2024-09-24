@@ -4,7 +4,10 @@ import { Calendar as Calendaroo, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import Drawer from '../../components/commonComponents/drawer/Drawer';
 import { ViewAppointment } from '../../components/viewComponents/drawerContent';
-import { handleAddSlotToCreateAppointment } from '../../../store/slices/appSlice';
+import {
+  handleAddSlotToCreateAppointment,
+  resetCreateAppointmentData,
+} from '../../../store/slices/appSlice';
 import {
   addTimeAndDuration,
   convertTime,
@@ -12,8 +15,20 @@ import {
 } from '../../utils/methods';
 import { useFetch } from '../../utils/hooks';
 import { useNavigate } from 'react-router-dom';
+import { Modal } from '../../components/commonComponents';
 
 const localizer = momentLocalizer(moment);
+
+function CreateAppointmentCancelModalContent() {
+  return (
+    <p>
+      If you close the appointment now,{' '}
+      <span className="font-bold">the changes will be lost</span>. Do you wish
+      to exit?
+    </p>
+  );
+}
+
 function Calendar({
   isView,
   isCreate,
@@ -23,6 +38,8 @@ function Calendar({
 }) {
   const [servicePerformers, setServicePerformers] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [isCancelingCreateAppointment, setIsCancelingCreateAppointment] =
+    useState(false);
 
   const { loading: employeeFetchLoading, fetchData: employeeFetch } =
     useFetch();
@@ -111,6 +128,16 @@ function Calendar({
     });
   };
 
+  const handleCloseCreateAppointmentDrawer = () => {
+    setIsCancelingCreateAppointment(true);
+  };
+
+  const handleCancelCreateAppointment = () => {
+    setIsCancelingCreateAppointment(false);
+    dispatch(resetCreateAppointmentData());
+    navigate(-1);
+  };
+
   const handleViewAppointment = (e: any) => {
     if (e.id) {
       navigate(`/calendar/appointment/view/${e.id.split('_')[0]}`);
@@ -118,19 +145,25 @@ function Calendar({
   };
 
   useEffect(() => {
-    handleFetchServicePerformer();
     fetchAppointments();
+  }, [navigate]);
+
+  useEffect(() => {
+    handleFetchServicePerformer();
   }, []);
 
   return (
     <div className="px-4 pb-2 pt-2 h-full -z-10 flex flex-col">
-      <div className="p-4 bg-[#F2F2F7] mb-4 shadow-sm rounded-lg">
+      <div className="p-4 bg-[#F2F2F7] mb-4 shadow-sm rounded-lg relative">
         <select className="select select-sm select-accent w-full max-w-xs rounded-full">
           <option selected>All</option>
           {servicePerformers.map((employee: any, index) => (
             <option key={index}>{employee?.name}</option>
           ))}
         </select>
+        <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-medium text-lg text-gray-800">
+          Appointments
+        </p>
       </div>
       <div className="flex-1 overflow-y-auto">
         <Calendaroo
@@ -159,10 +192,22 @@ function Calendar({
         <Drawer
           id="create-appointment-drawer"
           isOpen={isCreate}
-          close={() => navigate(-1)}
+          close={() => handleCloseCreateAppointmentDrawer()}
         >
           <ViewAppointment isView={false} />
         </Drawer>
+      ) : null}
+
+      {isCancelingCreateAppointment ? (
+        <Modal
+          title="Warning"
+          description={CreateAppointmentCancelModalContent}
+          cancelText="Cancel"
+          confirmText="Confirm"
+          onCancel={() => setIsCancelingCreateAppointment(false)}
+          confirmLoading={false}
+          onConfirm={() => handleCancelCreateAppointment()}
+        />
       ) : null}
     </div>
   );
