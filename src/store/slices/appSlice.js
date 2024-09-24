@@ -12,6 +12,7 @@ const appointmentInitialState = {
   slot: {
     time: null,
   },
+  appointment_status: 'booked',
 };
 
 const initialState = {

@@ -23,6 +23,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import LoadingList from './LoadingList';
 import { toast } from 'react-toastify';
 import LoadingButton from '../../../commonComponents/loadingButton/LoadingButton';
+import { APPOINTMENT_STATUS_COLOR } from '../../../../utils/constant';
 
 function ViewAppointment({ isView }: { isView: boolean }) {
   const [services, setServices] = useState<any>([]);
@@ -39,14 +40,13 @@ function ViewAppointment({ isView }: { isView: boolean }) {
   const selectedServices = useSelector(
     (state: any) => state.app.appointment.services,
   );
-  const selectedCustomer = useSelector(
-    (state: any) => state.app.appointment.customer,
-  );
-  const total = useSelector((state: any) => state.app.appointment.total);
-  const totalDuration = useSelector(
-    (state: any) => state.app.appointment.total_duration,
-  );
-  const slot = useSelector((state: any) => state.app.appointment.slot);
+  const {
+    customer: selectedCustomer,
+    total,
+    total_duration: totalDuration,
+    slot,
+    appointment_status,
+  } = useSelector((state: any) => state.app.appointment);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -78,7 +78,7 @@ function ViewAppointment({ isView }: { isView: boolean }) {
       total_price: total,
       total_duration: totalDuration,
       payment_status: 'unpaid',
-      appointment_status: 'booked',
+      appointment_status: appointment_status,
       notes: null,
     };
 
@@ -131,6 +131,7 @@ function ViewAppointment({ isView }: { isView: boolean }) {
           slot: {
             time: new Date(`${res.data.date} ${res.data.start_time}`),
           },
+          appointment_status: res.data.appointment_status,
         };
         dispatch(handleFillAppointmentData(payloadToSet));
         console.log('====res', res.data);
@@ -173,10 +174,17 @@ function ViewAppointment({ isView }: { isView: boolean }) {
         <SelectCustomer />
       </div>
 
-      <div className="min-w-[35vw] w-[35vw] max-w-[35vw]  overflow-y-auto">
+      <div className="min-w-[35vw] w-[35vw] max-w-[35vw]  overflow-y-auto ">
         {selectedServices.length > 0 && !isIntendedToAddService ? (
           <div className="h-full flex flex-col">
-            <div className="px-8 pt-6 pb-2 border-b">
+            <div
+              className="px-8 pt-6 pb-2 border-b"
+              style={{
+                backgroundColor: location.pathname.includes('view')
+                  ? APPOINTMENT_STATUS_COLOR[appointment_status]
+                  : 'transparent',
+              }}
+            >
               <div className="text-3xl font-semibold flex items-center gap-1.5">
                 <span>{getYYMMDD(new Date(slot?.time)).dayOfWeek},</span>
                 <span>{getYYMMDD(new Date(slot?.time)).day}</span>
@@ -201,7 +209,7 @@ function ViewAppointment({ isView }: { isView: boolean }) {
                 <p>Doesn't repeat</p>
               </div>
             </div>
-            <div className="flex-1 p-8 overflow-y-auto h-full">
+            <div className="flex-1 p-8 overflow-y-auto hide-scrollbar h-full">
               <p className="font-semibold text-2xl">Services</p>
               <div className="mt-4">
                 {selectedServices.map((service: any, index: any) => {

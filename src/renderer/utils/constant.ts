@@ -231,4 +231,22 @@ const DURATION = [
   '12h',
 ];
 
-export { noTaxOptions, noStoreOptions, Navbar, data, DURATION_TYPE, DURATION };
+const APPOINTMENT_STATUS_COLOR = {
+  booked: '#3498db',
+  confirmed: '#2ecc71',
+  arrived: '#f1c40f',
+  started: '#e67e22',
+  no_show: '#e74c3c',
+  cancelled: '#95a5a6',
+  completed: '#2c3e50',
+};
+
+export {
+  noTaxOptions,
+  noStoreOptions,
+  Navbar,
+  data,
+  DURATION_TYPE,
+  DURATION,
+  APPOINTMENT_STATUS_COLOR,
+};

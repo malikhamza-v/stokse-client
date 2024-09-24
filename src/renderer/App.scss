@@ -20,6 +20,10 @@ body {
   user-select: none;
 }
 
+html {
+  scrollbar-gutter: auto !important;
+}
+
 /* Switch */
 /* The switch - the box around the slider */
 .switch {
@@ -214,7 +218,7 @@ body {
 
 .time_picker {
   .flatpickr-input {
-    @apply border-none rounded-none !outline-none p-0 m-0 w-16;
+    @apply border-none rounded-none !outline-none p-0 m-0 w-16 bg-transparent;
   }
 }
 
