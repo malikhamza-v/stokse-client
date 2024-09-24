@@ -90,11 +90,28 @@ export default function App() {
                 </MainLayout>
               }
             />
+            {/* [info]: calendar */}
             <Route
               path="/calendar"
               element={
                 <MainLayout>
-                  <Calendar />
+                  <Calendar isView={false} />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/calendar/appointment/view/:id"
+              element={
+                <MainLayout>
+                  <Calendar isView={true} />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/calendar/appointment/create/"
+              element={
+                <MainLayout>
+                  <Calendar isView={false} isCreate={true} />
                 </MainLayout>
               }
             />

@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Calendar as Calendaroo, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import Drawer from '../../components/commonComponents/drawer/Drawer';
-import { CreateAppointment } from '../../components/viewComponents/drawerContent';
+import { ViewAppointment } from '../../components/viewComponents/drawerContent';
 import { handleAddSlotToCreateAppointment } from '../../../store/slices/appSlice';
 import {
   addTimeAndDuration,
@@ -11,11 +11,16 @@ import {
   getDateAndTimeFromSlot,
 } from '../../utils/methods';
 import { useFetch } from '../../utils/hooks';
+import { useNavigate } from 'react-router-dom';
 
 const localizer = momentLocalizer(moment);
-function Calendar() {
-  const [isCreateAppoinmentDrawerOpen, setIsCreateAppoinmentDrawerOpen] =
-    useState(false);
+function Calendar({
+  isView,
+  isCreate,
+}: {
+  isView: boolean;
+  isCreate: boolean;
+}) {
   const [servicePerformers, setServicePerformers] = useState([]);
   const [appointments, setAppointments] = useState([]);
 
@@ -26,11 +31,14 @@ function Calendar() {
 
   const dispatch = useDispatch();
 
+  const navigate = useNavigate();
+
   const handleSelectSlot = (e: any) => {
     dispatch(
       handleAddSlotToCreateAppointment(getDateAndTimeFromSlot(e.slots[0])),
     );
-    setIsCreateAppoinmentDrawerOpen(true);
+    navigate('/calendar/appointment/create/');
+    // setIsCreateAppoinmentDrawerOpen(true);
   };
 
   const handleFetchServicePerformer = () => {
@@ -103,6 +111,12 @@ function Calendar() {
     });
   };
 
+  const handleViewAppointment = (e: any) => {
+    if (e.id) {
+      navigate(`/calendar/appointment/view/${e.id.split('_')[0]}`);
+    }
+  };
+
   useEffect(() => {
     handleFetchServicePerformer();
     fetchAppointments();
@@ -123,6 +137,7 @@ function Calendar() {
           localizer={localizer}
           events={appointments}
           startAccessor="start"
+          onSelectEvent={handleViewAppointment}
           endAccessor="end"
           style={{ height: '100%' }}
           onSelectSlot={handleSelectSlot}
@@ -130,13 +145,25 @@ function Calendar() {
         />
       </div>
 
-      <Drawer
-        id="create-appointment-drawer"
-        isOpen={isCreateAppoinmentDrawerOpen}
-        close={() => setIsCreateAppoinmentDrawerOpen(false)}
-      >
-        <CreateAppointment />
-      </Drawer>
+      {isView ? (
+        <Drawer
+          id="view-appointment-drawer"
+          isOpen={isView}
+          close={() => navigate(-1)}
+        >
+          <ViewAppointment isView={true} />
+        </Drawer>
+      ) : null}
+
+      {isCreate ? (
+        <Drawer
+          id="create-appointment-drawer"
+          isOpen={isCreate}
+          close={() => navigate(-1)}
+        >
+          <ViewAppointment isView={false} />
+        </Drawer>
+      ) : null}
     </div>
   );
 }

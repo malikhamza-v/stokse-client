@@ -309,7 +309,7 @@ function Items() {
           ) : (
             <div className="px-4 md:px-16 flex flex-wrap items-center gap-2 my-8">
               <div className="px-4 py-2 border cursor-pointer rounded-lg hover:bg-slate-50 font-light">
-                Not Category Found
+                No Category Found
               </div>
             </div>
           )}

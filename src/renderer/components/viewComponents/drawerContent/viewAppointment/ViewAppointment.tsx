@@ -16,12 +16,15 @@ import {
   handleCalculateTotalDuration,
   handleTimeForAPI,
 } from '../../../../utils/methods';
+import { useLocation, useNavigate } from 'react-router-dom';
+import LoadingList from './LoadingList';
 
-function CreateAppointment() {
+function ViewAppointment({ isView }: { isView: boolean }) {
   const [services, setServices] = useState<any>([]);
   const [isIntendedToAddService, setIsIntendedToAddService] = useState(false);
 
-  const { loading: fetchLoading, fetchData: servicesFetch } = useFetch();
+  const { loading: servicesFetchLoading, fetchData: servicesFetch } =
+    useFetch();
   const { loading: cAppointmentLoading, createData: appointmentCreate } =
     useCreate();
 
@@ -37,6 +40,9 @@ function CreateAppointment() {
     (state: any) => state.app.createdAppointment.total_duration,
   );
   const slot = useSelector((state: any) => state.app.createdAppointment.slot);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   //   [methods]:
   const handleAddService = (service: any) => {
@@ -117,13 +123,13 @@ function CreateAppointment() {
   }, [selectedServices]);
 
   useEffect(() => {
-    fetchServices();
-  }, []);
+    if (location.pathname.includes('create')) {
+      fetchServices();
+    }
+  }, [navigate]);
+
   return (
-    <div
-      className="flex h-full transition-all duration-300 box-border"
-      id="create_appoint_container"
-    >
+    <div className="flex h-full transition-all duration-300 box-border">
       <div
         className="flex-1 border-r transition-all duration-300 box-border"
         id="left_container"
@@ -231,33 +237,37 @@ function CreateAppointment() {
             </div>
 
             <div className="mt-8 text-lg">
-              {Object.keys(services).map((cat, index) => {
-                const serviceCategory = services[cat];
-                return (
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p className="font-bold text-lg">
-                        {serviceCategory.categoryName}
-                      </p>
-                      <span className="badge badge-outline">
-                        {serviceCategory?.services?.length}
-                      </span>
-                    </div>
+              {servicesFetchLoading ? (
+                <LoadingList />
+              ) : (
+                Object.keys(services).map((cat, index) => {
+                  const serviceCategory = services[cat];
+                  return (
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <p className="font-bold text-lg">
+                          {serviceCategory.categoryName}
+                        </p>
+                        <span className="badge badge-outline">
+                          {serviceCategory?.services?.length}
+                        </span>
+                      </div>
 
-                    <div className="mt-4">
-                      {serviceCategory.services.map((service: any) => {
-                        return (
-                          <ServiceCard
-                            key={service.id}
-                            service={service}
-                            onClickAction={handleAddService}
-                          />
-                        );
-                      })}
+                      <div className="mt-4">
+                        {serviceCategory.services.map((service: any) => {
+                          return (
+                            <ServiceCard
+                              key={service.id}
+                              service={service}
+                              onClickAction={handleAddService}
+                            />
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           </div>
         )}
@@ -266,4 +276,4 @@ function CreateAppointment() {
   );
 }
 
-export default CreateAppointment;
+export default ViewAppointment;

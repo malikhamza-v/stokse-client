@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useFetch } from '../../../../utils/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleAddCustomerToCreateAppointment } from '../../../../../store/slices/appSlice';
+import LoadingList from '../viewAppointment/LoadingList';
 
 function SelectCustomer() {
   const [isIntendedToAddCustomer, setIsIntendedToAddCustomer] = useState(false);
@@ -65,8 +66,10 @@ function SelectCustomer() {
 
   //   [info]: lifecycles
   useEffect(() => {
-    fetchCustomer();
-  }, []);
+    if (isIntendedToAddCustomer) {
+      fetchCustomer();
+    }
+  }, [isIntendedToAddCustomer]);
 
   return (
     <div
@@ -115,7 +118,7 @@ function SelectCustomer() {
               onClick={() => handleSelectCustomer(null)}
             >
               <img
-                src="https://api.dicebear.com/9.x/fun-emoji/svg?seed=Eliza&radius=50"
+                src="https://api.dicebear.com/9.x/lorelei-neutral/svg?seed=Adrian&radius=50"
                 alt="customer image"
                 className="w-10 h-10"
               />
@@ -123,22 +126,28 @@ function SelectCustomer() {
                 <p>Walk In</p>
               </div>
             </div>
-            {customers?.map((customer) => (
-              <div
-                className="flex items-center gap-3 bg-purple-100 mb-4 p-4 rounded-lg cursor-pointer"
-                onClick={() => handleSelectCustomer(customer)}
-              >
-                <img
-                  src={`https://api.dicebear.com/9.x/initials/svg?seed=${customer.name}&radius=50`}
-                  alt="customer image"
-                  className="w-10 h-10"
-                />
-                <div className="flex flex-col gap-1.5">
-                  <p className="font-medium">{customer?.name}</p>
-                  <p className="text-gray-500">{customer?.email}</p>
+            {customerFetchLoading ? (
+              <LoadingList />
+            ) : (
+              customers?.map((customer) => (
+                <div
+                  className="flex items-center gap-3 bg-purple-100 mb-4 p-4 rounded-lg cursor-pointer"
+                  onClick={() => handleSelectCustomer(customer)}
+                >
+                  <img
+                    src={`https://api.dicebear.com/9.x/initials/svg?seed=${customer?.name || 'Walk-In'}&radius=50`}
+                    alt="customer image"
+                    className="w-10 h-10"
+                  />
+                  <div className="flex flex-col gap-1.5">
+                    <p className="font-medium">{customer?.name || 'Walk-In'}</p>
+                    {customer?.email ? (
+                      <p className="text-gray-500">{customer?.email}</p>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       ) : (
@@ -147,7 +156,7 @@ function SelectCustomer() {
             <div className="flex flex-col items-center justify-center px-4">
               <div>
                 <img
-                  src="https://api.dicebear.com/9.x/fun-emoji/svg?seed=Eliza&radius=50"
+                  src="https://api.dicebear.com/9.x/lorelei-neutral/svg?seed=Adrian&radius=50"
                   alt="customer_avatar"
                   className="w-14 h-14"
                 />
@@ -161,13 +170,17 @@ function SelectCustomer() {
             <div className="w-full px-4">
               <div className="flex flex-col items-center justify-center border-b w-full pb-8">
                 <img
-                  src={`https://api.dicebear.com/9.x/initials/svg?seed=${selectedCustomer?.name}&radius=50`}
+                  src={`https://api.dicebear.com/9.x/initials/svg?seed=${selectedCustomer?.name || 'Walk-In'}&radius=50`}
                   alt="customer image"
                   className="w-16 h-16"
                 />
                 <div className="flex flex-col justify-center items-center gap-1.5 mt-4">
-                  <p className="font-medium">{selectedCustomer?.name}</p>
-                  <p className="text-gray-500">{selectedCustomer?.email}</p>
+                  <p className="font-medium">
+                    {selectedCustomer?.name || 'Walk-In'}
+                  </p>
+                  {selectedCustomer?.email ? (
+                    <p className="text-gray-500">{selectedCustomer?.email}</p>
+                  ) : null}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mt-4">
