@@ -132,6 +132,11 @@ const appSlice = createSlice({
         ...action.payload,
       };
     },
+
+    handleUpdateAppointmentStatus: (state, action) => {
+      state.appointment.appointment_status = action.payload;
+    },
+
     resetCreateAppointmentData: (state) => {
       state.appointment = appointmentInitialState;
     },
@@ -159,6 +164,8 @@ export const {
   handleTotalDurationOfCreateAppointment,
   handleAddSlotToCreateAppointment,
   resetCreateAppointmentData,
+
+  handleUpdateAppointmentStatus,
 
   handleFillAppointmentData,
 } = appSlice.actions;

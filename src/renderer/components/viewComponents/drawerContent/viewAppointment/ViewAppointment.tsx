@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Flatpickr from 'react-flatpickr';
-import { useCreate, useFetch } from '../../../../utils/hooks';
+import { useCreate, useEdit, useFetch } from '../../../../utils/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   handleAddServiceToCreatedAppointment,
@@ -8,6 +8,7 @@ import {
   handleFillAppointmentData,
   handleTotalDurationOfCreateAppointment,
   handleTotalOfCreateAppointment,
+  handleUpdateAppointmentStatus,
   resetCreateAppointmentData,
 } from '../../../../../store/slices/appSlice';
 import { ServiceCard } from '../../../commonComponents/drawerContent';
@@ -35,6 +36,10 @@ function ViewAppointment({ isView }: { isView: boolean }) {
     useFetch();
   const { loading: cAppointmentLoading, createData: appointmentCreate } =
     useCreate();
+  const {
+    loading: eAppointmentStatusLoading,
+    editData: updateAppointmentStatus,
+  } = useEdit();
 
   const dispatch = useDispatch();
   const selectedServices = useSelector(
@@ -139,6 +144,22 @@ function ViewAppointment({ isView }: { isView: boolean }) {
     });
   };
 
+  const handleUpdateStatus = (e: any) => {
+    const payload = {
+      appointment_status: e.target.value,
+    };
+    updateAppointmentStatus(
+      `/appointments/${params?.id}/status/`,
+      payload,
+      false,
+    ).then((res) => {
+      if (res.status === 200) {
+        dispatch(handleUpdateAppointmentStatus(e.target.value));
+        toast.success('Appointment status updated successfully!');
+      }
+    });
+  };
+
   //   [info]: lifecyles
   useEffect(() => {
     const totalAmount = selectedServices.reduce((sum, service) => {
@@ -153,8 +174,6 @@ function ViewAppointment({ isView }: { isView: boolean }) {
     if (location.pathname.includes('create')) {
       if (!slot?.time) {
         navigate('/calendar');
-      } else {
-        fetchServices();
       }
     } else if (location.pathname.includes('view')) {
       if (params.id) {
@@ -163,6 +182,7 @@ function ViewAppointment({ isView }: { isView: boolean }) {
         navigate('/calendar');
       }
     }
+    fetchServices();
   }, [navigate]);
 
   return (
@@ -178,36 +198,70 @@ function ViewAppointment({ isView }: { isView: boolean }) {
         {selectedServices.length > 0 && !isIntendedToAddService ? (
           <div className="h-full flex flex-col">
             <div
-              className="px-8 pt-6 pb-2 border-b"
+              className="px-8 pt-6 pb-2 border-b flex items-start justify-between"
               style={{
                 backgroundColor: location.pathname.includes('view')
                   ? APPOINTMENT_STATUS_COLOR[appointment_status]
                   : 'transparent',
+                color: location.pathname.includes('view') ? 'white' : 'black',
               }}
             >
-              <div className="text-3xl font-semibold flex items-center gap-1.5">
-                <span>{getYYMMDD(new Date(slot?.time)).dayOfWeek},</span>
-                <span>{getYYMMDD(new Date(slot?.time)).day}</span>
-                <span>{getYYMMDD(new Date(slot?.time)).month}</span>
+              <div>
+                <div className="text-3xl font-semibold flex items-center gap-1.5">
+                  <span>{getYYMMDD(new Date(slot?.time)).dayOfWeek},</span>
+                  <span>{getYYMMDD(new Date(slot?.time)).day}</span>
+                  <span>{getYYMMDD(new Date(slot?.time)).month}</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {/* <p>{slot?.time || 'None'}</p> */}
+                  <div className="time_picker hover:underline">
+                    <Flatpickr
+                      placeholder="Time"
+                      value={slot?.time || ''}
+                      options={{
+                        enableTime: true,
+                        noCalendar: true,
+                        dateFormat: 'h:i K',
+                      }}
+                      onChange={handleAppointmentTimeChange}
+                    />
+                  </div>
+                  <span className="mb-2">.</span>
+                  <p>Doesn't repeat</p>
+                </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                {/* <p>{slot?.time || 'None'}</p> */}
-                <div className="time_picker hover:underline">
-                  <Flatpickr
-                    placeholder="Time"
-                    value={slot?.time || ''}
-                    options={{
-                      enableTime: true,
-                      noCalendar: true,
-                      dateFormat: 'h:i K',
-                    }}
-                    onChange={handleAppointmentTimeChange}
-                  />
+              {location.pathname.includes('view') ? (
+                <div>
+                  {eAppointmentStatusLoading ? (
+                    <div
+                      className="w-full h-10 bg-gray-200 rounded-full px-6 animate-pulse flex items-center justify-center font-medium text-gray-600 text-sm"
+                      style={{ animationDelay: '0.2s' }}
+                    >
+                      Loading...
+                    </div>
+                  ) : (
+                    <select
+                      className="select select-sm text-md pl-4 border border-gray-400 !outline-none select-bordered w-full max-w-full rounded-full capitalize text-black"
+                      value={appointment_status}
+                      onChange={handleUpdateStatus}
+                    >
+                      {Object.keys(APPOINTMENT_STATUS_COLOR).map(
+                        (status, index) => (
+                          <option
+                            key={index}
+                            value={status}
+                            className="capitalize"
+                          >
+                            {status.replace('_', ' ')}
+                          </option>
+                        ),
+                      )}
+                    </select>
+                  )}
                 </div>
-                <span className="mb-2">.</span>
-                <p>Doesn't repeat</p>
-              </div>
+              ) : null}
             </div>
             <div className="flex-1 p-8 overflow-y-auto hide-scrollbar h-full">
               <p className="font-semibold text-2xl">Services</p>
