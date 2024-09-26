@@ -114,6 +114,13 @@ const appSlice = createSlice({
       ];
     },
 
+    handleRemoveServiceFromAppointment: (state, action) => {
+      const { id, start_time: startTime } = action.payload;
+      state.appointment.services = state.appointment.services.filter(
+        (service) => !(service.id === id && service.start_time === startTime),
+      );
+    },
+
     handleAddCustomerToCreateAppointment: (state, action) => {
       state.appointment.customer = action.payload;
     },
@@ -159,6 +166,7 @@ export const {
   resetAppData,
 
   handleAddServiceToCreatedAppointment,
+  handleRemoveServiceFromAppointment,
   handleAddCustomerToCreateAppointment,
   handleTotalOfCreateAppointment,
   handleTotalDurationOfCreateAppointment,
