@@ -1,6 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Calendar as Calendaroo, momentLocalizer } from 'react-big-calendar';
+import {
+  Calendar as Calendaroo,
+  EventProps,
+  momentLocalizer,
+} from 'react-big-calendar';
 import moment from 'moment';
 import Drawer from '../../components/commonComponents/drawer/Drawer';
 import { ViewAppointment } from '../../components/viewComponents/drawerContent';
@@ -8,13 +12,19 @@ import {
   handleAddSlotToCreateAppointment,
   resetCreateAppointmentData,
 } from '../../../store/slices/appSlice';
-import { addTimeAndDuration, convertTime } from '../../utils/methods';
+import {
+  addTimeAndDuration,
+  convertTime,
+  formatDateIntoYYMMDD,
+} from '../../utils/methods';
 import { useFetch } from '../../utils/hooks';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from '../../components/commonComponents';
+import LoadingSpinner from '../../components/commonComponents/loadingSpinner/LoadingSpinner';
 
 const localizer = momentLocalizer(moment);
 
+let selectedView = 'month';
 function CreateAppointmentCancelModalContent() {
   return (
     <p>
@@ -36,7 +46,6 @@ function Calendar({
   const [appointments, setAppointments] = useState([]);
   const [isCancelingCreateAppointment, setIsCancelingCreateAppointment] =
     useState(false);
-
   const { loading: employeeFetchLoading, fetchData: employeeFetch } =
     useFetch();
 
@@ -60,19 +69,43 @@ function Calendar({
     });
   };
 
-  const fetchAppointments = () => {
-    appointFetch('/appointments/').then((res) => {
-      if (res.status === 200) {
-        const filteredAppointments = [];
-        res.data.forEach((appointment: any, index: number) => {
-          const appointmentDate = appointment.date.split('-');
+  const handleRangeChange = (e: any) => {
+    let startTime;
+    let endTime;
+    if (selectedView === 'month' || selectedView === 'agenda') {
+      startTime = e.start;
+      endTime = e.end;
+    } else if (selectedView === 'day') {
+      startTime = e[0];
+      endTime = e[0];
+    } else {
+      startTime = e[0];
+      endTime = e[e.length - 1];
+    }
+    fetchAppointments(startTime, endTime);
+  };
 
-          appointment.services.forEach(
-            (service: any, service_index: number) => {
+  const handleViewChange = (e: any) => {
+    selectedView = e;
+  };
+
+  const fetchAppointments = async (start_time: any, end_time: any) => {
+    try {
+      const res = await appointFetch(
+        `/appointments/?start_date=${formatDateIntoYYMMDD(start_time)}&end_date=${formatDateIntoYYMMDD(end_time)}`,
+      );
+      if (res.status === 200) {
+        const appointments: any = res.data;
+        const filteredAppointments = appointments.flatMap(
+          (appointment: any) => {
+            const appointmentDate = appointment.date.split('-');
+
+            return appointment.services.map((service: any) => {
               const serviceStartTime = convertTime(
                 service.start_time,
                 '24',
               ).split(':');
+
               const start = {
                 year: appointmentDate[0],
                 month: appointmentDate[1],
@@ -80,11 +113,13 @@ function Calendar({
                 hour: serviceStartTime[0],
                 minute: serviceStartTime[1],
               };
+
               const serviceEndTime = addTimeAndDuration(
                 `${start.year}-${start.month}-${start.day} ${start.hour}:${start.minute}`,
                 service.duration,
                 '24',
               ).split(':');
+
               const end = {
                 year: appointmentDate[0],
                 month: appointmentDate[1],
@@ -93,7 +128,7 @@ function Calendar({
                 minute: serviceEndTime[1],
               };
 
-              filteredAppointments.push({
+              return {
                 id: `${appointment.id}_${service.id}`,
                 title: `${service.name} FOR ${appointment.customer || 'Walk-In'}`,
                 start: new Date(
@@ -112,14 +147,16 @@ function Calendar({
                   parseInt(end.minute || '0'),
                   0,
                 ),
-              });
-            },
-          );
-        });
+              };
+            });
+          },
+        );
 
         setAppointments(filteredAppointments);
       }
-    });
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+    }
   };
 
   const handleCloseCreateAppointmentDrawer = () => {
@@ -138,13 +175,31 @@ function Calendar({
     }
   };
 
+  useEffect(() => {}, [navigate]);
+
+  const hasClickedRef = useRef(false);
   useEffect(() => {
-    fetchAppointments();
-  }, [navigate]);
+    const btnGroup = document.querySelector('.rbc-btn-group');
+
+    if (btnGroup) {
+      const firstButton = btnGroup.querySelector('button');
+
+      if (firstButton && !hasClickedRef.current) {
+        firstButton.click();
+        hasClickedRef.current = true;
+      }
+    }
+  }, []);
 
   useEffect(() => {
     handleFetchServicePerformer();
   }, []);
+
+  const components: any = {
+    event: ({ event }: any) => {
+      const data = event?.data;
+    },
+  };
 
   return (
     <div className="px-4 pb-2 pt-2 h-full -z-10 flex flex-col">
@@ -159,17 +214,28 @@ function Calendar({
           Appointments
         </p>
       </div>
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto relative">
         <Calendaroo
           localizer={localizer}
           events={appointments}
           startAccessor="start"
+          onRangeChange={handleRangeChange}
+          onView={handleViewChange}
           onSelectEvent={handleViewAppointment}
           endAccessor="end"
           style={{ height: '100%' }}
           onSelectSlot={handleSelectSlot}
           selectable
         />
+        {appointFetchLoading ? (
+          <div className="absolute inset-0 transition-opacity h-[93%] mt-auto">
+            <div className="absolute inset-0 bg-slate-400 opacity-15" />
+            <div className="left-1/2 top-1/2 translate-x-full translate-y-full  absolute">
+              {/* <p>Loading</p> */}
+              <LoadingSpinner />
+            </div>
+          </div>
+        ) : null}
       </div>
 
       {isView ? (

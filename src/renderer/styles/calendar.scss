@@ -1,0 +1,23 @@
+.rbc-header {
+  color: black;
+  font-size: 14px !important;
+  height: 36px !important;
+}
+
+.rbc-allday-cell {
+  display: none;
+}
+
+.rbc-time-slot {
+  min-height: 32px;
+  color: #1a1a1a;
+}
+
+.rbc-time-slot:not(.rbc-today .rbc-time-slot) {
+  background-color: #fefeff;
+}
+
+// event styles
+.rbc-event,
+.rbc-background-event {
+}
