@@ -53,6 +53,8 @@ function ViewAppointment({ isView }: { isView: boolean }) {
     appointment_status,
   } = useSelector((state: any) => state.app.appointment);
 
+  const { selectedEmployee } = useSelector((state: any) => state.app.calendar);
+
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
@@ -72,7 +74,7 @@ function ViewAppointment({ isView }: { isView: boolean }) {
     const payload = {
       customer: selectedCustomer?.id || null,
       // store: null,
-      employee: 1, // [todo]: fix this employee
+      employee: selectedEmployee, // [todo]: fix this employee
       // created_by: null,
       date: formatDateIntoYYMMDD(slot.time),
       start_time: handleTimeForAPI(slot.time),

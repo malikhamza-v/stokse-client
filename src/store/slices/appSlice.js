@@ -12,6 +12,7 @@ const appointmentInitialState = {
   slot: {
     time: null,
   },
+  employee: null,
   appointment_status: 'booked',
 };
 
@@ -35,6 +36,9 @@ const initialState = {
 
   calendar: {
     selectedEmployee: null,
+    selectedView: null,
+    startDate: null,
+    endDate: null,
   },
 
   appointment: appointmentInitialState,
@@ -89,6 +93,15 @@ const appSlice = createSlice({
       state.calendar.selectedEmployee = action.payload;
     },
 
+    handleSelectViewForCalendar: (state, action) => {
+      state.calendar.selectedView = action.payload;
+    },
+
+    handleSelectDateForCalendar: (state, action) => {
+      state.calendar.startDate = action.payload.startDate;
+      state.calendar.endDate = action.payload.endDate;
+    },
+
     // [info]: view appointment
     handleFillAppointmentData: (state, action) => {
       state.appointment = action.payload;
@@ -119,6 +132,10 @@ const appSlice = createSlice({
       state.appointment.services = state.appointment.services.filter(
         (service) => !(service.id === id && service.start_time === startTime),
       );
+    },
+
+    handleAddEmployeeToCreateAppointment: (state, action) => {
+      state.appointment.employee = action.payload;
     },
 
     handleAddCustomerToCreateAppointment: (state, action) => {
@@ -165,9 +182,14 @@ export const {
   setPaymentMethods,
   resetAppData,
 
+  handleSelectEmployeeForCalendar,
+  handleSelectViewForCalendar,
+  handleSelectDateForCalendar,
+
   handleAddServiceToCreatedAppointment,
   handleRemoveServiceFromAppointment,
   handleAddCustomerToCreateAppointment,
+  handleAddEmployeeToCreateAppointment,
   handleTotalOfCreateAppointment,
   handleTotalDurationOfCreateAppointment,
   handleAddSlotToCreateAppointment,

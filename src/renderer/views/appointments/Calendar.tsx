@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import {
-  Calendar as Calendaroo,
-  EventProps,
-  momentLocalizer,
-} from 'react-big-calendar';
+import { useDispatch, useSelector } from 'react-redux';
+import { Calendar as Calendaroo, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import Drawer from '../../components/commonComponents/drawer/Drawer';
 import { ViewAppointment } from '../../components/viewComponents/drawerContent';
 import {
   handleAddSlotToCreateAppointment,
+  handleSelectDateForCalendar,
+  handleSelectEmployeeForCalendar,
+  handleSelectViewForCalendar,
   resetCreateAppointmentData,
 } from '../../../store/slices/appSlice';
 import {
@@ -25,6 +24,8 @@ import LoadingSpinner from '../../components/commonComponents/loadingSpinner/Loa
 const localizer = momentLocalizer(moment);
 
 let selectedView = 'month';
+let startDateGlobal: any = null;
+let endDateGlobal: any = null;
 function CreateAppointmentCancelModalContent() {
   return (
     <p>
@@ -46,19 +47,21 @@ function Calendar({
   const [appointments, setAppointments] = useState([]);
   const [isCancelingCreateAppointment, setIsCancelingCreateAppointment] =
     useState(false);
+
   const { loading: employeeFetchLoading, fetchData: employeeFetch } =
     useFetch();
-
   const { loading: appointFetchLoading, fetchData: appointFetch } = useFetch();
 
   const dispatch = useDispatch();
+  const { selectedEmployee, selectedView: selectedViewState } = useSelector(
+    (state: any) => state.app.calendar,
+  );
 
   const navigate = useNavigate();
 
   const handleSelectSlot = (e: any) => {
     dispatch(handleAddSlotToCreateAppointment({ time: e.slots[0] }));
     navigate('/calendar/appointment/create/');
-    // setIsCreateAppoinmentDrawerOpen(true);
   };
 
   const handleFetchServicePerformer = () => {
@@ -82,17 +85,31 @@ function Calendar({
       startTime = e[0];
       endTime = e[e.length - 1];
     }
-    fetchAppointments(startTime, endTime);
+    startDateGlobal = startTime;
+    endDateGlobal = endTime;
+    dispatch(
+      handleSelectDateForCalendar({
+        startDate: startTime,
+        endDate: endTime,
+      }),
+    );
+    fetchAppointments(selectedEmployee);
   };
 
   const handleViewChange = (e: any) => {
+    if (e !== 'agenda') {
+      if (!selectedEmployee || selectedEmployee === 'all') {
+        dispatch(handleSelectEmployeeForCalendar(servicePerformers[0].id));
+      }
+    }
     selectedView = e;
+    dispatch(handleSelectViewForCalendar(e));
   };
 
-  const fetchAppointments = async (start_time: any, end_time: any) => {
+  const fetchAppointments = async (employee: any) => {
     try {
       const res = await appointFetch(
-        `/appointments/?start_date=${formatDateIntoYYMMDD(start_time)}&end_date=${formatDateIntoYYMMDD(end_time)}`,
+        `/appointments/?start_date=${formatDateIntoYYMMDD(startDateGlobal)}&end_date=${formatDateIntoYYMMDD(endDateGlobal)}${employee ? `&employee=${employee}` : ''}`,
       );
       if (res.status === 200) {
         const appointments: any = res.data;
@@ -175,43 +192,72 @@ function Calendar({
     }
   };
 
-  useEffect(() => {}, [navigate]);
+  const handleSelectEmployee = (e) => {
+    if (e.target.value === 'all') {
+      navigateToView('agenda');
+    } else {
+      fetchAppointments(e.target.value);
+    }
+    dispatch(handleSelectEmployeeForCalendar(e.target.value));
+  };
+
+  const navigateToView = (view: string) => {
+    selectedView = view;
+    const toolBar = document.querySelector('.rbc-toolbar');
+    const btnGroup = toolBar?.querySelectorAll('.rbc-btn-group')[1];
+    if (btnGroup) {
+      let btn = btnGroup.querySelectorAll('button');
+      if (view === 'month') {
+        btn[0].click();
+      } else if (view === 'week') {
+        btn[1].click();
+      } else if (view === 'day') {
+        btn[2].click();
+      } else {
+        btn[3].click();
+      }
+    }
+  };
 
   const hasClickedRef = useRef(false);
   useEffect(() => {
-    const btnGroup = document.querySelector('.rbc-btn-group');
-
-    if (btnGroup) {
-      const firstButton = btnGroup.querySelector('button');
-
-      if (firstButton && !hasClickedRef.current) {
-        firstButton.click();
-        hasClickedRef.current = true;
+    if (!hasClickedRef.current) {
+      if (selectedViewState) {
+        navigateToView(selectedViewState);
+      } else {
+        navigateToView('month');
       }
+      hasClickedRef.current = true;
     }
-  }, []);
+  }, [selectedViewState]);
 
   useEffect(() => {
     handleFetchServicePerformer();
   }, []);
 
-  const components: any = {
-    event: ({ event }: any) => {
-      const data = event?.data;
-    },
-  };
+  useEffect(() => {
+    if (servicePerformers.length > 0 && !selectedEmployee) {
+      dispatch(handleSelectEmployeeForCalendar(servicePerformers[0].id));
+    }
+  }, [servicePerformers]);
 
   return (
     <div className="px-4 pb-2 pt-2 h-full -z-10 flex flex-col">
       <div className="p-4 bg-[#F2F2F7] mb-4 shadow-sm rounded-lg relative">
-        <select className="select select-sm select-accent w-full max-w-xs rounded-full">
-          <option selected>All</option>
+        <select
+          onChange={handleSelectEmployee}
+          className="select select-sm select-accent w-full max-w-xs rounded-full"
+          value={selectedEmployee}
+        >
+          <option value="all">All</option>
           {servicePerformers.map((employee: any, index) => (
-            <option key={index}>{employee?.name}</option>
+            <option key={index} value={employee.id}>
+              {employee?.name}
+            </option>
           ))}
         </select>
         <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-medium text-lg text-gray-800">
-          Appointments
+          Appointments {selectedViewState}
         </p>
       </div>
       <div className="flex-1 overflow-y-auto relative">
@@ -231,7 +277,6 @@ function Calendar({
           <div className="absolute inset-0 transition-opacity h-[93%] mt-auto">
             <div className="absolute inset-0 bg-slate-400 opacity-15" />
             <div className="left-1/2 top-1/2 translate-x-full translate-y-full  absolute">
-              {/* <p>Loading</p> */}
               <LoadingSpinner />
             </div>
           </div>
