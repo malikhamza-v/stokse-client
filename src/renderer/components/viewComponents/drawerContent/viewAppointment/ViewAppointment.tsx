@@ -26,7 +26,13 @@ import { toast } from 'react-toastify';
 import LoadingButton from '../../../commonComponents/loadingButton/LoadingButton';
 import { APPOINTMENT_STATUS_COLOR } from '../../../../utils/constant';
 
-function ViewAppointment({ isView }: { isView: boolean }) {
+function ViewAppointment({
+  isView,
+  afterSubmitAction,
+}: {
+  isView: boolean;
+  afterSubmitAction: any;
+}) {
   const [services, setServices] = useState<any>([]);
   const [isIntendedToAddService, setIsIntendedToAddService] = useState(false);
 
@@ -74,7 +80,7 @@ function ViewAppointment({ isView }: { isView: boolean }) {
     const payload = {
       customer: selectedCustomer?.id || null,
       // store: null,
-      employee: selectedEmployee, // [todo]: fix this employee
+      employee: selectedEmployee === 'all' ? null : selectedEmployee, // [todo]: fix this employee
       // created_by: null,
       date: formatDateIntoYYMMDD(slot.time),
       start_time: handleTimeForAPI(slot.time),
@@ -94,6 +100,7 @@ function ViewAppointment({ isView }: { isView: boolean }) {
         dispatch(resetCreateAppointmentData());
         toast.success('Appointment set successfully!');
         navigate('/calendar');
+        afterSubmitAction(selectedEmployee);
       }
     });
   };
@@ -216,7 +223,6 @@ function ViewAppointment({ isView }: { isView: boolean }) {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  {/* <p>{slot?.time || 'None'}</p> */}
                   <div className="time_picker hover:underline">
                     <Flatpickr
                       placeholder="Time"

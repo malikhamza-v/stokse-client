@@ -26,6 +26,7 @@ const localizer = momentLocalizer(moment);
 let selectedView = 'month';
 let startDateGlobal: any = null;
 let endDateGlobal: any = null;
+let selectedEmployeeGlobal = null;
 function CreateAppointmentCancelModalContent() {
   return (
     <p>
@@ -93,12 +94,14 @@ function Calendar({
         endDate: endTime,
       }),
     );
-    fetchAppointments(selectedEmployee);
+    console.log('---fetching by date change');
+    fetchAppointments(selectedEmployeeGlobal || selectedEmployee);
   };
 
   const handleViewChange = (e: any) => {
     if (e !== 'agenda') {
       if (!selectedEmployee || selectedEmployee === 'all') {
+        selectedEmployeeGlobal = servicePerformers[0].id;
         dispatch(handleSelectEmployeeForCalendar(servicePerformers[0].id));
       }
     }
@@ -109,7 +112,7 @@ function Calendar({
   const fetchAppointments = async (employee: any) => {
     try {
       const res = await appointFetch(
-        `/appointments/?start_date=${formatDateIntoYYMMDD(startDateGlobal)}&end_date=${formatDateIntoYYMMDD(endDateGlobal)}${employee ? `&employee=${employee}` : ''}`,
+        `/appointments/?start_date=${formatDateIntoYYMMDD(startDateGlobal)}&end_date=${formatDateIntoYYMMDD(endDateGlobal)}${employee && employee !== 'all' ? `&employee=${employee}` : ''}`,
       );
       if (res.status === 200) {
         const appointments: any = res.data;
@@ -193,12 +196,14 @@ function Calendar({
   };
 
   const handleSelectEmployee = (e) => {
+    selectedEmployeeGlobal = e.target.value;
+    dispatch(handleSelectEmployeeForCalendar(e.target.value));
     if (e.target.value === 'all') {
       navigateToView('agenda');
     } else {
+      console.log('---fetching by select employee');
       fetchAppointments(e.target.value);
     }
-    dispatch(handleSelectEmployeeForCalendar(e.target.value));
   };
 
   const navigateToView = (view: string) => {
@@ -237,6 +242,7 @@ function Calendar({
 
   useEffect(() => {
     if (servicePerformers.length > 0 && !selectedEmployee) {
+      selectedEmployeeGlobal = servicePerformers[0].id;
       dispatch(handleSelectEmployeeForCalendar(servicePerformers[0].id));
     }
   }, [servicePerformers]);
@@ -289,7 +295,10 @@ function Calendar({
           isOpen={isView}
           close={() => navigate(-1)}
         >
-          <ViewAppointment isView={true} />
+          <ViewAppointment
+            isView={true}
+            afterSubmitAction={fetchAppointments}
+          />
         </Drawer>
       ) : null}
 
@@ -299,7 +308,10 @@ function Calendar({
           isOpen={isCreate}
           close={() => handleCloseCreateAppointmentDrawer()}
         >
-          <ViewAppointment isView={false} />
+          <ViewAppointment
+            isView={false}
+            afterSubmitAction={fetchAppointments}
+          />
         </Drawer>
       ) : null}
 
