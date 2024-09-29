@@ -40,6 +40,8 @@ function ViewAppointment({
     useFetch();
   const { loading: servicesFetchLoading, fetchData: servicesFetch } =
     useFetch();
+  const { loading: availabilityLoading, fetchData: availablilityFetch } =
+    useFetch();
   const { loading: cAppointmentLoading, createData: appointmentCreate } =
     useCreate();
   const {
@@ -67,7 +69,11 @@ function ViewAppointment({
 
   //   [methods]:
   const handleAddService = (service: any) => {
-    dispatch(handleAddServiceToCreatedAppointment(service));
+    const payload = {
+      service,
+      action: checkAvailablility,
+    };
+    dispatch(handleAddServiceToCreatedAppointment(payload));
     setIsIntendedToAddService(false);
   };
 
@@ -76,12 +82,21 @@ function ViewAppointment({
     dispatch(handleAddSlotToCreateAppointment({ time: time }));
   };
 
+  const checkAvailablility = (
+    employee: any,
+    date: any,
+    start_time: any,
+    duration: any,
+  ) => {
+    availablilityFetch(
+      `/appointments/check-availability/?employee=${employee}&date=${date}&start_time=${start_time}&duration=${duration}`,
+    );
+  };
+
   const handleSaveAppointment = () => {
     const payload = {
       customer: selectedCustomer?.id || null,
-      // store: null,
-      employee: selectedEmployee === 'all' ? null : selectedEmployee, // [todo]: fix this employee
-      // created_by: null,
+      employee: selectedEmployee === 'all' ? null : selectedEmployee,
       date: formatDateIntoYYMMDD(slot.time),
       start_time: handleTimeForAPI(slot.time),
       frequency_value: null,

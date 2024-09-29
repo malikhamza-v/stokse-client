@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
   addTimeAndDuration,
+  convertTime,
   formatDateIntoYYMMDD,
+  handleTimeForAPI,
 } from '../../renderer/utils/methods';
 
 const appointmentInitialState = {
@@ -110,16 +112,26 @@ const appSlice = createSlice({
     // [info]: create appointment
     handleAddServiceToCreatedAppointment: (state, action) => {
       const allServices = state.appointment.services;
+      const startTime = addTimeAndDuration(
+        allServices[allServices.length - 1]?.start_time
+          ? `${formatDateIntoYYMMDD(state.appointment.slot.time)} ${allServices[allServices.length - 1]?.start_time}`
+          : state.appointment.slot.time?.toString(),
+        allServices[allServices.length - 1]?.duration || '0min',
+        '12',
+      );
       const selectedService = {
-        ...action.payload,
-        start_time: addTimeAndDuration(
-          allServices[allServices.length - 1]?.start_time
-            ? `${formatDateIntoYYMMDD(state.appointment.slot.time)} ${allServices[allServices.length - 1]?.start_time}`
-            : state.appointment.slot.time?.toString(),
-          allServices[allServices.length - 1]?.duration || '0min',
-          '12',
-        ),
+        ...action.payload.service,
+        start_time: startTime,
       };
+
+      console.log(startTime, convertTime(startTime, '24'));
+
+      action.payload.action(
+        state.calendar.selectedEmployee,
+        formatDateIntoYYMMDD(state.appointment.slot.time),
+        handleTimeForAPI(`1970-10-10 ${convertTime(startTime, '24')}`),
+        action.payload.service.duration,
+      );
 
       state.appointment.services = [
         ...state.appointment.services,
