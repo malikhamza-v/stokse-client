@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { MoreSVG, SettingSVG } from '../../../utils/svg';
 import { Navbar } from '../../../utils/constant';
@@ -11,9 +11,14 @@ function SideBar() {
   const moreOptionsContainer = useRef<HTMLDivElement>(null);
   const sideBarRef = useRef<HTMLElement>(null); // Ref for the SideBar component
   const [isMoreOptionsOpen, setIsMoreOptionsOpen] = useState<boolean>(false);
+  const location = useLocation();
 
   const handleOpenMoreOptions = () => {
     setIsMoreOptionsOpen(!isMoreOptionsOpen);
+  };
+
+  const addActiveStateClasses = () => {
+    return '';
   };
 
   useEffect(() => {
@@ -67,12 +72,24 @@ function SideBar() {
               onMouseEnter={() => setToolTip(nav.label)}
               onMouseLeave={() => setToolTip('')}
               onClick={() => setIsMoreOptionsOpen(false)}
-              className={`p-4 h-14 w-14 flex justify-center items-center text-white transition-colors duration-200 bg-slate-100 rounded-full hover:bg-slate-200 dark:hover:text-light dark:bg-dark focus:outline-none ${
+              className={`p-4 h-14 w-14 flex justify-center items-center text-white transition-colors duration-200 rounded-full dark:hover:text-light dark:bg-dark focus:outline-none ${
                 nav.isHiddenForMobile ? 'hidden md:flex' : ''
-              } ${nav.label === 'Settings' ? 'absolute bottom-4' : ''} `}
+              } ${nav.label === 'Settings' ? 'absolute bottom-4' : ''} ${
+                (location.pathname === '/' && nav.link === '/') ||
+                (location.pathname.includes(nav.link) && nav.link !== '/')
+                  ? 'bg-[#3c3c3c]'
+                  : 'bg-slate-100 hover:bg-slate-200'
+              }`}
             >
               <div className="relative flex items-center">
-                <nav.icon stroke="#000000" />
+                <nav.icon
+                  stroke={`${
+                    (location.pathname === '/' && nav.link === '/') ||
+                    (location.pathname.includes(nav.link) && nav.link !== '/')
+                      ? '#ffffff'
+                      : '#000000'
+                  }`}
+                />
                 {toolTip === nav.label && window.innerWidth > 600 && (
                   <div className="popover absolute left-0 bg-gray-600 border shadow-md px-4 ml-[3.5rem] py-2 rounded-lg">
                     <p className="text-white">{nav.label}</p>
@@ -109,7 +126,7 @@ function SideBar() {
                           <p className="text-gray-500 text-sm">
                             {nav.description}
                           </p>
-                        </div>{' '}
+                        </div>
                       </div>
                       <div className="collapse-content">
                         {nav.options?.map((option) => (
@@ -139,7 +156,7 @@ function SideBar() {
                     onMouseEnter={() => setToolTip(nav.label)}
                     onMouseLeave={() => setToolTip('')}
                     onClick={() => setIsMoreOptionsOpen(false)}
-                    className="p-4  w-full flex justify-start text-black transition-colors duration-200 hover:bg-slate-200 dark:hover:text-light dark:bg-dark focus:outline-none"
+                    className="p-4 w-full flex justify-start text-black transition-colors duration-200 hover:bg-slate-200 dark:hover:text-light dark:bg-dark focus:outline-none"
                   >
                     <div className="relative flex flex-col">
                       <p className="font-semibold">{nav.label}</p>

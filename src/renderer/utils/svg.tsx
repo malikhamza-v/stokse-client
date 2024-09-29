@@ -166,7 +166,7 @@ export function BillingSVG() {
   );
 }
 
-export function ProfileSVG() {
+export function ProfileSVG({ stroke }: { stroke: string }) {
   return (
     <svg
       viewBox="0 0 46 42"
@@ -174,9 +174,9 @@ export function ProfileSVG() {
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
       className="w-6 h-6"
+      // stroke={stroke}
     >
-      <title>customer-support</title>
-      <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g stroke={stroke} strokeWidth="1" fill={stroke} fillRule="evenodd">
         <g
           transform="translate(-1717.000000, -291.000000)"
           fill="#FFFFFF"
@@ -185,21 +185,40 @@ export function ProfileSVG() {
           <g transform="translate(1716.000000, 291.000000)">
             <g transform="translate(1.000000, 0.000000)">
               <path
-                className="fill-slate-800 opacity-60"
+                className={`${stroke === '#000000' ? 'fill-slate-800' : 'fill-slate-100'} opacity-60`}
                 d="M45,0 L26,0 C25.447,0 25,0.447 25,1 L25,20 C25,20.379 25.214,20.725 25.553,20.895 C25.694,20.965 25.848,21 26,21 C26.212,21 26.424,20.933 26.6,20.8 L34.333,15 L45,15 C45.553,15 46,14.553 46,14 L46,1 C46,0.447 45.553,0 45,0 Z"
               />
               <path
-                className="fill-slate-800"
+                className={`${stroke === '#000000' ? 'fill-slate-800' : 'fill-slate-100'}`}
                 d="M22.883,32.86 C20.761,32.012 17.324,31 13,31 C8.676,31 5.239,32.012 3.116,32.86 C1.224,33.619 0,35.438 0,37.494 L0,41 C0,41.553 0.447,42 1,42 L25,42 C25.553,42 26,41.553 26,41 L26,37.494 C26,35.438 24.776,33.619 22.883,32.86 Z"
               />
               <path
-                className="fill-slate-800"
+                className={`${stroke === '#000000' ? 'fill-slate-800' : 'fill-slate-100'}`}
                 d="M13,28 C17.432,28 21,22.529 21,18 C21,13.589 17.411,10 13,10 C8.589,10 5,13.589 5,18 C5,22.529 8.568,28 13,28 Z"
               />
             </g>
           </g>
         </g>
       </g>
+    </svg>
+  );
+}
+
+export function CalendarSVG({ stroke }: { stroke: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth="1.5"
+      stroke={stroke}
+      className="size-6"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
+      />
     </svg>
   );
 }

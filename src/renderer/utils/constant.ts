@@ -8,6 +8,7 @@ import {
   SettingSVG,
   OrderBox,
   CustomerSVG,
+  CalendarSVG,
 } from './svg';
 
 const Navbar = [
@@ -20,6 +21,11 @@ const Navbar = [
     label: 'Employees',
     icon: ProfileSVG,
     link: '/employees',
+  },
+  {
+    label: 'Calendar',
+    icon: CalendarSVG,
+    link: '/calendar',
   },
   {
     label: 'Sale',
