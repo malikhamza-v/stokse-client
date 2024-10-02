@@ -3,7 +3,14 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { LabelInput } from '../../components/commonComponents';
-import { ArrowRight } from '../../utils/svg';
+import {
+  ArrowRight,
+  DescriptionSVG,
+  EmailSVG,
+  LocationSVG,
+  PhoneSVG,
+  StoreSVG,
+} from '../../utils/svg';
 import { useCreate } from '../../utils/hooks';
 import { SecondaryButton } from '../../components/commonComponents/buttons';
 import { useEffect, useState } from 'react';
@@ -52,6 +59,12 @@ function Setting() {
       label: 'Managers',
       description: 'Manage managers of your stores.',
       link: '/setting/managers',
+      onlyForAdmin: true,
+    },
+    {
+      label: 'Store Settings',
+      description: 'Manage settings of your stores.',
+      link: '/setting/store',
       onlyForAdmin: true,
     },
     {
@@ -121,134 +134,26 @@ function Setting() {
       </div> */}
       <div className="px-4 md:px-16 py-8">
         <div className="relative mx-auto break-words bg-white w-full mb-6 rounded-xl mt-16">
-          <div className="px-6">
-            <div className="flex flex-wrap justify-center">
-              <div className="w-full flex justify-center">
-                <div className="relative">
-                  <img
-                    src="https://placehold.co/230x230"
-                    className="shadow-xl rounded-full align-middle border-none absolute -m-16 -ml-20 max-w-[100px] md:max-w-[150px]"
-                    alt="business-logo"
-                  />
+          <div className="grid grid-cols-2">
+            <div className="rounded-lg p-8 mb-12">
+              <div className="flex items-center gap-6">
+                <div>
+                  <div class="avatar">
+                    <div class="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2">
+                      <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="text-center mt-24">
-              <h3 className="text-2xl text-slate-700 font-bold leading-normal mb-1">
-                Store Name
-              </h3>
-              <div className="text-xs mt-0 mb-2 text-slate-400 font-bold uppercase">
-                Paris, France
-              </div>
-            </div>
-            <div className="mt-6 py-6 border-t border-slate-200 text-center">
-              <div className="w-full">
-                <div className="bg-white rounded-2xl shadow-sm py-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="col-span-1 ">
-                    <LabelInput
-                      loading={false}
-                      errorMsg={null}
-                      label="Name"
-                      required
-                    >
-                      <input
-                        type="text"
-                        id="name"
-                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 w-full py-4 px-4"
-                        placeholder="Store Name"
-                        required
-                        // onChange={(e) =>
-                        //   handleUserInput('name', e.target.value)
-                        // }
-                      />
-                    </LabelInput>
-                  </div>
 
-                  <div className="col-span-1">
-                    <LabelInput
-                      loading={false}
-                      errorMsg={null}
-                      label="Business Email"
-                      required
-                    >
-                      <input
-                        type="text"
-                        id="name"
-                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 w-full  py-4 px-4"
-                        placeholder="Business Email"
-                        required
-                        // onChange={(e) =>
-                        //   handleUserInput('name', e.target.value)
-                        // }
-                      />
-                    </LabelInput>
-                  </div>
-
-                  <div className="">
-                    <LabelInput
-                      loading={false}
-                      errorMsg={null}
-                      label="Business Phone"
-                      required
-                    >
-                      <input
-                        type="number"
-                        id="name"
-                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 w-full py-4 px-4"
-                        placeholder="Business Phone"
-                        required
-                        // onChange={(e) =>
-                        //   handleUserInput('name', e.target.value)
-                        // }
-                      />
-                    </LabelInput>
-                  </div>
-
-                  <div>
-                    <LabelInput
-                      loading={false}
-                      errorMsg={null}
-                      label="Business Description"
-                      required
-                    >
-                      <input
-                        type="number"
-                        id="name"
-                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 w-full py-4 px-4"
-                        placeholder="Business Description"
-                        required
-                        // onChange={(e) =>
-                        //   handleUserInput('name', e.target.value)
-                        // }
-                      />
-                    </LabelInput>
-                  </div>
-
-                  <div className="col-span-1 md:col-span-2">
-                    <LabelInput
-                      loading={false}
-                      errorMsg={null}
-                      label="Business Address"
-                      required
-                    >
-                      <input
-                        type="number"
-                        id="name"
-                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 w-full py-4 px-4"
-                        placeholder="Business Address"
-                        required
-                        // onChange={(e) =>
-                        //   handleUserInput('name', e.target.value)
-                        // }
-                      />
-                    </LabelInput>
-                  </div>
+                <div>
+                  <p className="font-bold text-2xl">Store One of Stokse</p>
+                  <p className="text-gray-500">Created On: 25 Jan 2024</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="px-6 pr-2  flex flex-col">
+          <div className="mx-6 flex flex-col">
             <div>
               <h2 className="font-bold text-2xl">Settings</h2>
               <p className="text-gray-500">

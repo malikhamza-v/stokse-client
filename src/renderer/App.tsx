@@ -44,6 +44,7 @@ import Inventory from './views/inventory/Inventory';
 import Service from './views/services/Services';
 import ServiceAdd from './views/services/ServiceAdd';
 import { PersistGate } from 'redux-persist/integration/react';
+import Store from './views/setting/Store';
 
 const RouterComponent = isElectron() ? MemoryRouter : BrowserRouter;
 
@@ -324,6 +325,14 @@ export default function App() {
                 element={
                   <MainLayout>
                     <Taxes />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/setting/store"
+                element={
+                  <MainLayout>
+                    <Store />
                   </MainLayout>
                 }
               />
