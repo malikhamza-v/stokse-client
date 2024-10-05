@@ -1,10 +1,13 @@
 FROM node:18-alpine
 
+RUN apk add --no-cache bash \
+  && npm install -g yarn
+
 WORKDIR /react
 
 COPY package*.json ./
-RUN npm install
+RUN yarn install
 
 COPY . .
 
-RUN npm run build:web --no-cache
+RUN yarn build:web --no-cache
