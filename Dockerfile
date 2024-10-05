@@ -4,7 +4,7 @@ WORKDIR /react
 
 COPY . .
 
-RUN npm install
+RUN npm install --ignore-scripts
 
 
 RUN npm run build:web --no-cache
