@@ -4,7 +4,7 @@ WORKDIR /react
 
 COPY . .
 
-RUN yarn install
+RUN npm install
 
 
-RUN yarn build:web --no-cache
+RUN npm run build:web --no-cache
