@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { MoreSVG, SettingSVG } from '../../../utils/svg';
+import { MoreSVG } from '../../../utils/svg';
 import { Navbar } from '../../../utils/constant';
 
 function SideBar() {
@@ -15,10 +15,6 @@ function SideBar() {
 
   const handleOpenMoreOptions = () => {
     setIsMoreOptionsOpen(!isMoreOptionsOpen);
-  };
-
-  const addActiveStateClasses = () => {
-    return '';
   };
 
   useEffect(() => {
@@ -75,8 +71,11 @@ function SideBar() {
               className={`p-4 h-14 w-14 flex justify-center items-center text-white transition-colors duration-200 rounded-full dark:hover:text-light dark:bg-dark focus:outline-none ${
                 nav.isHiddenForMobile ? 'hidden md:flex' : ''
               } ${nav.label === 'Settings' ? 'absolute bottom-4' : ''} ${
-                (location.pathname === '/' && nav.link === '/') ||
-                (location.pathname.includes(nav.link) && nav.link !== '/')
+                (nav.link === '/' && location.pathname === '/') ||
+                (nav.link !== '/' && location.pathname.includes(nav.link)) ||
+                nav.relavent_links.some((relLink) =>
+                  location.pathname.includes(relLink),
+                )
                   ? 'bg-[#3c3c3c]'
                   : 'bg-slate-100 hover:bg-slate-200'
               }`}
@@ -84,8 +83,12 @@ function SideBar() {
               <div className="relative flex items-center">
                 <nav.icon
                   stroke={`${
-                    (location.pathname === '/' && nav.link === '/') ||
-                    (location.pathname.includes(nav.link) && nav.link !== '/')
+                    (nav.link === '/' && location.pathname === '/') ||
+                    (nav.link !== '/' &&
+                      location.pathname.includes(nav.link)) ||
+                    nav.relavent_links.some((relLink) =>
+                      location.pathname.includes(relLink),
+                    )
                       ? '#ffffff'
                       : '#000000'
                   }`}

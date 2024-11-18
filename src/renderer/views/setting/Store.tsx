@@ -20,9 +20,8 @@ function Store() {
   }, []);
 
   useEffect(() => {
-    if (storeSettings?.data?.created_at) {
-    }
-    setStoreCreatedAt(getYYMMDD(new Date(storeSettings?.data?.created_at)));
+    if (storeSettings?.data?.created_at)
+      setStoreCreatedAt(getYYMMDD(new Date(storeSettings.data.created_at)));
   }, [storeSettings?.data?.created_at]);
   return (
     <div className="flex flex-col h-full w-full">
@@ -52,7 +51,7 @@ function Store() {
                 <p className="font-bold text-2xl">
                   {storeSettings?.data?.name || 'None'}
                 </p>
-                {storeSettings?.data?.created_at ? (
+                {storeSettings?.data?.created_at && storeCreatedAt ? (
                   <p className="text-gray-500">
                     Created On:{' '}
                     {`${storeCreatedAt.dayOfWeek}, ${storeCreatedAt.day} ${storeCreatedAt.month} ${storeCreatedAt.year}`}
@@ -122,9 +121,10 @@ function Store() {
           <div className="py-4 px-6">
             <div className="flex items-center gap-6">
               <div>
-                <p className="font-bold text-2xl">+1 (555) 123-4567</p>
-                <p>info@gourmetdelights.com</p>
-                <p>gourmetdelights</p>
+                <p className="font-bold text-2xl">
+                  {storeSettings?.data?.phone}
+                </p>
+                <p>{storeSettings?.data?.email}</p>
               </div>
             </div>
           </div>

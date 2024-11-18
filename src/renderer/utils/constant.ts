@@ -16,32 +16,38 @@ const Navbar = [
     label: 'Dashboard',
     icon: HomeSVG,
     link: '/',
+    relavent_links: [],
   },
   {
     label: 'Employees',
     icon: ProfileSVG,
     link: '/employees',
+    relavent_links: ['employee'],
   },
   {
     label: 'Calendar',
     icon: CalendarSVG,
     link: '/calendar',
+    relavent_links: [],
   },
   {
     label: 'Sale',
     icon: SaleSVG,
     link: '/sale',
+    relavent_links: [],
   },
   {
     label: 'Inventory',
     icon: InventorySVG,
     link: '/inventory',
+    relavent_links: [],
   },
   {
     label: 'Catalogue',
     description: 'Explore all the catalogues of your store',
     icon: TableSVG,
     link: '/catalogue',
+    relavent_links: [],
     isHiddenForMobile: true,
     options: [
       {
@@ -63,6 +69,7 @@ const Navbar = [
     description: 'Explore all the settings of your store',
     icon: SettingSVG,
     link: '/setting',
+    relavent_links: [],
     isHiddenForMobile: true,
   },
 ];
@@ -188,7 +195,7 @@ const data = [
   },
 ];
 
-const DURATION_TYPE = ['free', 'fixed', 'fixed'];
+const DURATION_TYPE = ['free', 'fixed', 'from'];
 
 const DURATION = [
   '5min',
