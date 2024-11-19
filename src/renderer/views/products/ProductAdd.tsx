@@ -270,13 +270,6 @@ export default function InventoryAdd() {
     });
   };
 
-  const handleCreateProductClient = (product: any) => {
-    // eslint-disable-next-line camelcase
-    const total_price = getTotalPrice({ ...product });
-    // eslint-disable-next-line camelcase
-    dispatch(setProducts([...products, { ...product, total_price }]));
-  };
-
   const handleCreateProduct = () => {
     setCProductLoading(true);
     resetErrorMsg();
@@ -321,9 +314,7 @@ export default function InventoryAdd() {
             displayValue: false,
           });
 
-          handleCreateProductClient(res.data);
-
-          navigate('/inventory');
+          navigate('/inventory/product-list');
         }
         return true;
       })

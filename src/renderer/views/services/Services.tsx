@@ -4,7 +4,7 @@
 /* eslint-disable no-nested-ternary */
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useFetch } from '../../utils/hooks';
 import {
@@ -16,10 +16,7 @@ import {
   ViewSVG,
 } from '../../utils/svg';
 import useRemove from '../../utils/hooks/useRemove';
-import {
-  setEditProduct,
-  setProducts as setGlobalProducts,
-} from '../../../store/slices/appSlice';
+import { setEditProduct } from '../../../store/slices/appSlice';
 
 /* eslint-disable jsx-a11y/control-has-associated-label */
 export default function Service({ isView }: { isView: boolean }) {
@@ -57,7 +54,6 @@ export default function Service({ isView }: { isView: boolean }) {
       .then((res) => {
         if (res?.status === 200) {
           setProducts(res?.data);
-          dispatch(setGlobalProducts(res?.data));
         }
         return true;
       })
