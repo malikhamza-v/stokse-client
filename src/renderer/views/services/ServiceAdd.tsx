@@ -4,7 +4,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   BackButton,
   PrimaryButton,
@@ -12,13 +12,9 @@ import {
 import CreatableSelect from 'react-select/creatable';
 import { LabelInput } from '../../components/commonComponents';
 import useCreate from '../../utils/hooks/useCreate';
-import {
-  setCategories as setGlobalCategories,
-  setProducts,
-} from '../../../store/slices/appSlice';
+import { setCategories as setGlobalCategories } from '../../../store/slices/appSlice';
 import { useFetch } from '../../utils/hooks';
 import { AddSVG } from '../../utils/svg';
-import { calculateTaxAmount, getTotalPrice } from '../../utils/methods';
 import { DURATION, DURATION_TYPE, noTaxOptions } from '../../utils/constant';
 
 interface Employee {
@@ -68,9 +64,6 @@ export default function ServiceAdd() {
 
   const { createData: createProduct } = useCreate();
 
-  const globalCategories = useSelector((state: any) => state.app.categories);
-  const products = useSelector((state: any) => state.app.products);
-
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -96,7 +89,7 @@ export default function ServiceAdd() {
     employeeFetch('/employee/')
       .then((res) => {
         if (res?.status === 200) {
-          const modifiedEmployees = res?.data?.map((employee) => {
+          const modifiedEmployees = res?.data?.map((employee: any) => {
             return {
               label: `${employee.name} - (${employee.email})`,
               value: employee.id,
@@ -132,13 +125,6 @@ export default function ServiceAdd() {
     });
   };
 
-  const handleCreateProductClient = (product: any) => {
-    // eslint-disable-next-line camelcase
-    const total_price = getTotalPrice({ ...product });
-    // eslint-disable-next-line camelcase
-    dispatch(setProducts([...products, { ...product, total_price }]));
-  };
-
   const handleCreateProduct = () => {
     setCProductLoading(true);
     resetErrorMsg();
@@ -171,10 +157,9 @@ export default function ServiceAdd() {
 
           setErrorMsg(res.data);
         }
-        if (res.status === 200) {
-          handleCreateProductClient(res.data);
 
-          navigate('/inventory');
+        if (res.status === 200) {
+          navigate('/inventory/service-list');
         }
         return true;
       })
@@ -216,6 +201,8 @@ export default function ServiceAdd() {
                   label="Name"
                   loading={false}
                   required
+                  isInline={false}
+                  htmlfor="name"
                 >
                   <input
                     type="text"
@@ -233,6 +220,8 @@ export default function ServiceAdd() {
                   label="Service Category"
                   loading={categoryFetchLoading}
                   required
+                  isInline={false}
+                  htmlfor="category"
                 >
                   <div className="relative group rounded-full overflow-hidden before:absolute w-full bg-white border border-gray-300">
                     <svg
@@ -293,6 +282,8 @@ export default function ServiceAdd() {
                   label="Service Description"
                   loading={false}
                   required={false}
+                  isInline={false}
+                  htmlfor="message"
                 >
                   <div className="mx-auto">
                     <textarea
@@ -329,6 +320,8 @@ export default function ServiceAdd() {
                     label="Price"
                     loading={false}
                     required
+                    isInline={false}
+                    htmlfor="price"
                   >
                     <input
                       type="number"
@@ -347,6 +340,8 @@ export default function ServiceAdd() {
                     label="Price Type"
                     loading={false}
                     errorMsg={errorMsg.price_type}
+                    isInline={false}
+                    htmlfor="category"
                   >
                     <div className="relative group rounded-full overflow-hidden before:absolute w-full bg-white border border-gray-300">
                       <svg
@@ -398,6 +393,8 @@ export default function ServiceAdd() {
                     label="Duration"
                     loading={false}
                     errorMsg={errorMsg.duration}
+                    isInline={false}
+                    htmlfor="duration"
                   >
                     <div className="relative group rounded-full overflow-hidden before:absolute w-full bg-white border border-gray-300">
                       <svg
@@ -461,6 +458,8 @@ export default function ServiceAdd() {
                     label="Team Member"
                     loading={false}
                     required={false}
+                    isInline={false}
+                    htmlfor=""
                   >
                     <div className="mt-3">
                       <CreatableSelect
@@ -472,7 +471,10 @@ export default function ServiceAdd() {
                         placeholder="Select Member"
                         value={userInput.team}
                         onChange={(selectedEmployee) => {
-                          handleUserInput('team', selectedEmployee);
+                          handleUserInput(
+                            'team',
+                            selectedEmployee as unknown as string,
+                          );
                         }}
                       />
                     </div>

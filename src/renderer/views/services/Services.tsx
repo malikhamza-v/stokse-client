@@ -112,7 +112,7 @@ export default function Service({ isView }: { isView: boolean }) {
       removeProduct(`/service/${preDeleteItem.id}/`, false)
         .then((res) => {
           if (res.status === 204) {
-            toast.success('Product deleted successfully!');
+            toast.success('Service deleted successfully!');
             setShowDeleteModal(false);
             fetchProducts();
           } else if (res.status === 400) {
@@ -338,7 +338,7 @@ export default function Service({ isView }: { isView: boolean }) {
                             <span>Category: </span>
                             <span>{service.category?.name || '----'}</span>
                           </h4>
-                          <p className="text-gray-500 mt-2">
+                          <p className="text-gray-500 mt-2 truncate text-clip whitespace-break-spaces">
                             {service.description}
                           </p>
                         </div>
