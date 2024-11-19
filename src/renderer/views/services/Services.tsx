@@ -109,7 +109,7 @@ export default function Service({ isView }: { isView: boolean }) {
 
   const handleDeleteItem = () => {
     if (preDeleteItem.id) {
-      removeProduct(`/products/${preDeleteItem.id}/`, false)
+      removeProduct(`/service/${preDeleteItem.id}/`, false)
         .then((res) => {
           if (res.status === 204) {
             toast.success('Product deleted successfully!');

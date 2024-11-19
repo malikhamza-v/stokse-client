@@ -4,7 +4,6 @@ import {
   ProfileSVG,
   SaleSVG,
   TableSVG,
-  MoreSVG,
   SettingSVG,
   OrderBox,
   CustomerSVG,
