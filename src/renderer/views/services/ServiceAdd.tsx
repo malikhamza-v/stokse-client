@@ -13,7 +13,7 @@ import CreatableSelect from 'react-select/creatable';
 import { LabelInput } from '../../components/commonComponents';
 import useCreate from '../../utils/hooks/useCreate';
 import { setCategories as setGlobalCategories } from '../../../store/slices/appSlice';
-import { useFetch } from '../../utils/hooks';
+import { useEdit, useFetch } from '../../utils/hooks';
 import { AddSVG } from '../../utils/svg';
 import { DURATION, DURATION_TYPE, noTaxOptions } from '../../utils/constant';
 
@@ -62,8 +62,6 @@ export default function ServiceAdd({ isForEdit }: { isForEdit: boolean }) {
   const [categories, setCategories] = useState([]);
   const [employees, setEmployees] = useState<any>([]);
 
-  const { createData: createProduct } = useCreate();
-
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -71,12 +69,11 @@ export default function ServiceAdd({ isForEdit }: { isForEdit: boolean }) {
 
   const { loading: categoryFetchLoading, fetchData: categoriesFetch } =
     useFetch();
-
   const { loading: serviceFetchLoading, fetchData: serviceFetch } = useFetch();
-
   const { loading: employeeFetchLoading, fetchData: employeeFetch } =
     useFetch();
-
+  const { createData: createProduct } = useCreate();
+  const { editData: editService, loading: editServiceLoading } = useEdit();
   // [info]: methods
 
   const resetErrorMsg = () => {
@@ -150,6 +147,47 @@ export default function ServiceAdd({ isForEdit }: { isForEdit: boolean }) {
       ...userInput,
       [key]: value,
     });
+  };
+
+  const handleEditService = () => {
+    resetErrorMsg();
+
+    const payload = {
+      name: userInput.name,
+      category: userInput.category,
+      description: userInput.description,
+      price: userInput.price,
+      price_type: userInput.price_type,
+      duration: userInput.duration,
+      team: userInput.team.map((employee) => employee.value),
+    };
+    editService(`/service/${params.id}/`, payload, false)
+      .then(async (res) => {
+        if (res.status === 400) {
+          const firstError = Object.keys(res.data)[0];
+          if (firstError) {
+            setTimeout(() => {
+              if (document.getElementById(firstError)) {
+                document.getElementById(firstError)?.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'center',
+                });
+                document.getElementById(firstError)?.focus();
+              }
+            }, 50);
+          }
+
+          setErrorMsg(res.data);
+        }
+
+        if (res.status === 200) {
+          navigate('/inventory/service-list');
+        }
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
   };
 
   const handleCreateProduct = () => {
@@ -525,9 +563,13 @@ export default function ServiceAdd({ isForEdit }: { isForEdit: boolean }) {
 
         <div className="flex justify-end w-40 ml-auto mt-4">
           <PrimaryButton
-            loading={cProductLoading}
+            loading={cProductLoading || editServiceLoading}
             label="Save"
-            onClickAction={handleCreateProduct}
+            onClickAction={
+              isForEdit
+                ? () => handleEditService()
+                : () => handleCreateProduct()
+            }
           />
         </div>
       </div>
