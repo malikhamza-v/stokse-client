@@ -1,10 +1,7 @@
-FROM node:14.21-alpine
+FROM node:18-alpine
 
 WORKDIR /react
 
-COPY package*.json ./
-RUN npm install
-
 COPY . .
 
-RUN npm run build:web --no-cache
+RUN npm install --ignore-scripts
