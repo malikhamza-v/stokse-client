@@ -105,7 +105,7 @@ export default function App() {
                 path="/calendar"
                 element={
                   <MainLayout>
-                    <Calendar isView={false} />
+                    <Calendar isView={false} isCreate={false} />
                   </MainLayout>
                 }
               />
@@ -113,7 +113,7 @@ export default function App() {
                 path="/calendar/appointment/view/:id"
                 element={
                   <MainLayout>
-                    <Calendar isView={true} />
+                    <Calendar isView={true} isCreate={false} />
                   </MainLayout>
                 }
               />
@@ -206,7 +206,16 @@ export default function App() {
                 path="/inventory/service-list/add"
                 element={
                   <MainLayout>
-                    <ServiceAdd />
+                    <ServiceAdd isForEdit={false} />
+                  </MainLayout>
+                }
+              />
+
+              <Route
+                path="/inventory/service-list/edit/:id"
+                element={
+                  <MainLayout>
+                    <ServiceAdd isForEdit={true} />
                   </MainLayout>
                 }
               />

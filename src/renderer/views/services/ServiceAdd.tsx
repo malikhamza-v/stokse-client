@@ -3,7 +3,7 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
   BackButton,
@@ -40,7 +40,7 @@ interface ErrorMsgInterface {
   duration: string | null;
 }
 
-export default function ServiceAdd() {
+export default function ServiceAdd({ isForEdit }: { isForEdit: boolean }) {
   const [errorMsg, setErrorMsg] = useState<ErrorMsgInterface>({
     name: null,
     category: null,
@@ -67,8 +67,12 @@ export default function ServiceAdd() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
+  const params = useParams();
+
   const { loading: categoryFetchLoading, fetchData: categoriesFetch } =
     useFetch();
+
+  const { loading: serviceFetchLoading, fetchData: serviceFetch } = useFetch();
 
   const { loading: employeeFetchLoading, fetchData: employeeFetch } =
     useFetch();
@@ -118,6 +122,29 @@ export default function ServiceAdd() {
       });
   };
 
+  const fetchService = (id: number) => {
+    serviceFetch(`/service/${id}`)
+      .then((res) => {
+        if (res.status === 200) {
+          const { data } = res;
+          setUserInput({
+            name: data?.name || '',
+            description: data?.description || '',
+            category: data?.category || null,
+            duration: data?.duration || null,
+            price: data?.price || null,
+            price_type: data.price_type || null,
+            team: data.team || [],
+          });
+        } else {
+          navigate('/inventory/service-list');
+        }
+      })
+      .catch(() => {
+        navigate('/inventory/service-list');
+      });
+  };
+
   const handleUserInput = (key: string, value: string) => {
     setUserInput({
       ...userInput,
@@ -139,7 +166,7 @@ export default function ServiceAdd() {
     };
 
     // eslint-disable-next-line promise/catch-or-return
-    createProduct('/services/', payload, false)
+    createProduct('/service/', payload, false)
       .then(async (res) => {
         if (res.status === 400) {
           const firstError = Object.keys(res.data)[0];
@@ -174,7 +201,15 @@ export default function ServiceAdd() {
   useEffect(() => {
     fetchCategories();
     fetchEmployees();
+    if (isForEdit) {
+      const id = params.id;
 
+      if (id) {
+        fetchService(Number(id));
+      } else {
+        navigate('/inventory/service-list');
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -182,7 +217,7 @@ export default function ServiceAdd() {
     <div className=" flex flex-col gap-4 px-4 md:px-10 py-10 h-full w-full bg-slate-50 overflow-y-scroll">
       <BackButton />
       <h2 className="mb-5 text-left  text-4xl font-semibold font-sans">
-        Add service in your inventory:
+        {isForEdit ? 'Edit' : 'Add'} service in your inventory:
       </h2>
 
       <div className="flex flex-col gap-4">
@@ -211,6 +246,7 @@ export default function ServiceAdd() {
                     placeholder="Service Name"
                     required
                     onChange={(e) => handleUserInput('name', e.target.value)}
+                    value={userInput.name}
                   />
                 </LabelInput>
               </div>
@@ -294,6 +330,7 @@ export default function ServiceAdd() {
                       onChange={(e) =>
                         handleUserInput('description', e.target.value)
                       }
+                      value={userInput.description || ''}
                     />
                   </div>
                 </LabelInput>
@@ -330,6 +367,7 @@ export default function ServiceAdd() {
                       placeholder="Price"
                       required
                       onChange={(e) => handleUserInput('price', e.target.value)}
+                      value={userInput.price}
                     />
                   </LabelInput>
                 </div>

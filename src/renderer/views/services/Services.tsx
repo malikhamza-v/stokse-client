@@ -46,7 +46,7 @@ export default function Service({ isView }: { isView: boolean }) {
   // [info]: method
   const handleProductForEdit = (product: any) => {
     dispatch(setEditProduct(product));
-    navigate(`/inventory/edit/${product.id}`);
+    navigate(`/inventory/service-list/edit/${product.id}`);
   };
 
   const fetchProducts = () => {
