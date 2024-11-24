@@ -325,15 +325,21 @@ export default function InventoryEdit() {
   }, [product]);
 
   useEffect(() => {
-    if (product && userInput)
-      JsBarcode('#barcode', `${product.id}-@${userInput.name}`, {
-        format: 'CODE128',
-        lineColor: '#0aa',
-        fontSize: 12,
-        width: 3,
-        displayValue: false,
-        // textMargin: 10,
-      });
+    if (product && userInput.name) {
+      console.log(`${product.id}-@${userInput.name.replace('–', ' ')}`);
+      JsBarcode(
+        '#barcode',
+        `${product.id}-@${userInput.name.replace('–', ' ')}`,
+        {
+          format: 'CODE128',
+          lineColor: '#0aa',
+          fontSize: 12,
+          width: 3,
+          displayValue: false,
+          // textMargin: 10,
+        },
+      );
+    }
   }, [userInput.name, product?.id]);
   return (
     <div className=" flex flex-col gap-4 px-4 md:px-10 py-10 h-full w-full bg-slate-50 overflow-y-scroll">
