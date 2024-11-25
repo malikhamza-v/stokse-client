@@ -46,12 +46,12 @@ function Dashboard() {
   });
 
   const [selectedButton, setSelectedButton] = useState({
-    sale: 1,
-    customer: 1,
-    itemsSold: 1,
-    topTransactions: 1,
-    topCustomers: 1,
-    topProducts: 1,
+    sale: 7,
+    customer: 7,
+    itemsSold: 7,
+    topTransactions: 7,
+    topCustomers: 7,
+    topProducts: 7,
   });
 
   // [info]: hooks
@@ -376,8 +376,8 @@ function Dashboard() {
                         {selectedButton.sale === 1
                           ? 'day'
                           : selectedButton.sale === 7
-                          ? 'week'
-                          : 'month'}{' '}
+                            ? 'week'
+                            : 'month'}{' '}
                       </span>
                       ${ConvertIntoDecimal(analyticsSale?.prev_total_sale || 0)}
                     </p>
@@ -513,8 +513,8 @@ function Dashboard() {
                         {selectedButton.customer === 1
                           ? 'day'
                           : selectedButton.customer === 7
-                          ? 'week'
-                          : 'month'}{' '}
+                            ? 'week'
+                            : 'month'}{' '}
                       </span>
                       {analyticsCustomer?.prev_total_customers || 0}{' '}
                     </p>
@@ -650,8 +650,8 @@ function Dashboard() {
                         {selectedButton.itemsSold === 1
                           ? 'day'
                           : selectedButton.itemsSold === 7
-                          ? 'week'
-                          : 'month'}{' '}
+                            ? 'week'
+                            : 'month'}{' '}
                       </span>
                       {analyticsItemsSold?.prev_total_items_sold || 0}{' '}
                     </p>
@@ -672,8 +672,8 @@ function Dashboard() {
                   {selectedButton.topTransactions === 1
                     ? 'Today'
                     : selectedButton.topTransactions === 7
-                    ? 'This Week'
-                    : 'This Month'}
+                      ? 'This Week'
+                      : 'This Month'}
                 </h6>
                 <div className="flex items-center gap-2 mt-2 md:mt-0">
                   <button
@@ -862,8 +862,8 @@ function Dashboard() {
                   {selectedButton.topCustomers === 1
                     ? 'Today'
                     : selectedButton.topCustomers === 7
-                    ? 'This Week'
-                    : 'This Month'}
+                      ? 'This Week'
+                      : 'This Month'}
                 </h6>
                 <div className="flex items-center gap-2 mt-2 md:mt-0">
                   <button
@@ -1060,8 +1060,8 @@ function Dashboard() {
                   {selectedButton.topProducts === 1
                     ? 'Today'
                     : selectedButton.topProducts === 7
-                    ? 'This Week'
-                    : 'This Month'}
+                      ? 'This Week'
+                      : 'This Month'}
                 </h6>
                 <div className="flex items-center gap-2 mt-2 md:mt-0">
                   <button

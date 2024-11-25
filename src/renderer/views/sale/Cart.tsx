@@ -27,6 +27,7 @@ import {
   CustomerDetail,
   PaymentCollection,
 } from '../../components/viewComponents/cart';
+import { Modal } from '../../components/commonComponents';
 
 function Cart() {
   // [info]: states
@@ -41,7 +42,7 @@ function Cart() {
   const [showOrderConfirmationModal, setShowOrderConfirmationModal] =
     useState(false);
   const [recentCreatedOrder, setRecentCreatedOrder] = useState<any>({});
-
+  const [isCancelingSale, setIsCancelingSale] = useState(false);
   const [showOrderSuccessfulModal, setShowOrderSuccessfulModal] =
     useState(false);
 
@@ -60,6 +61,18 @@ function Cart() {
   const { loading: cOrderLoading, createData: orderCreate } = useCreate();
 
   // [info]: methods
+  function CreateSaleCancelModalContent() {
+    return (
+      <p>
+        If you cancel the sale now,{' '}
+        <span className="font-bold">
+          all your current cart data will be removed
+        </span>
+        . Do you wish to proceed?
+      </p>
+    );
+  }
+
   const handleSendInvoice = () => {};
 
   const handleCloseOrderSuccessModal = () => {
@@ -245,6 +258,7 @@ function Cart() {
 
   const cancelCart = () => {
     dispatch(resetCart());
+    setIsCancelingSale(false);
   };
 
   // [info]: lifecycles
@@ -413,7 +427,7 @@ function Cart() {
           <SecondaryButton
             label="Cancel"
             loading={false}
-            onClickAction={cancelCart}
+            onClickAction={() => setIsCancelingSale(true)}
           />
         </div>
       </div>
@@ -882,6 +896,18 @@ function Cart() {
           </div>
         </div>
       )}
+
+      {isCancelingSale ? (
+        <Modal
+          title="Warning"
+          description={CreateSaleCancelModalContent}
+          cancelText="Go Back"
+          confirmText="Confirm"
+          onCancel={() => setIsCancelingSale(false)}
+          confirmLoading={false}
+          onConfirm={() => cancelCart()}
+        />
+      ) : null}
     </div>
   );
 }
