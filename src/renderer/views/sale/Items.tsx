@@ -38,9 +38,7 @@ function Items() {
     useFetch();
   const dispatch = useDispatch();
 
-  const globalProducts = useSelector((state: any) => state.app.products);
   const cartItems = useSelector((state: any) => state.cart.items);
-  const globalCategories = useSelector((state: any) => state.app.categories);
   //   [info]: methods
   const fetchProducts = () => {
     productsFetch('/products/')
@@ -58,7 +56,7 @@ function Items() {
   };
 
   const fetchCategories = () => {
-    categoriesFetch('/category/')
+    categoriesFetch('/category/?type=product')
       .then((res) => {
         if (res?.status === 200) {
           setCategories(res?.data);
@@ -163,19 +161,10 @@ function Items() {
 
   // [info]: lifecyles
   useEffect(() => {
-    if (globalProducts.length > 0) {
-      setProducts(globalProducts);
-      setFilteredProducts(globalProducts);
-    } else {
-      fetchProducts();
-    }
+    fetchProducts();
 
-    if (globalCategories.length > 0) {
-      setCategories(globalCategories);
-      dispatch(setGlobalCategories(globalCategories));
-    } else {
-      fetchCategories();
-    }
+    fetchCategories();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
