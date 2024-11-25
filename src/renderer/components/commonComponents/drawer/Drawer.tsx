@@ -10,11 +10,15 @@ function Drawer({
   id,
   isOpen,
   close,
+  reverse = false,
+  overlay = true,
   children,
 }: {
   id: string;
   isOpen: boolean;
   close: any;
+  reverse: boolean;
+  overlay: boolean;
   children: any;
 }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -22,7 +26,7 @@ function Drawer({
     setIsDrawerOpen(isOpen);
   }, [isOpen]);
   return (
-    <div className="drawer drawer-end z-40">
+    <div className={`drawer z-40 ${!reverse ? 'drawer-end' : ''}`}>
       <input
         id={id}
         type="checkbox"
@@ -31,20 +35,22 @@ function Drawer({
         readOnly
       />
 
-      <div className="drawer-side min-h-screen">
-        <label
-          htmlFor={id}
-          aria-label="close sidebar"
-          className="drawer-overlay"
-          onClick={close}
-        ></label>
-        <ul className="menu p-0 bg-base-200 text-base-content category-drawer min-h-full h-full">
+      <div className="drawer-side  min-h-screen">
+        {overlay ? (
+          <label
+            htmlFor={id}
+            aria-label="close sidebar"
+            className="drawer-overlay"
+            onClick={close}
+          ></label>
+        ) : null}
+        <ul className="menu p-0 bg-base-200 shadow-xl text-base-content category-drawer min-h-full h-full">
           {isOpen && (
             <button
               aria-label="Save"
               type="button"
               onClick={close}
-              className="btn bg-transparent m-4 sm:bg-base-200 sm:btn-circle shadow-none sm:shadow-xl border-0 z-50 sm:border absolute category-close-btn"
+              className={`btn bg-transparent m-4 sm:bg-base-200 sm:btn-circle shadow-none sm:shadow-xl border-0 z-50 sm:border absolute ${reverse ? 'category-close-btn-reverse' : 'category-close-btn'}`}
             >
               <CloseSvg />
             </button>

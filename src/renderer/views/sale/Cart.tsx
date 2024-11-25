@@ -28,6 +28,7 @@ import {
   PaymentCollection,
 } from '../../components/viewComponents/cart';
 import { Modal } from '../../components/commonComponents';
+import Drawer from '../../components/commonComponents/drawer/Drawer';
 
 function Cart() {
   // [info]: states
@@ -580,78 +581,93 @@ function Cart() {
       )}
 
       {showOrderConfirmationModal && (
-        <div className="flex items-center justify-center">
-          <div
-            className="fixed inset-0 transition-opacity h-full"
-            onClick={() => setShowOrderConfirmationModal(false)}
-          >
-            <div className="absolute inset-0 bg-black opacity-60" />
-          </div>
-          <div className="max-w-2xl  my-10 bg-white rounded-xl fixed z-10 inset-0 overflow-y-scroll flex flex-col mx-auto h-fit max-h-[90%]">
-            <div className="flex flex-col justify-center h-fit ">
-              <div className="relative sm:max-w-2xl sm:mx-auto h-full w-full">
-                <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 rounded-3xl sm:p-10 h-full w-full">
-                  <div className="mx-auto flex flex-col h-full ">
-                    <div className="flex items-center space-x-5">
-                      <div className="block font-semibold text-xl self-start text-gray-700">
-                        <h2 className="leading-relaxed">Order Confirmation</h2>
-                        <p className="text-sm text-gray-500 font-normal leading-relaxed">
-                          Add taxes, customer detail and payment method for your
-                          order.
-                        </p>
-                      </div>
-                    </div>
-                    <CartDetail />
-                    <div className=" text-base leading-6 text-gray-700 sm:text-lg sm:leading-7 flex flex-col flex-grow flex-auto h-full">
-                      {orderConfirmationState === 1 && <AdditionalTax />}
-                      {orderConfirmationState === 2 && <CustomerDetail />}
+        <Drawer
+          reverse={true}
+          overlay={false}
+          id={''}
+          isOpen={showOrderConfirmationModal}
+          close={() => setShowOrderConfirmationModal(false)}
+        >
+          <div className="p-12">
+            <div>
+              <p className="font-bold text-3xl">Additional Taxes?</p>
 
-                      {orderConfirmationState === 3 && <PaymentCollection />}
-                    </div>
-                    <div className="pt-4 flex items-center space-x-4">
-                      <button
-                        type="button"
-                        className="flex gap-2 border justify-center items-center w-full text-gray-900 px-4 py-3 rounded-md focus:outline-none"
-                        onClick={() =>
-                          orderConfirmationState === 1
-                            ? setShowOrderConfirmationModal(false)
-                            : setOrderConfirmationState(
-                                orderConfirmationState - 1,
-                              )
-                        }
-                      >
-                        {orderConfirmationState === 1 ? (
-                          <CloseSvg />
-                        ) : (
-                          <ArrowLongLeft />
-                        )}
-                        {orderConfirmationState === 1 ? 'Cancel' : 'Back'}
-                      </button>
-                      <button
-                        type="button"
-                        className={`bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none ${
-                          cOrderLoading && 'opacity-50'
-                        }`}
-                        onClick={handleNext}
-                      >
-                        <div className="flex items-center justify-center gap-2">
-                          {cOrderLoading && (
-                            <div className="flex flex-row gap-1">
-                              <div className="w-2 h-2 rounded-full bg-white animate-bounce" />
-                              <div className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:-.3s]" />
-                              <div className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:-.5s]" />
-                            </div>
-                          )}
-                          {cOrderLoading ? 'Loading' : 'Next'}
-                        </div>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <AdditionalTax />
             </div>
           </div>
-        </div>
+        </Drawer>
+        // <div className="flex items-center justify-center">
+        //   <div
+        //     className="fixed inset-0 transition-opacity h-full"
+        //     onClick={() => setShowOrderConfirmationModal(false)}
+        //   >
+        //     <div className="absolute inset-0 bg-black opacity-60" />
+        //   </div>
+        //   <div className="max-w-2xl  my-10 bg-white rounded-xl fixed z-10 inset-0 overflow-y-scroll flex flex-col mx-auto h-fit max-h-[90%]">
+        //     <div className="flex flex-col justify-center h-fit ">
+        //       <div className="relative sm:max-w-2xl sm:mx-auto h-full w-full">
+        //         <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 rounded-3xl sm:p-10 h-full w-full">
+        //           <div className="mx-auto flex flex-col h-full ">
+        //             <div className="flex items-center space-x-5">
+        //               <div className="block font-semibold text-xl self-start text-gray-700">
+        //                 <h2 className="leading-relaxed">Order Confirmation</h2>
+        //                 <p className="text-sm text-gray-500 font-normal leading-relaxed">
+        //                   Add taxes, customer detail and payment method for your
+        //                   order.
+        //                 </p>
+        //               </div>
+        //             </div>
+        //             <CartDetail />
+        //             <div className=" text-base leading-6 text-gray-700 sm:text-lg sm:leading-7 flex flex-col flex-grow flex-auto h-full">
+        //               {orderConfirmationState === 1 && <AdditionalTax />}
+        //               {orderConfirmationState === 2 && <CustomerDetail />}
+
+        //               {orderConfirmationState === 3 && <PaymentCollection />}
+        //             </div>
+        //             <div className="pt-4 flex items-center space-x-4">
+        //               <button
+        //                 type="button"
+        //                 className="flex gap-2 border justify-center items-center w-full text-gray-900 px-4 py-3 rounded-md focus:outline-none"
+        //                 onClick={() =>
+        //                   orderConfirmationState === 1
+        //                     ? setShowOrderConfirmationModal(false)
+        //                     : setOrderConfirmationState(
+        //                         orderConfirmationState - 1,
+        //                       )
+        //                 }
+        //               >
+        //                 {orderConfirmationState === 1 ? (
+        //                   <CloseSvg />
+        //                 ) : (
+        //                   <ArrowLongLeft />
+        //                 )}
+        //                 {orderConfirmationState === 1 ? 'Cancel' : 'Back'}
+        //               </button>
+        //               <button
+        //                 type="button"
+        //                 className={`bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none ${
+        //                   cOrderLoading && 'opacity-50'
+        //                 }`}
+        //                 onClick={handleNext}
+        //               >
+        //                 <div className="flex items-center justify-center gap-2">
+        //                   {cOrderLoading && (
+        //                     <div className="flex flex-row gap-1">
+        //                       <div className="w-2 h-2 rounded-full bg-white animate-bounce" />
+        //                       <div className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:-.3s]" />
+        //                       <div className="w-2 h-2 rounded-full bg-white animate-bounce [animation-delay:-.5s]" />
+        //                     </div>
+        //                   )}
+        //                   {cOrderLoading ? 'Loading' : 'Next'}
+        //                 </div>
+        //               </button>
+        //             </div>
+        //           </div>
+        //         </div>
+        //       </div>
+        //     </div>
+        //   </div>
+        // </div>
       )}
 
       {showOrderSuccessfulModal && (

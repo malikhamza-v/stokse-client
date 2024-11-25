@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
 import { useDispatch, useSelector } from 'react-redux';
 import { LabelInput } from '../../commonComponents';
-import { setTaxes as setGlobalTaxes } from '../../../../store/slices/appSlice';
 import {
   setCart,
   setOrderLevelTaxes,
@@ -28,12 +27,10 @@ function AdditionalTax() {
       amount: '',
     },
   ]);
-  const [isAdditionalTaxInclude, setIsAdditionalTaxInclude] = useState(false);
   const [taxes, setTaxes] = useState([{ label: '', value: '' }]);
 
   //   [info]: hooks
   const dispatch = useDispatch();
-  const globalTaxes = useSelector((state: any) => state.app.taxes);
   const { loading: taxFetchLoading, fetchData: taxesFetch } = useFetch();
   const calculations = useSelector((state: any) => state.cart.calculations);
   const cartTaxes = useSelector(
@@ -68,7 +65,6 @@ function AdditionalTax() {
         }),
       );
     }
-    setIsAdditionalTaxInclude(event.target.checked);
   };
 
   const handleSelectDefaultTax = (selectedTax: any, index: number) => {
@@ -130,7 +126,6 @@ function AdditionalTax() {
         }),
       );
 
-      setIsAdditionalTaxInclude(false);
       return;
     }
     const taxesCopy = [...userInput];
@@ -214,7 +209,6 @@ function AdditionalTax() {
             });
 
             setTaxes(modifiedTaxes);
-            dispatch(setGlobalTaxes(res.data));
           }
         }
         return true;
@@ -226,130 +220,107 @@ function AdditionalTax() {
 
   //   [info]: lifecycles
   useEffect(() => {
-    if (globalTaxes.length > 0) {
-      setTaxes(globalTaxes);
-      dispatch(setGlobalTaxes(globalTaxes));
-    } else {
-      fetchTaxes();
-    }
+    fetchTaxes();
 
     if (cartTaxes?.taxes.length > 0) {
-      setIsAdditionalTaxInclude(true);
       setUserInput(cartTaxes?.taxes);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div>
-      <div className="mb-4">
-        <div className="flex gap-4 justify-between items-center">
-          <label htmlFor="include_additional_tax">
-            <p className="font-bold my-4 text-base">Include Additional Tax</p>
-          </label>
-          <label className="switch">
-            <input
-              id="include_additional_tax"
-              type="checkbox"
-              checked={isAdditionalTaxInclude}
-              onChange={handleTaxIncludeToggle}
-            />
-            <span className="slider" />
-          </label>
-        </div>
-      </div>
-      {isAdditionalTaxInclude &&
-        userInput.map((tax: any, index) => (
-          <div
-            className="py-4 space-y-4 text-base"
-            key={`${tax.name}-${index + 1}`}
-          >
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex-1">
-                <LabelInput
-                  required
-                  label="Tax Name"
-                  loading={taxFetchLoading}
-                  errorMsg={null}
-                >
-                  <CreatableSelect
-                    isClearable
-                    options={taxes[0].value ? taxes : noTaxOptions}
-                    className=""
-                    placeholder="Tax Name"
-                    value={{
-                      value: '',
-                      label: userInput[index].name,
-                    }}
-                    onChange={(selectedTax) =>
-                      handleSelectDefaultTax(selectedTax, index)
-                    }
-                    onCreateOption={(name) =>
-                      handleUserInput('name', name, index)
-                    }
-                  />
-                </LabelInput>
-              </div>
-              <div
-                className="mt-8 cursor-pointer"
-                onClick={() => handleRemoveTax(index)}
+      {userInput.map((tax: any, index) => (
+        <div
+          className="py-4 space-y-4 text-base"
+          key={`${tax.name}-${index + 1}`}
+        >
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex-1">
+              <LabelInput
+                required
+                label="Tax Name"
+                loading={taxFetchLoading}
+                errorMsg={null}
               >
-                <DeleteSVG />
-              </div>
+                <CreatableSelect
+                  isClearable
+                  options={taxes[0].value ? taxes : noTaxOptions}
+                  className=""
+                  placeholder="Tax Name"
+                  value={{
+                    value: '',
+                    label: userInput[index].name,
+                  }}
+                  onChange={(selectedTax) =>
+                    handleSelectDefaultTax(selectedTax, index)
+                  }
+                  onCreateOption={(name) =>
+                    handleUserInput('name', name, index)
+                  }
+                />
+              </LabelInput>
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <LabelInput
-                  required
-                  label="Tax Percent (%)"
-                  loading={false}
-                  errorMsg={null}
-                >
-                  <input
-                    type="number"
-                    id="tax_percent"
-                    className="bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    placeholder="Tax Percent"
-                    required
-                    value={userInput[index].percent}
-                    onChange={(e) =>
-                      handleUserInput('percent', e.target.value, index)
-                    }
-                  />
-                </LabelInput>
-              </div>
-
-              <div>
-                <LabelInput
-                  required
-                  label="Tax Amount"
-                  loading={false}
-                  errorMsg={null}
-                >
-                  <input
-                    type="number"
-                    id="tax_amount"
-                    className="bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    placeholder="Tax Amount"
-                    required
-                    value={userInput[index].amount}
-                    onChange={(e) =>
-                      handleUserInput('amount', e.target.value, index)
-                    }
-                  />
-                </LabelInput>
-              </div>
-            </div>
-            <button
-              type="button"
-              className="text-blue-600 flex items-center gap-2 ml-auto"
-              onClick={handleAddTax}
+            <div
+              className="mt-8 cursor-pointer"
+              onClick={() => handleRemoveTax(index)}
             >
-              <AddSVG />
-              <p>Add another</p>
-            </button>
+              <DeleteSVG />
+            </div>
           </div>
-        ))}
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <LabelInput
+                required
+                label="Tax Percent (%)"
+                loading={false}
+                errorMsg={null}
+              >
+                <input
+                  type="number"
+                  id="tax_percent"
+                  className="bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Tax Percent"
+                  required
+                  value={userInput[index].percent}
+                  onChange={(e) =>
+                    handleUserInput('percent', e.target.value, index)
+                  }
+                />
+              </LabelInput>
+            </div>
+
+            <div>
+              <LabelInput
+                required
+                label="Tax Amount"
+                loading={false}
+                errorMsg={null}
+              >
+                <input
+                  type="number"
+                  id="tax_amount"
+                  className="bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Tax Amount"
+                  required
+                  value={userInput[index].amount}
+                  onChange={(e) =>
+                    handleUserInput('amount', e.target.value, index)
+                  }
+                />
+              </LabelInput>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="text-blue-600 flex items-center gap-2 ml-auto"
+            onClick={handleAddTax}
+          >
+            <AddSVG />
+            <p>Add another</p>
+          </button>
+        </div>
+      ))}
     </div>
   );
 }
