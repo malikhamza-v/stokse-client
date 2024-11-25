@@ -76,6 +76,8 @@ function Signin() {
                 errorMsg={errorMsg.email}
                 required
                 loading={false}
+                isInline={false}
+                htmlfor="email"
               >
                 <input
                   type="email"
@@ -84,6 +86,11 @@ function Signin() {
                   placeholder="Enter email"
                   value={userInput.email}
                   onChange={(e) => handleInput(e, 'email')}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleLogin();
+                    }
+                  }}
                 />
               </LabelInput>
             </div>
@@ -93,6 +100,8 @@ function Signin() {
                 errorMsg={errorMsg.password}
                 required
                 loading={false}
+                isInline={false}
+                htmlfor="password"
               >
                 <input
                   type="password"
@@ -101,6 +110,11 @@ function Signin() {
                   placeholder="Enter password"
                   value={userInput.password}
                   onChange={(e) => handleInput(e, 'password')}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleLogin();
+                    }
+                  }}
                 />
               </LabelInput>
             </div>
