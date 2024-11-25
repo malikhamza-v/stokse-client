@@ -388,18 +388,20 @@ function Cart() {
       </div>
       <div className="border-t px-8 py-4 border-gray-300 flex-1 flex-grow">
         <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-center">
-            <p className="text-gray-400 text-md">Item</p>
-            <p className="font-medium">{cartItems.length} (items)</p>
-          </div>
+          {cartItems.length ? (
+            <div className="flex justify-between items-center">
+              <p className="text-gray-400 text-md">Item</p>
+              <p className="font-medium">{cartItems.length} (items)</p>
+            </div>
+          ) : null}
           <div className="flex justify-between items-center">
             <p className="text-gray-400 text-md">Subtotal (incl. taxes)</p>
-            <p className="font-medium">{calculations?.subTotal} USD</p>
+            <p className="font-medium">{calculations?.subTotal || 0} USD</p>
           </div>
 
           <div className="flex justify-between items-center mb-6 mt-4">
             <p className="text-lg font-bold">Total</p>
-            <p className="font-medium">{calculations?.total} USD</p>
+            <p className="font-medium">{calculations?.total || 0} USD</p>
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -806,7 +808,7 @@ function Cart() {
                           </div>
                           <div className="flex justify-between gap-4 items-center mb-2">
                             <p>Total:</p>
-                            <p>{recentCreatedOrder.total} USD</p>
+                            <p>{recentCreatedOrder?.total || 0} USD</p>
                           </div>
                           <div className="flex justify-between gap-4 items-center mb-2">
                             <p>Change:</p>
