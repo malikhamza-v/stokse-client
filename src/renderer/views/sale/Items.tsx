@@ -15,7 +15,7 @@ function Items() {
   const [products, setProducts] = useState<any>([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedFilteredBtn, setSelectedFilteredBtn] = useState<string | null>(
-    null,
+    'all',
   );
   const [categories, setCategories] = useState([]);
   const [searchedProducts, setSearchedProducts] = useState([]);
@@ -280,7 +280,7 @@ function Items() {
               className="px-4 md:px-16 flex overflow-x-auto hide-scrollbar items-center gap-2 my-8"
             >
               <div
-                className="px-4 py-2 border min-w-fit text-center truncate cursor-pointer rounded-lg hover:bg-slate-50 font-light"
+                className={`px-4 py-2 border min-w-fit text-center truncate cursor-pointer rounded-lg font-light ${selectedFilteredBtn === 'all' ? 'bg-gray-700 text-white hover:bg-gray-800' : 'hover:bg-slate-50'}`}
                 onClick={() => setSelectedFilteredBtn('all')}
               >
                 All
@@ -288,7 +288,7 @@ function Items() {
               {categories.map((item: any) => (
                 <div
                   key={item.name}
-                  className="px-4 py-2 border min-w-fit text-center cursor-pointer rounded-lg hover:bg-slate-50 font-light"
+                  className={`px-4 py-2 border min-w-fit text-center cursor-pointer rounded-lg  font-light ${selectedFilteredBtn === item.id ? 'bg-gray-700 text-white hover:bg-gray-800' : 'hover:bg-slate-50'}`}
                   onClick={() => setSelectedFilteredBtn(item.id)}
                 >
                   {item.name}
