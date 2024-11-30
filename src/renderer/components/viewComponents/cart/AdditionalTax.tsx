@@ -17,16 +17,11 @@ import {
 } from '../../../utils/methods';
 import { AddSVG, DeleteSVG } from '../../../utils/svg';
 import { noTaxOptions } from '../../../utils/constant';
+import { SecondaryButton } from '../../commonComponents/buttons';
 
 function AdditionalTax() {
   // [info]: states
-  const [userInput, setUserInput] = useState([
-    {
-      name: '',
-      percent: '',
-      amount: '',
-    },
-  ]);
+  const [userInput, setUserInput] = useState([]);
   const [taxes, setTaxes] = useState([{ label: '', value: '' }]);
 
   //   [info]: hooks
@@ -103,13 +98,7 @@ function AdditionalTax() {
 
   const handleRemoveTax = (index: number) => {
     if (userInput.length === 1 && index === 0) {
-      setUserInput([
-        {
-          name: '',
-          percent: '',
-          amount: '',
-        },
-      ]);
+      setUserInput([]);
       dispatch(
         setCart({
           calculations: {
@@ -229,98 +218,111 @@ function AdditionalTax() {
   }, []);
   return (
     <div>
-      {userInput.map((tax: any, index) => (
-        <div
-          className="py-4 space-y-4 text-base"
-          key={`${tax.name}-${index + 1}`}
-        >
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex-1">
-              <LabelInput
-                required
-                label="Tax Name"
-                loading={taxFetchLoading}
-                errorMsg={null}
-              >
-                <CreatableSelect
-                  isClearable
-                  options={taxes[0].value ? taxes : noTaxOptions}
-                  className=""
-                  placeholder="Tax Name"
-                  value={{
-                    value: '',
-                    label: userInput[index].name,
-                  }}
-                  onChange={(selectedTax) =>
-                    handleSelectDefaultTax(selectedTax, index)
-                  }
-                  onCreateOption={(name) =>
-                    handleUserInput('name', name, index)
-                  }
-                />
-              </LabelInput>
-            </div>
-            <div
-              className="mt-8 cursor-pointer"
-              onClick={() => handleRemoveTax(index)}
-            >
-              <DeleteSVG />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <LabelInput
-                required
-                label="Tax Percent (%)"
-                loading={false}
-                errorMsg={null}
-              >
-                <input
-                  type="number"
-                  id="tax_percent"
-                  className="bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Tax Percent"
-                  required
-                  value={userInput[index].percent}
-                  onChange={(e) =>
-                    handleUserInput('percent', e.target.value, index)
-                  }
-                />
-              </LabelInput>
-            </div>
-
-            <div>
-              <LabelInput
-                required
-                label="Tax Amount"
-                loading={false}
-                errorMsg={null}
-              >
-                <input
-                  type="number"
-                  id="tax_amount"
-                  className="bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Tax Amount"
-                  required
-                  value={userInput[index].amount}
-                  onChange={(e) =>
-                    handleUserInput('amount', e.target.value, index)
-                  }
-                />
-              </LabelInput>
-            </div>
-          </div>
-          <button
-            type="button"
-            className="text-blue-600 flex items-center gap-2 ml-auto"
-            onClick={handleAddTax}
-          >
-            <AddSVG />
-            <p>Add another</p>
-          </button>
+      {userInput.length <= 0 ? (
+        <div className="mt-4">
+          <SecondaryButton
+            label="Include Taxes"
+            loading={false}
+            onClickAction={() => handleAddTax()}
+            icon={<AddSVG />}
+          />
         </div>
-      ))}
+      ) : (
+        <div>
+          {userInput.map((tax: any, index) => (
+            <div
+              className="py-4 space-y-4 text-base"
+              key={`${tax.name}-${index + 1}`}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex-1">
+                  <LabelInput
+                    required
+                    label="Tax Name"
+                    loading={taxFetchLoading}
+                    errorMsg={null}
+                  >
+                    <CreatableSelect
+                      isClearable
+                      options={taxes[0].value ? taxes : noTaxOptions}
+                      className=""
+                      placeholder="Tax Name"
+                      value={{
+                        value: '',
+                        label: userInput[index].name,
+                      }}
+                      onChange={(selectedTax) =>
+                        handleSelectDefaultTax(selectedTax, index)
+                      }
+                      onCreateOption={(name) =>
+                        handleUserInput('name', name, index)
+                      }
+                    />
+                  </LabelInput>
+                </div>
+                <div
+                  className="mt-8 cursor-pointer"
+                  onClick={() => handleRemoveTax(index)}
+                >
+                  <DeleteSVG />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <LabelInput
+                    required
+                    label="Tax Percent (%)"
+                    loading={false}
+                    errorMsg={null}
+                  >
+                    <input
+                      type="number"
+                      id="tax_percent"
+                      className="bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      placeholder="Tax Percent"
+                      required
+                      value={userInput[index].percent}
+                      onChange={(e) =>
+                        handleUserInput('percent', e.target.value, index)
+                      }
+                    />
+                  </LabelInput>
+                </div>
+
+                <div>
+                  <LabelInput
+                    required
+                    label="Tax Amount"
+                    loading={false}
+                    errorMsg={null}
+                  >
+                    <input
+                      type="number"
+                      id="tax_amount"
+                      className="bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                      placeholder="Tax Amount"
+                      required
+                      value={userInput[index].amount}
+                      onChange={(e) =>
+                        handleUserInput('amount', e.target.value, index)
+                      }
+                    />
+                  </LabelInput>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="text-blue-600 flex items-center gap-2 ml-auto"
+                onClick={handleAddTax}
+              >
+                <AddSVG />
+                <p>Add another</p>
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

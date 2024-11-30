@@ -1,10 +1,12 @@
 function SecondaryButton({
   loading,
   label,
+  icon,
   onClickAction,
 }: {
   loading: boolean;
   label: string;
+  icon: any;
   onClickAction: any;
 }) {
   return (
@@ -24,6 +26,8 @@ function SecondaryButton({
             <div className="w-2 h-2 rounded-full bg-black animate-bounce [animation-delay:-.5s]" />
           </div>
         )}
+        {icon || null}
+
         {loading ? 'Loading' : label}
       </div>
     </button>
