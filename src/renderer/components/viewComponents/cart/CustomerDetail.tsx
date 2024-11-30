@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { LabelInput } from '../../commonComponents';
 import { setCustomer } from '../../../../store/slices/cartSlice';
+import { SelectCustomer } from '../drawerContent';
 
 function CustomerDetail() {
   // [info]: states
@@ -30,7 +31,8 @@ function CustomerDetail() {
   return (
     <div className="text-base flex flex-col gap-2">
       <p className="font-bold my-4">Customer Detail:</p>
-      <div className="flex gap-2 items-center justify-between">
+      <SelectCustomer />
+      {/* <div className="flex gap-2 items-center justify-between">
         <LabelInput
           label="Customer Name"
           errorMsg={null}
@@ -75,7 +77,7 @@ function CustomerDetail() {
           value={userInput.email}
           onChange={(e) => handleUserInput('email', e.target.value)}
         />
-      </LabelInput>
+      </LabelInput> */}
 
       <p className="text-gray-500 text-sm">
         * This information is required for sending invoice to customer email.

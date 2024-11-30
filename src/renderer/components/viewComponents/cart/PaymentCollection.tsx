@@ -135,7 +135,7 @@ function PaymentCollection() {
   }, []);
 
   return (
-    <div className="text-base">
+    <div className="text-base w-full">
       <p className="font-bold my-4">Collect Payment:</p>
       {userInput.map((tax: any, index) => (
         <div

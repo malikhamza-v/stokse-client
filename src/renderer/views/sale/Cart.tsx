@@ -29,6 +29,7 @@ import {
 } from '../../components/viewComponents/cart';
 import { Modal } from '../../components/commonComponents';
 import Drawer from '../../components/commonComponents/drawer/Drawer';
+import { SelectCustomer } from '../../components/viewComponents/drawerContent';
 
 function Cart() {
   // [info]: states
@@ -197,7 +198,7 @@ function Cart() {
   };
 
   const handleNext = () => {
-    if (orderConfirmationState === 3) {
+    if (orderConfirmationState === 2) {
       if (calculations.total - (calculations.payment?.total || 0) > 0) {
         toast.error('Cart has remaining balance!');
         return;
@@ -583,16 +584,66 @@ function Cart() {
       {showOrderConfirmationModal && (
         <Drawer
           reverse={true}
-          overlay={false}
+          overlay={true}
           id={''}
           isOpen={showOrderConfirmationModal}
           close={() => setShowOrderConfirmationModal(false)}
         >
-          <div className="p-12">
-            <div>
-              <p className="font-bold text-3xl">Additional Taxes?</p>
+          <div className="h-full flex items-center">
+            <div className="flex flex-col gap-6 justify-between h-full py-6 min-w-[35vw] w-[35vw] max-w-[35vw]">
+              <div className="flex flex-col flex-1 h-full overflow-y-auto">
+                <p className="font-bold text-3xl mb-6 px-12">
+                  Additional Taxes?
+                </p>
 
-              <AdditionalTax />
+                <div className="flex-1 overflow-y-auto px-12">
+                  {orderConfirmationState === 1 && <AdditionalTax />}
+                  {orderConfirmationState === 2 && <PaymentCollection />}{' '}
+                </div>
+              </div>
+
+              <div>
+                <div className="px-12 pb-4 text-[14px] flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-gray-600">Subtotal</p>
+                    <p className="font-medium">
+                      {calculations?.subTotal || 0} USD
+                    </p>
+                  </div>
+                  {calculations?.order_tax?.taxes?.length > 0
+                    ? calculations?.order_tax?.taxes.map((tax) => (
+                        <div className="flex items-center justify-between">
+                          <p className="text-gray-600">
+                            Tax ({tax.name} {tax.percent}%)
+                          </p>
+                          <p className="font-medium">{tax.amount} USD</p>
+                        </div>
+                      ))
+                    : null}
+                  <div className="flex items-center justify-between">
+                    <p className="text-gray-600">Total</p>
+                    <p className="font-medium">
+                      {calculations?.total || 0} USD
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-6 px-12">
+                  <PrimaryButton
+                    label="Back"
+                    icon={<ArrowLongLeft />}
+                    loading={false}
+                    onClickAction={handleOpenOrderConfirmationModal}
+                  />
+                  <SecondaryButton
+                    label="Next"
+                    loading={false}
+                    onClickAction={() => handleNext()}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="h-full flex-1 border-l">
+              <SelectCustomer />
             </div>
           </div>
         </Drawer>
