@@ -183,7 +183,7 @@ function OrderView({
                   )}
                 </div>
 
-                <div className="my-4 divide-y">
+                <div className="my-4 divide-y flex flex-col gap-2">
                   {singleOrderFetchLoading ? (
                     <div className="flex flex-col gap-4 w-full">
                       <div className="skeleton h-2 w-full" />
@@ -195,7 +195,7 @@ function OrderView({
                       return (
                         <div
                           key={index}
-                          className="flex items-center justify-between "
+                          className="flex items-center justify-between pt-4"
                         >
                           <div>
                             <div className="flex flex-col gap-0.5">
