@@ -6,13 +6,14 @@ import CreatableSelect from 'react-select/creatable';
 import { useDispatch, useSelector } from 'react-redux';
 import { LabelInput } from '../../commonComponents';
 import { setPayment } from '../../../../store/slices/cartSlice';
-import { setPaymentMethods as setGlobalPaymentMethod } from '../../../../store/slices/appSlice';
 import { useFetch } from '../../../utils/hooks';
 import { noTaxOptions } from '../../../utils/constant';
 import { AddSVG, DeleteSVG } from '../../../utils/svg';
 import { calculateTotalPaymentAmount } from '../../../utils/methods';
 
 function PaymentCollection() {
+  const calculations = useSelector((state: any) => state.cart.calculations);
+
   // [info]: states
   const [userInput, setUserInput] = useState([
     {
@@ -24,11 +25,10 @@ function PaymentCollection() {
     { label: string; value: string }[]
   >([]);
 
+  const [amountOptions, setAmountOptions] = useState<any>([]);
+
   //   [info]: hooks
   const dispatch = useDispatch();
-  const globalPaymentMethods = useSelector(
-    (state: any) => state.app.paymentMethods,
-  );
   const { loading: fetchLoading, fetchData: paymentMethodFetch } = useFetch();
 
   //   [info]: methods
@@ -45,6 +45,9 @@ function PaymentCollection() {
         methods: methodsCopy,
       }),
     );
+    if (index === 1) {
+      calculateAmountOptions(parseFloat(calculations.total) || 0);
+    }
   };
 
   const handleSelectDefaultMethod = (
@@ -96,6 +99,7 @@ function PaymentCollection() {
         method: '',
       },
     ]);
+    setAmountOptions([]);
   };
 
   const fetchPaymentMethods = () => {
@@ -117,21 +121,42 @@ function PaymentCollection() {
       });
   };
 
+  const handleSelectOption = (amount, index) => {
+    // const numAmount = amount)
+    handleUserInput('amount', amount, index);
+  };
+
+  const calculateAmountOptions = (totalAmount: number) => {
+    const options: string[] = [];
+    // Push the exact amount
+    options.push(totalAmount?.toFixed(2));
+
+    // Push the next rounded-up amount
+    const roundedUp = Math.ceil(totalAmount);
+    options.push(roundedUp.toFixed(2));
+
+    // Push increments
+    options.push((Math.ceil(roundedUp / 5) * 5 + 5).toFixed(2)); // Nearest multiple of 5 + 5
+    options.push((Math.ceil(roundedUp / 10) * 10 + 10).toFixed(2)); // Nearest multiple of 10 + 10
+    options.push((Math.ceil(roundedUp / 50) * 50 + 50).toFixed(2)); // Nearest multiple of 50 + 50
+
+    // Set options
+    setAmountOptions(options);
+  };
+
   //   [info]: lifecycle
   useEffect(() => {
-    if (globalPaymentMethods.length > 0) {
-      const methods = globalPaymentMethods.map((method: any) => {
-        return {
-          label: method.name,
-          value: method.name,
-        };
-      });
-      setPaymentMethods(methods);
-      dispatch(setGlobalPaymentMethod(globalPaymentMethods));
-    } else {
-      fetchPaymentMethods();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (paymentMethods.length <= 0) return;
+    handleUserInput('amount', calculations.total, 0);
+    setTimeout(() => {
+      handleUserInput('method', paymentMethods[0].label, 0);
+    }, 500);
+
+    calculateAmountOptions(parseFloat(calculations.total) || 0);
+  }, [calculations.total, paymentMethods]);
+
+  useEffect(() => {
+    fetchPaymentMethods();
   }, []);
 
   return (
@@ -157,8 +182,21 @@ function PaymentCollection() {
                 onChange={(e) =>
                   handleUserInput('amount', e.target.value, index)
                 }
+                onWheel={(e) => e.target.blur()}
               />
             </LabelInput>
+            {amountOptions.length > 0 ? (
+              <div className="flex items-center gap-2 overflow-x-auto py-2">
+                {amountOptions.map((option: string) => (
+                  <div
+                    onClick={() => handleSelectOption(option, index)}
+                    className="border min-w-fit px-4 py-1 rounded-full text-sm font-semibold cursor-pointer"
+                  >
+                    <span>{option} USD</span>
+                  </div>
+                ))}
+              </div>
+            ) : null}
             <div className="flex justify-between items-center gap-2">
               <div className="flex-1">
                 <LabelInput
@@ -189,12 +227,14 @@ function PaymentCollection() {
                   />
                 </LabelInput>
               </div>
-              <div
-                className="mt-8 cursor-pointer"
-                onClick={() => handleRemoveMethod(index)}
-              >
-                <DeleteSVG />
-              </div>
+              {userInput.length > 1 ? (
+                <div
+                  className="mt-8 cursor-pointer"
+                  onClick={() => handleRemoveMethod(index)}
+                >
+                  <DeleteSVG />
+                </div>
+              ) : null}
             </div>
           </div>
 

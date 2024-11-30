@@ -23,7 +23,7 @@ export const calculateTotalPaymentAmount = (methods: any) => {
     (total: number, method: any) => total + (parseFloat(method.amount) || 0),
     0,
   );
-  return totalAmount.toFixed(2);
+  return totalAmount?.toFixed(2);
 };
 
 export const calculateTotalTaxAmount = (
@@ -44,7 +44,7 @@ export const calculateTotalTaxAmount = (
     return accumulator + amount;
   }, 0);
 
-  return totalAmount.toFixed(2); // Return total amount with two decimal places
+  return totalAmount?.toFixed(2); // Return total amount with two decimal places
 };
 
 export const getYYMMDD = (date: any) => {

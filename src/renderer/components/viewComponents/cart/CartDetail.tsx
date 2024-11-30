@@ -10,22 +10,6 @@ function CartDetail() {
   const cartItems = useSelector((state: any) => state.cart.items);
   const calculations = useSelector((state: any) => state.cart.calculations);
 
-  useEffect(() => {
-    if (calculations.total && calculations.payment?.total) {
-      const calculatedBalance = (
-        calculations.total - calculations.payment.total
-      ).toFixed(2);
-      dispatch(
-        setPayment({
-          ...calculations.payment,
-          balance: calculatedBalance as unknown as number,
-        }),
-      );
-      setBalance(calculatedBalance as unknown as number);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [calculations.total, calculations.payment?.total]);
-
   return (
     <div className="mt-4 mb-2">
       <p>Order Detail</p>

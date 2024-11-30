@@ -326,7 +326,6 @@ export default function InventoryEdit() {
 
   useEffect(() => {
     if (product && userInput.name) {
-      console.log(`${product.id}-@${userInput.name.replace('–', ' ')}`);
       JsBarcode(
         '#barcode',
         `${product.id}-@${userInput.name.replace('–', ' ')}`,

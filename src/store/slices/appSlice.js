@@ -124,8 +124,6 @@ const appSlice = createSlice({
         start_time: startTime,
       };
 
-      console.log(startTime, convertTime(startTime, '24'));
-
       action.payload.action(
         state.calendar.selectedEmployee,
         formatDateIntoYYMMDD(state.appointment.slot.time),

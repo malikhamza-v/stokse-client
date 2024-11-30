@@ -18,7 +18,11 @@ import {
   InfoSVG,
   MinusSVG,
 } from '../../utils/svg';
-import { resetCart, setCart } from '../../../store/slices/cartSlice';
+import {
+  resetCart,
+  setCart,
+  setPayment,
+} from '../../../store/slices/cartSlice';
 import { useCreate } from '../../utils/hooks';
 
 import {
@@ -308,6 +312,21 @@ function Cart() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartItems]);
+
+  useEffect(() => {
+    if (calculations.total && calculations.payment?.total) {
+      const calculatedBalance = (
+        calculations.total - calculations.payment.total
+      ).toFixed(2);
+      dispatch(
+        setPayment({
+          ...calculations.payment,
+          balance: calculatedBalance as unknown as number,
+        }),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [calculations.total, calculations.payment?.total]);
 
   return (
     <div className="border h-screen flex flex-col justify-between pb-20 lg:pb-0">
@@ -624,6 +643,21 @@ function Cart() {
                     <p className="text-gray-600">Total</p>
                     <p className="font-medium">
                       {calculations?.total || 0} USD
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p className="text-gray-600">
+                      {calculations?.payment?.balance >= 0
+                        ? 'Balance'
+                        : 'Change'}
+                    </p>
+                    <p className="font-medium">
+                      {calculations?.payment?.balance
+                        ? calculations?.payment?.balance > 0
+                          ? calculations?.payment?.balance
+                          : calculations?.payment?.balance * -1
+                        : 0}{' '}
+                      USD
                     </p>
                   </div>
                 </div>
