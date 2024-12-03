@@ -41,6 +41,7 @@ function PaymentCollection() {
     setUserInput(methodsCopy);
     dispatch(
       setPayment({
+        ...calculations.payment,
         total: calculateTotalPaymentAmount(methodsCopy),
         methods: methodsCopy,
       }),
@@ -65,6 +66,7 @@ function PaymentCollection() {
     setUserInput(newMethods);
     dispatch(
       setPayment({
+        ...calculations.payment,
         total: calculateTotalPaymentAmount(newMethods),
         methods: newMethods,
       }),
@@ -72,33 +74,41 @@ function PaymentCollection() {
   };
 
   const handleUserInput = (key: string, value: string, index: number) => {
-    const newMethods = [...userInput];
+    setUserInput((prevUserInput) => {
+      const updatedMethods = [...prevUserInput];
 
-    if (index >= 0 && index < newMethods.length) {
-      newMethods[index] = {
-        ...newMethods[index],
-        [key]: value,
-      };
-    }
+      // Only update if the index is within bounds
+      if (index >= 0 && index < updatedMethods.length) {
+        updatedMethods[index] = {
+          ...updatedMethods[index],
+          [key]: value,
+        };
+      } else if (index === updatedMethods.length) {
+        updatedMethods.push({
+          amount: key === 'amount' ? value : '',
+          method: key === 'method' ? value : '',
+        });
+      }
 
-    setUserInput(newMethods);
+      dispatch(
+        setPayment({
+          ...calculations.payment,
+          total: calculateTotalPaymentAmount(updatedMethods),
+          methods: updatedMethods,
+        }),
+      );
 
-    dispatch(
-      setPayment({
-        total: calculateTotalPaymentAmount(newMethods),
-        methods: newMethods,
-      }),
-    );
+      return updatedMethods;
+    });
   };
 
   const handleAddMethod = () => {
-    setUserInput([
-      ...userInput,
-      {
-        amount: '',
-        method: '',
-      },
-    ]);
+    const newIndex = userInput.length;
+    const balance = calculations?.payment?.balance || 0;
+
+    handleUserInput('amount', balance.toString(), newIndex);
+    handleUserInput('method', '', newIndex);
+
     setAmountOptions([]);
   };
 
@@ -127,30 +137,31 @@ function PaymentCollection() {
   };
 
   const calculateAmountOptions = (totalAmount: number) => {
-    const options: string[] = [];
+    const options = new Set<string>();
+
     // Push the exact amount
-    options.push(totalAmount?.toFixed(2));
+    options.add(totalAmount?.toFixed(2));
 
     // Push the next rounded-up amount
     const roundedUp = Math.ceil(totalAmount);
-    options.push(roundedUp.toFixed(2));
+    options.add(roundedUp.toFixed(2));
 
     // Push increments
-    options.push((Math.ceil(roundedUp / 5) * 5 + 5).toFixed(2)); // Nearest multiple of 5 + 5
-    options.push((Math.ceil(roundedUp / 10) * 10 + 10).toFixed(2)); // Nearest multiple of 10 + 10
-    options.push((Math.ceil(roundedUp / 50) * 50 + 50).toFixed(2)); // Nearest multiple of 50 + 50
+    options.add((Math.ceil(roundedUp / 5) * 5 + 5).toFixed(2)); // Nearest multiple of 5 + 5
+    options.add((Math.ceil(roundedUp / 10) * 10 + 10).toFixed(2)); // Nearest multiple of 10 + 10
+    options.add((Math.ceil(roundedUp / 50) * 50 + 50).toFixed(2)); // Nearest multiple of 50 + 50
 
-    // Set options
-    setAmountOptions(options);
+    // Convert the Set back to an array
+    setAmountOptions(Array.from(options));
   };
 
   //   [info]: lifecycle
   useEffect(() => {
     if (paymentMethods.length <= 0) return;
     handleUserInput('amount', calculations.total, 0);
-    setTimeout(() => {
-      handleUserInput('method', paymentMethods[0].label, 0);
-    }, 500);
+    // setTimeout(() => {
+    handleUserInput('method', paymentMethods[0].label, 0);
+    // }, 500);
 
     calculateAmountOptions(parseFloat(calculations.total) || 0);
   }, [calculations.total, paymentMethods]);
@@ -161,11 +172,10 @@ function PaymentCollection() {
 
   return (
     <div className="text-base w-full">
-      <p className="font-bold my-4">Collect Payment:</p>
       {userInput.map((tax: any, index) => (
         <div
           className="py-4 space-y-4 text-base"
-          key={`${tax.name}-${index + 1}`}
+          key={`${tax.method}-${index + 1}`}
         >
           <div className="flex flex-col gap-2">
             <LabelInput
@@ -173,8 +183,11 @@ function PaymentCollection() {
               label="Collected Amount"
               loading={false}
               errorMsg={null}
+              isInline={false}
+              htmlfor={'amount' + index}
             >
               <input
+                id={'amount' + index}
                 type="number"
                 className="p-2.5 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-black"
                 placeholder="Amount"
@@ -189,6 +202,7 @@ function PaymentCollection() {
               <div className="flex items-center gap-2 overflow-x-auto py-2">
                 {amountOptions.map((option: string) => (
                   <div
+                    key={option}
                     onClick={() => handleSelectOption(option, index)}
                     className="border min-w-fit px-4 py-1 rounded-full text-sm font-semibold cursor-pointer"
                   >
@@ -204,6 +218,8 @@ function PaymentCollection() {
                   label="Payment Method"
                   loading={fetchLoading}
                   errorMsg={null}
+                  isInline={false}
+                  htmlfor=""
                 >
                   <CreatableSelect
                     isClearable
@@ -237,17 +253,18 @@ function PaymentCollection() {
               ) : null}
             </div>
           </div>
-
-          <button
-            type="button"
-            className="text-blue-600 flex items-center gap-2 ml-auto"
-            onClick={handleAddMethod}
-          >
-            <AddSVG />
-            <p>Add another</p>
-          </button>
         </div>
       ))}
+      {calculations?.payment?.balance > 0 ? (
+        <button
+          type="button"
+          className="text-blue-600 flex items-center gap-2 ml-auto"
+          onClick={handleAddMethod}
+        >
+          <AddSVG />
+          <p>Add another</p>
+        </button>
+      ) : null}
     </div>
   );
 }

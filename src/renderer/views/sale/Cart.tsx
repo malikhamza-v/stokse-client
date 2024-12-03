@@ -612,7 +612,9 @@ function Cart() {
             <div className="flex flex-col gap-6 justify-between h-full py-6 min-w-[35vw] w-[35vw] max-w-[35vw]">
               <div className="flex flex-col flex-1 h-full overflow-y-auto">
                 <p className="font-bold text-3xl mb-6 px-12">
-                  Additional Taxes?
+                  {orderConfirmationState === 1
+                    ? 'Additional Taxes?'
+                    : 'Collect Payments'}
                 </p>
 
                 <div className="flex-1 overflow-y-auto px-12">
@@ -630,8 +632,11 @@ function Cart() {
                     </p>
                   </div>
                   {calculations?.order_tax?.taxes?.length > 0
-                    ? calculations?.order_tax?.taxes.map((tax) => (
-                        <div className="flex items-center justify-between">
+                    ? calculations?.order_tax?.taxes.map((tax, index) => (
+                        <div
+                          className="flex items-center justify-between"
+                          key={index}
+                        >
                           <p className="text-gray-600">
                             Tax ({tax.name} {tax.percent}%)
                           </p>
@@ -645,21 +650,23 @@ function Cart() {
                       {calculations?.total || 0} USD
                     </p>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <p className="text-gray-600">
-                      {calculations?.payment?.balance >= 0
-                        ? 'Balance'
-                        : 'Change'}
-                    </p>
-                    <p className="font-medium">
-                      {calculations?.payment?.balance
-                        ? calculations?.payment?.balance > 0
-                          ? calculations?.payment?.balance
-                          : calculations?.payment?.balance * -1
-                        : 0}{' '}
-                      USD
-                    </p>
-                  </div>
+                  {orderConfirmationState === 2 ? (
+                    <div className="flex items-center justify-between">
+                      <p className="text-gray-600">
+                        {calculations?.payment?.balance >= 0
+                          ? 'Balance'
+                          : 'Change'}
+                      </p>
+                      <p className="font-medium">
+                        {calculations?.payment?.balance
+                          ? calculations?.payment?.balance > 0
+                            ? calculations?.payment?.balance
+                            : calculations?.payment?.balance * -1
+                          : 0}{' '}
+                        USD
+                      </p>
+                    </div>
+                  ) : null}
                 </div>
                 <div className="flex items-center gap-6 px-12">
                   <PrimaryButton
