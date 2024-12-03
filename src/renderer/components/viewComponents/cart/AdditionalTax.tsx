@@ -21,7 +21,7 @@ import { SecondaryButton } from '../../commonComponents/buttons';
 
 function AdditionalTax() {
   // [info]: states
-  const [userInput, setUserInput] = useState([]);
+  const [userInput, setUserInput] = useState<any>([]);
   const [taxes, setTaxes] = useState([{ label: '', value: '' }]);
 
   //   [info]: hooks
@@ -33,34 +33,6 @@ function AdditionalTax() {
   );
 
   //   [info]: methods
-  const handleTaxIncludeToggle = (event: {
-    target: { checked: boolean | ((prevState: boolean) => boolean) };
-  }) => {
-    if (!event.target.checked) {
-      setUserInput([
-        {
-          name: '',
-          percent: '',
-          amount: '',
-        },
-      ]);
-      dispatch(
-        setCart({
-          calculations: {
-            ...calculations,
-            total: (parseFloat(calculations.subTotal) + 0).toFixed(2),
-          },
-        }),
-      );
-
-      dispatch(
-        setOrderLevelTaxes({
-          total: 0,
-          taxes: [],
-        }),
-      );
-    }
-  };
 
   const handleSelectDefaultTax = (selectedTax: any, index: number) => {
     const newTaxes = [...userInput];
@@ -229,7 +201,7 @@ function AdditionalTax() {
         </div>
       ) : (
         <div>
-          {userInput.map((tax: any, index) => (
+          {userInput.map((tax: any, index: number) => (
             <div
               className="py-4 space-y-4 text-base"
               key={`${tax.name}-${index + 1}`}
@@ -241,6 +213,8 @@ function AdditionalTax() {
                     label="Tax Name"
                     loading={taxFetchLoading}
                     errorMsg={null}
+                    isInline={false}
+                    htmlfor={''}
                   >
                     <CreatableSelect
                       isClearable
@@ -275,6 +249,8 @@ function AdditionalTax() {
                     label="Tax Percent (%)"
                     loading={false}
                     errorMsg={null}
+                    isInline={false}
+                    htmlfor={''}
                   >
                     <input
                       type="number"
@@ -296,6 +272,8 @@ function AdditionalTax() {
                     label="Tax Amount"
                     loading={false}
                     errorMsg={null}
+                    isInline={false}
+                    htmlfor={''}
                   >
                     <input
                       type="number"
