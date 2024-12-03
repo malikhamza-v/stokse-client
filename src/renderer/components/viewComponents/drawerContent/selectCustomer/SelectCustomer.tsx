@@ -138,8 +138,9 @@ function SelectCustomer() {
             {customerFetchLoading ? (
               <LoadingList />
             ) : (
-              customers?.map((customer) => (
+              customers?.map((customer, index) => (
                 <div
+                  key={index}
                   className="flex items-center gap-3 bg-purple-100 mb-4 p-4 rounded-lg cursor-pointer"
                   onClick={() => handleSelectCustomer(customer)}
                 >

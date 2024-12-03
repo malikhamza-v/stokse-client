@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { calculateTotalPaymentAmount } from '../../renderer/utils/methods';
 
 const initialState = {
   items: [],
@@ -30,7 +31,15 @@ const cartSlice = createSlice({
       state.customer = action.payload;
     },
     setPayment: (state, action) => {
-      state.calculations.payment = action.payload;
+      if (action.payload) {
+        const total = calculateTotalPaymentAmount(action.payload);
+        const balance = (state.calculations.total - total).toFixed(2);
+        state.calculations.payment = {
+          total,
+          balance,
+          methods: action.payload,
+        };
+      }
     },
 
     setOrderLevelTaxes: (state, action) => {

@@ -18,17 +18,11 @@ import {
   InfoSVG,
   MinusSVG,
 } from '../../utils/svg';
-import {
-  resetCart,
-  setCart,
-  setPayment,
-} from '../../../store/slices/cartSlice';
+import { resetCart, setCart } from '../../../store/slices/cartSlice';
 import { useCreate } from '../../utils/hooks';
 
 import {
   AdditionalTax,
-  CartDetail,
-  CustomerDetail,
   PaymentCollection,
 } from '../../components/viewComponents/cart';
 import { Modal } from '../../components/commonComponents';
@@ -69,13 +63,13 @@ function Cart() {
   // [info]: methods
   function CreateSaleCancelModalContent() {
     return (
-      <p>
+      <span>
         If you cancel the sale now,{' '}
         <span className="font-bold">
           all your current cart data will be removed
         </span>
         . Do you wish to proceed?
-      </p>
+      </span>
     );
   }
 
@@ -312,21 +306,6 @@ function Cart() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartItems]);
-
-  useEffect(() => {
-    if (calculations.total && calculations.payment?.total) {
-      const calculatedBalance = (
-        calculations.total - calculations.payment.total
-      ).toFixed(2);
-      dispatch(
-        setPayment({
-          ...calculations.payment,
-          balance: calculatedBalance as unknown as number,
-        }),
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [calculations.total, calculations.payment?.total]);
 
   return (
     <div className="border h-screen flex flex-col justify-between pb-20 lg:pb-0">

@@ -39,13 +39,7 @@ function PaymentCollection() {
     const methodsCopy = [...userInput];
     methodsCopy.splice(index, 1);
     setUserInput(methodsCopy);
-    dispatch(
-      setPayment({
-        ...calculations.payment,
-        total: calculateTotalPaymentAmount(methodsCopy),
-        methods: methodsCopy,
-      }),
-    );
+    dispatch(setPayment(methodsCopy));
     if (index === 1) {
       calculateAmountOptions(parseFloat(calculations.total) || 0);
     }
@@ -64,20 +58,14 @@ function PaymentCollection() {
       };
     }
     setUserInput(newMethods);
-    dispatch(
-      setPayment({
-        ...calculations.payment,
-        total: calculateTotalPaymentAmount(newMethods),
-        methods: newMethods,
-      }),
-    );
+    dispatch(setPayment(newMethods));
   };
 
   const handleUserInput = (key: string, value: string, index: number) => {
     setUserInput((prevUserInput) => {
       const updatedMethods = [...prevUserInput];
 
-      // Only update if the index is within bounds
+      // Update existing method or add a new one
       if (index >= 0 && index < updatedMethods.length) {
         updatedMethods[index] = {
           ...updatedMethods[index],
@@ -89,14 +77,10 @@ function PaymentCollection() {
           method: key === 'method' ? value : '',
         });
       }
-
-      dispatch(
-        setPayment({
-          ...calculations.payment,
-          total: calculateTotalPaymentAmount(updatedMethods),
-          methods: updatedMethods,
-        }),
-      );
+      // Dispatch in a separate step
+      setTimeout(() => {
+        dispatch(setPayment(updatedMethods));
+      }, 0);
 
       return updatedMethods;
     });

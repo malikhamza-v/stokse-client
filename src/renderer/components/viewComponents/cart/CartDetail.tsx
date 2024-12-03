@@ -1,12 +1,8 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setPayment } from '../../../../store/slices/cartSlice';
+import { useSelector } from 'react-redux';
 
 function CartDetail() {
   // [info]: state
-  const [balance, setBalance] = useState(0);
   // [info]: hooks
-  const dispatch = useDispatch();
   const cartItems = useSelector((state: any) => state.cart.items);
   const calculations = useSelector((state: any) => state.cart.calculations);
 
@@ -66,16 +62,6 @@ function CartDetail() {
                   </div>
                 ),
               )}
-            </div>
-          )}
-          {calculations.total && calculations?.payment?.total && (
-            <div className="flex justify-between items-center my-2">
-              <p className="text-lg font-bold">
-                {balance > 0 ? 'Balance' : 'Change'}
-              </p>
-              <p className="font-medium">
-                {balance > 0 ? balance : balance * -1} USD
-              </p>
             </div>
           )}
         </div>
