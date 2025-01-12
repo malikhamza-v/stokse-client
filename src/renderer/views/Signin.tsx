@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { LabelInput } from '../components/commonComponents';
 import useCreate from '../utils/hooks/useCreate';
 import { ArrowLongRight } from '../utils/svg';
+import SignInScreenImage from '../assets/images/signin-screen.svg';
 
 function Signin() {
   const [userInput, setUserInput] = useState({ email: '', password: '' });
@@ -152,7 +153,7 @@ function Signin() {
       </div>
       <div className="h-screen w-1/2">
         <img
-          src="https://placehold.co/500x900"
+          src={SignInScreenImage}
           className="h-full w-full object-cover"
           alt="POS With inventory"
         />
