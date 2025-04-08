@@ -1,8 +1,8 @@
+@use './styles/calendar.scss';
+
 @import 'react-toastify/dist/ReactToastify.css';
 @import 'flatpickr/dist/themes/material_green.css';
-
 @import 'react-big-calendar/lib/css/react-big-calendar.css';
-@import './styles/calendar.scss';
 
 @tailwind base;
 @tailwind components;

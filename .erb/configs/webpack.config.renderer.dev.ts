@@ -43,6 +43,8 @@ const configuration: webpack.Configuration = {
 
   mode: 'development',
 
+  stats: 'errors-only',
+
   target: ['web', 'electron-renderer'],
 
   entry: [
@@ -62,8 +64,9 @@ const configuration: webpack.Configuration = {
 
   module: {
     rules: [
+      // SCSS/CSS Modules
       {
-        test: /\.s?(c|a)ss$/,
+        test: /\.module\.s?(c|a)ss$/,
         use: [
           'style-loader',
           {
@@ -74,27 +77,48 @@ const configuration: webpack.Configuration = {
               importLoaders: 1,
             },
           },
-          'sass-loader',
+          'postcss-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              api: 'modern',
+              implementation: require('sass'),
+            },
+          },
         ],
-        include: /\.module\.s?(c|a)ss$/,
       },
-      // [info]: remove this for tailwind
-      // {
-      //   test: /\.s?css$/,
-      //   use: ['style-loader', 'css-loader', 'sass-loader'],
-      //   exclude: /\.module\.s?(c|a)ss$/,
-      // },
+
+      // Global SCSS/CSS (includes Tailwind + 3rd party styles)
+      {
+        test: /\.s?(c|a)ss$/,
+        exclude: /\.module\.s?(c|a)ss$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'postcss-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              implementation: require('sass'),
+              api: 'modern',
+            },
+          },
+        ],
+      },
+
       // Fonts
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
         type: 'asset/resource',
       },
+
       // Images
       {
         test: /\.(png|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
       },
-      // SVG
+
+      // SVGs
       {
         test: /\.svg$/,
         use: [
@@ -113,6 +137,8 @@ const configuration: webpack.Configuration = {
           'file-loader',
         ],
       },
+
+      // Global .css (just in case)
       {
         test: /\.css$/,
         include: [webpackPaths.srcRendererPath],
@@ -167,6 +193,10 @@ const configuration: webpack.Configuration = {
       env: process.env.NODE_ENV,
       isDevelopment: process.env.NODE_ENV !== 'production',
       nodeModules: webpackPaths.appNodeModulesPath,
+    }),
+
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^@types\/react-big-calendar$/,
     }),
   ],
 

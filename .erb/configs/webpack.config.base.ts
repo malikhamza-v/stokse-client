@@ -8,7 +8,18 @@ import webpackPaths from './webpack.paths';
 import { dependencies as externals } from '../../release/app/package.json';
 
 const configuration: webpack.Configuration = {
-  externals: [...Object.keys(externals || {})],
+  externals: [
+    ...Object.keys(externals || {}),
+    'esbuild',
+    'vite',
+    '@types/react-big-calendar',
+  ],
+
+  plugins: [
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^(esbuild|vite)$/,
+    }),
+  ],
 
   stats: 'errors-only',
 
