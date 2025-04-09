@@ -103,7 +103,7 @@ export default function Employees() {
   }, []);
 
   return (
-    <section className="container py-10 px-4 mx-auto">
+    <section className="py-10 px-4 mx-auto">
       <div className="sm:flex sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-x-3">
