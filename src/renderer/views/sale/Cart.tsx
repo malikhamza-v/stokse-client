@@ -28,6 +28,7 @@ import {
 import { Modal } from '../../components/commonComponents';
 import Drawer from '../../components/commonComponents/drawer/Drawer';
 import { SelectCustomer } from '../../components/viewComponents/drawerContent';
+import { displayPriceWithCurrency } from '../../utils/methods/appMethods';
 
 function Cart() {
   // [info]: states
@@ -57,6 +58,7 @@ function Cart() {
 
   const customer = useSelector((state: any) => state.cart.customer);
   const user = useSelector((state: any) => state.app.user);
+  const store = useSelector((state: any) => state.app.store);
 
   const { loading: cOrderLoading, createData: orderCreate } = useCreate();
 
@@ -337,14 +339,17 @@ function Cart() {
                         item.discount.discounted_price && 'line-through'
                       }`}
                     >
-                      {item.total_price} USD
+                      {displayPriceWithCurrency(item.total_price, store)}
                     </button>
                     {item.discount.discounted_price && (
                       <button
                         type="button"
                         className="border border-blue-500 text-blue-500 rounded-full px-4 text-sm"
                       >
-                        {item.discount.discounted_price} USD
+                        {displayPriceWithCurrency(
+                          item.discount.discounted_price,
+                          store,
+                        )}
                       </button>
                     )}
                   </div>
@@ -410,12 +415,16 @@ function Cart() {
           ) : null}
           <div className="flex justify-between items-center">
             <p className="text-gray-400 text-md">Subtotal (incl. taxes)</p>
-            <p className="font-medium">{calculations?.subTotal || 0} USD</p>
+            <p className="font-medium">
+              {displayPriceWithCurrency(calculations?.subTotal, store)}
+            </p>
           </div>
 
           <div className="flex justify-between items-center mb-6 mt-4">
             <p className="text-lg font-bold">Total</p>
-            <p className="font-medium">{calculations?.total || 0} USD</p>
+            <p className="font-medium">
+              {displayPriceWithCurrency(calculations?.total, store)}{' '}
+            </p>
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -607,7 +616,7 @@ function Cart() {
                   <div className="flex items-center justify-between">
                     <p className="text-gray-600">Subtotal</p>
                     <p className="font-medium">
-                      {calculations?.subTotal || 0} USD
+                      {displayPriceWithCurrency(calculations?.subTotal, store)}
                     </p>
                   </div>
                   {calculations?.order_tax?.taxes?.length > 0
@@ -619,14 +628,16 @@ function Cart() {
                           <p className="text-gray-600">
                             Tax ({tax.name} {tax.percent}%)
                           </p>
-                          <p className="font-medium">{tax.amount} USD</p>
+                          <p className="font-medium">
+                            {displayPriceWithCurrency(tax.amount, store)}
+                          </p>
                         </div>
                       ))
                     : null}
                   <div className="flex items-center justify-between">
                     <p className="text-gray-600">Total</p>
                     <p className="font-medium">
-                      {calculations?.total || 0} USD
+                      {displayPriceWithCurrency(calculations?.total, store)}
                     </p>
                   </div>
                   {orderConfirmationState === 2 ? (
@@ -637,12 +648,14 @@ function Cart() {
                           : 'Change'}
                       </p>
                       <p className="font-medium">
-                        {calculations?.payment?.balance
-                          ? calculations?.payment?.balance > 0
-                            ? calculations?.payment?.balance
-                            : calculations?.payment?.balance * -1
-                          : 0}{' '}
-                        USD
+                        {displayPriceWithCurrency(
+                          calculations?.payment?.balance
+                            ? calculations?.payment?.balance > 0
+                              ? calculations?.payment?.balance
+                              : calculations?.payment?.balance * -1
+                            : 0,
+                          store,
+                        )}
                       </p>
                     </div>
                   ) : null}
@@ -905,15 +918,30 @@ function Cart() {
                         <div className="flex flex-col w-fit ml-auto text-sm text-gray-600">
                           <div className="flex justify-between gap-4 items-center mb-2">
                             <p>Subtotal:</p>
-                            <p>{recentCreatedOrder.sub_total} USD</p>
+                            <p>
+                              {displayPriceWithCurrency(
+                                recentCreatedOrder.sub_total,
+                                store,
+                              )}
+                            </p>
                           </div>
                           <div className="flex justify-between gap-4 items-center mb-2">
                             <p>Total:</p>
-                            <p>{recentCreatedOrder?.total || 0} USD</p>
+                            <p>
+                              {displayPriceWithCurrency(
+                                recentCreatedOrder?.total,
+                                store,
+                              )}
+                            </p>
                           </div>
                           <div className="flex justify-between gap-4 items-center mb-2">
                             <p>Change:</p>
-                            <p>{recentCreatedOrder.total} USD</p>
+                            <p>
+                              {displayPriceWithCurrency(
+                                recentCreatedOrder.total,
+                                store,
+                              )}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -927,7 +955,12 @@ function Cart() {
                                 className="flex justify-between gap-4 items-center"
                               >
                                 <p>{method.method}:</p>
-                                <p>{method.amount} USD</p>
+                                <p>
+                                  {displayPriceWithCurrency(
+                                    method.amount,
+                                    store,
+                                  )}
+                                </p>
                               </div>
                             ),
                           )}

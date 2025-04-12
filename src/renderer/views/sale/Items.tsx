@@ -9,6 +9,7 @@ import {
   setCategories as setGlobalCategories,
 } from '../../../store/slices/appSlice';
 import { useFetch } from '../../utils/hooks';
+import { displayPriceWithCurrency } from '../../utils/methods/appMethods';
 
 function Items() {
   const noOfItemsPerPage = 8;
@@ -39,6 +40,7 @@ function Items() {
   const dispatch = useDispatch();
 
   const cartItems = useSelector((state: any) => state.cart.items);
+  const store = useSelector((state: any) => state.app.store);
   //   [info]: methods
   const fetchProducts = () => {
     productsFetch('/products/')
@@ -355,7 +357,7 @@ function Items() {
                           type="button"
                           className="border border-black text-gray-600 font-medium rounded-full px-4 text-sm"
                         >
-                          {product.total_price} USD
+                          {displayPriceWithCurrency(product.total_price, store)}
                         </button>
                       </div>
                     </div>
