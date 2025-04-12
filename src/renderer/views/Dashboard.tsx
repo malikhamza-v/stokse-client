@@ -15,6 +15,8 @@ import {
 } from '../utils/svg';
 import { ConvertIntoDecimal } from '../utils/methods';
 import BarChart from '../components/viewComponents/chart/BarChart';
+import { displayPriceWithCurrency } from '../utils/methods/appMethods';
+import { useSelector } from 'react-redux';
 
 function Dashboard() {
   // [info]: states
@@ -82,6 +84,8 @@ function Dashboard() {
     useFetch();
 
   const { fetchData: overallAnalyticsFetch } = useFetch();
+
+  const store = useSelector((state: any) => state.app.store);
 
   // [info]: methods
   const fetchAnalyticsSale = (days: number) => {
@@ -333,7 +337,10 @@ function Dashboard() {
                   ) : (
                     <div className="my-2 flex items-center justify-center gap-4">
                       <h3 className="text-3xl font-bold text-gray-700">
-                        ${ConvertIntoDecimal(analyticsSale?.total_sale || 0)}
+                        {displayPriceWithCurrency(
+                          analyticsSale?.total_sale,
+                          store,
+                        )}
                       </h3>
 
                       <div className="flex items-end gap-1 text-green-500">
@@ -379,7 +386,10 @@ function Dashboard() {
                             ? 'week'
                             : 'month'}{' '}
                       </span>
-                      ${ConvertIntoDecimal(analyticsSale?.prev_total_sale || 0)}
+                      {displayPriceWithCurrency(
+                        analyticsSale?.prev_total_sale,
+                        store,
+                      )}
                     </p>
                   )}
                 </div>
@@ -810,7 +820,10 @@ function Dashboard() {
 
                         <td className="py-3 px-5 border-b border-blue-gray-50">
                           <p className="block antialiased font-sans text-xs font-medium text-blue-gray-600">
-                            ${transactions.total}
+                            {displayPriceWithCurrency(
+                              transactions.total,
+                              store,
+                            )}
                           </p>
                         </td>
                         <td className="py-3 px-5 border-b border-blue-gray-50">
@@ -1024,9 +1037,10 @@ function Dashboard() {
                         <td className="py-3 px-5 border-b border-blue-gray-50">
                           <div className="w-4/6">
                             <p className="antialiased font-sans mb-1 block text-xs font-medium text-blue-gray-600">
-                              $
-                              {ConvertIntoDecimal(customer.total_spent) ||
-                                'None'}
+                              {displayPriceWithCurrency(
+                                customer.total_spent,
+                                store,
+                              )}
                             </p>
                           </div>
                         </td>
