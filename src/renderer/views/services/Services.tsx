@@ -4,7 +4,7 @@
 /* eslint-disable no-nested-ternary */
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useFetch } from '../../utils/hooks';
 import {
@@ -17,6 +17,7 @@ import {
 } from '../../utils/svg';
 import useRemove from '../../utils/hooks/useRemove';
 import { setEditProduct } from '../../../store/slices/appSlice';
+import { displayPriceWithCurrency } from '../../utils/methods/appMethods';
 
 /* eslint-disable jsx-a11y/control-has-associated-label */
 export default function Service({ isView }: { isView: boolean }) {
@@ -39,6 +40,8 @@ export default function Service({ isView }: { isView: boolean }) {
 
   const { loading: fetchLoading, fetchData: productsFetch } = useFetch();
   const { loading: rProductLoading, removeData: removeProduct } = useRemove();
+
+  const store = useSelector((state: any) => state.app.store);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -344,7 +347,7 @@ export default function Service({ isView }: { isView: boolean }) {
                           <span className="py-1 text-sm font-normal rounded-full w-fit badge badge-neutral text-center">
                             {service.price_type}
                           </span>
-                          {service.price}
+                          {displayPriceWithCurrency(service.price, store)}
                         </div>
                       </td>
 

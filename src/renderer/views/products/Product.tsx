@@ -21,6 +21,7 @@ import {
   setProducts as setGlobalProducts,
 } from '../../../store/slices/appSlice';
 import InventoryView from './ProductView';
+import { displayPriceWithCurrency } from '../../utils/methods/appMethods';
 
 /* eslint-disable jsx-a11y/control-has-associated-label */
 export default function Inventory({ isView }: { isView: boolean }) {
@@ -55,7 +56,7 @@ export default function Inventory({ isView }: { isView: boolean }) {
   const dispatch = useDispatch();
   const params = useParams();
   const globalProducts = useSelector((state: any) => state.app.products);
-
+  const store = useSelector((state: any) => state.app.store);
   // [info]: method
   const handleProductForEdit = (product: any) => {
     dispatch(setEditProduct(product));
@@ -440,12 +441,14 @@ export default function Inventory({ isView }: { isView: boolean }) {
                       </td>
                       <td className="hover:bg-gray-100 p-3">
                         <div className="flex items-center">
-                          {product.cost_price}
+                          {displayPriceWithCurrency(product.cost_price, store)}
                         </div>
                       </td>
 
                       <td className="hover:bg-gray-100 p-3">
-                        <div>{product.sale_price}</div>
+                        <div>
+                          {displayPriceWithCurrency(product.sale_price, store)}
+                        </div>
                       </td>
                       <td className="hover:bg-gray-100">
                         <div className="flex items-center gap-2 p-3 h-full">
