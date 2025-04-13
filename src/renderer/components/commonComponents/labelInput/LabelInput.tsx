@@ -8,7 +8,7 @@ export default function LabelInput({
   htmlfor,
   children,
 }: {
-  label: string;
+  label: string | null;
   errorMsg: string | null;
   loading: boolean;
   required: boolean;
@@ -18,13 +18,15 @@ export default function LabelInput({
 }) {
   return (
     <div className={`w-full ${isInline ? 'flex' : ''}`}>
-      <label
-        htmlFor={htmlfor}
-        className="block mb-2 font-medium text-gray-900 text-left"
-      >
-        {label}
-        {required && <span className="text-gray-500 ml-1">*</span>}
-      </label>
+      {label && (
+        <label
+          htmlFor={htmlfor}
+          className="block mb-2 font-medium text-gray-900 text-left"
+        >
+          {label}
+          {required && <span className="text-gray-500 ml-1">*</span>}
+        </label>
+      )}
       {loading ? (
         <div>
           <div
