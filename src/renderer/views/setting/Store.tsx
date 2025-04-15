@@ -6,7 +6,8 @@ import {
 import { useEdit, useFetch } from '../../utils/hooks';
 import { convertTime, getYYMMDD } from '../../utils/methods';
 import { SelectInput } from '../../components/commonComponents/inputs';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setStore } from '../../../store/slices/appSlice';
 
 interface Currency {
   id: number;
@@ -34,7 +35,7 @@ function Store() {
   });
 
   const appStore = useSelector((store: any) => store.app.store);
-
+  const dispatch = useDispatch();
   const {
     data: storeSettings,
     loading: storeSettingsLoading,
@@ -69,7 +70,8 @@ function Store() {
     };
 
     await saveStoreSettings(`/store/${appStore.id}/`, payload, false);
-    await fetchStoreSettings('store/');
+    const response = await fetchStoreSettings('store/');
+    dispatch(setStore(response.data));
     setEditStates({ ...editStates, [type]: !editStates[type] });
   };
 
