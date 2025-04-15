@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
-import { BackButton } from '../../components/commonComponents/buttons';
-import { useCreate, useEdit, useFetch } from '../../utils/hooks';
+import {
+  AppButton,
+  BackButton,
+} from '../../components/commonComponents/buttons';
+import { useEdit, useFetch } from '../../utils/hooks';
 import { convertTime, getYYMMDD } from '../../utils/methods';
 import { SelectInput } from '../../components/commonComponents/inputs';
+import { useSelector } from 'react-redux';
 
 interface Currency {
   id: number;
@@ -21,13 +25,15 @@ const SettingCard = ({ header, body }: { header: any; body: any }) => {
 };
 
 function Store() {
-  const [storeCreatedAt, setStoreCreatedAt] = useState();
+  const [storeCreatedAt, setStoreCreatedAt] = useState<any>();
   const [userInput, setUserInput] = useState({
-    currency: ''
-  })
+    currency: '',
+  });
   const [editStates, setEditStates] = useState<{ currency: Boolean }>({
     currency: false,
   });
+
+  const appStore = useSelector((store: any) => store.app.store);
 
   const {
     data: storeSettings,
@@ -41,42 +47,50 @@ function Store() {
     fetchData: fetchAllCurrencies,
   } = useFetch();
 
-  const {editData: saveStoreSettings, loading: saveStoreSettingsLoading} = useEdit()
+  const { editData: saveStoreSettings, loading: saveStoreSettingsLoading } =
+    useEdit();
 
   // [info]: methods
-  
-  const handleUserInput = (key:string, value:string|number)=>{
-    setUserInput({...userInput, [key]:value})
-  }
 
-  const handleSaveStoreSettings = ()=>{
-const payload  = {
-  name:storeData.name,
-  description:storeData.description,
-  city:storeData.city,
-  country:storeData.country,
-  address:storeData.address,
-  phone:storeData.phone,
-  email:storeData.email,
-  // currency: userInput.currency
-}
+  const handleUserInput = (key: string, value: string | number) => {
+    setUserInput({ ...userInput, [key]: value });
+  };
 
-console.log("check store data", storeData)
-    saveStoreSettings('/store/', payload, false)
-  }
-  
+  const handleSaveStoreSettings = async (type: keyof typeof editStates) => {
+    const payload = {
+      name: storeData.name,
+      description: storeData.description,
+      city: storeData.city,
+      country: storeData.country,
+      address: storeData.address,
+      phone: storeData.phone,
+      email: storeData.email,
+      currency_id: userInput.currency,
+    };
+
+    await saveStoreSettings(`/store/${appStore.id}/`, payload, false);
+    await fetchStoreSettings('store/');
+    setEditStates({ ...editStates, [type]: !editStates[type] });
+  };
+
+  const handleActions = (type: keyof typeof editStates) => {
+    if (editStates[type]) {
+      handleSaveStoreSettings(type);
+    } else {
+      handleEdit(type);
+    }
+  };
+
   const handleEdit = (type: keyof typeof editStates) => {
     const handleFetchCurrencies = () => {
-      setUserInput({...userInput, currency: storeData.currency.id})
+      setUserInput({ ...userInput, currency: storeData.currency.id });
       fetchAllCurrencies('/universal/currencies');
     };
 
-
     if (!editStates.currency && type === 'currency') {
       handleFetchCurrencies();
-    }else if(editStates.currency && type === 'currency'){
-      handleSaveStoreSettings()
     }
+
     setEditStates({ ...editStates, [type]: !editStates[type] });
   };
 
@@ -192,12 +206,20 @@ console.log("check store data", storeData)
               header={
                 <div className="px-4 flex items-center justify-between">
                   <p className="text-xl font-medium">Store Currency</p>
-                  <button
-                    className="btn btn-sm btn-outline"
-                    onClick={() => handleEdit('currency')}
+                  <AppButton
+                    size="sm"
+                    type="secondary"
+                    onClickAction={() => handleActions('currency')}
+                    loading={saveStoreSettingsLoading}
                   >
-                    {editStates.currency? 'Save':'Edit'}
-                  </button>
+                    {editStates.currency ? 'Save' : 'Edit'}
+                  </AppButton>
+                  {/* <button
+                    className="btn btn-sm btn-outline"
+                    onClick={() => }
+                  >
+                    
+                  </button> */}
                 </div>
               }
               body={
