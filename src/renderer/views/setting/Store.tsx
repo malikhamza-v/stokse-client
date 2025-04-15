@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react';
 import { BackButton } from '../../components/commonComponents/buttons';
-import { useFetch } from '../../utils/hooks';
+import { useCreate, useEdit, useFetch } from '../../utils/hooks';
 import { convertTime, getYYMMDD } from '../../utils/methods';
 import { SelectInput } from '../../components/commonComponents/inputs';
+
+interface Currency {
+  id: number;
+  symbol: string;
+  label: string;
+  position: string;
+}
 
 const SettingCard = ({ header, body }: { header: any; body: any }) => {
   return (
@@ -15,6 +22,9 @@ const SettingCard = ({ header, body }: { header: any; body: any }) => {
 
 function Store() {
   const [storeCreatedAt, setStoreCreatedAt] = useState();
+  const [userInput, setUserInput] = useState({
+    currency: ''
+  })
   const [editStates, setEditStates] = useState<{ currency: Boolean }>({
     currency: false,
   });
@@ -31,12 +41,42 @@ function Store() {
     fetchData: fetchAllCurrencies,
   } = useFetch();
 
-  // [info]: methods
-  const handleFetchCurrencies = () => {
-    fetchAllCurrencies('');
-  };
+  const {editData: saveStoreSettings, loading: saveStoreSettingsLoading} = useEdit()
 
+  // [info]: methods
+  
+  const handleUserInput = (key:string, value:string|number)=>{
+    setUserInput({...userInput, [key]:value})
+  }
+
+  const handleSaveStoreSettings = ()=>{
+const payload  = {
+  name:storeData.name,
+  description:storeData.description,
+  city:storeData.city,
+  country:storeData.country,
+  address:storeData.address,
+  phone:storeData.phone,
+  email:storeData.email,
+  // currency: userInput.currency
+}
+
+console.log("check store data", storeData)
+    saveStoreSettings('/store/', payload, false)
+  }
+  
   const handleEdit = (type: keyof typeof editStates) => {
+    const handleFetchCurrencies = () => {
+      setUserInput({...userInput, currency: storeData.currency.id})
+      fetchAllCurrencies('/universal/currencies');
+    };
+
+
+    if (!editStates.currency && type === 'currency') {
+      handleFetchCurrencies();
+    }else if(editStates.currency && type === 'currency'){
+      handleSaveStoreSettings()
+    }
     setEditStates({ ...editStates, [type]: !editStates[type] });
   };
 
@@ -156,7 +196,7 @@ function Store() {
                     className="btn btn-sm btn-outline"
                     onClick={() => handleEdit('currency')}
                   >
-                    Edit
+                    {editStates.currency? 'Save':'Edit'}
                   </button>
                 </div>
               }
@@ -166,11 +206,16 @@ function Store() {
                     <div>
                       <SelectInput
                         id="store_currency"
-                        options={[]}
-                        selectedValue={''}
-                        handleChange={() => null}
+                        options={
+                          allCurrencies?.data?.map((currency: Currency) => ({
+                            label: `${currency.symbol} ${currency.label}`,
+                            value: currency.id,
+                          })) || []
+                        }
+                        selectedValue={userInput.currency}
+                        handleChange={(e) => handleUserInput('currency', e)}
                         errorMessage=""
-                        isLoading={false}
+                        isLoading={allCurrenciesLoading}
                         label={null}
                       />
                     </div>

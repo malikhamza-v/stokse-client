@@ -58,7 +58,7 @@ const SelectInput = ({
             Select {id ? id.replace('_', ' ') : 'value'}
           </option>
 
-          {options.map((option: { value: string | number; label: string }) => (
+          {(options||[]).map((option: { value: string | number; label: string }) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
