@@ -85,7 +85,7 @@ function Store() {
 
   const handleEdit = (type: keyof typeof editStates) => {
     const handleFetchCurrencies = () => {
-      setUserInput({ ...userInput, currency: storeData.currency.id });
+      setUserInput({ ...userInput, currency: storeData.currency?.id ?? '' });
       fetchAllCurrencies('/universal/currencies');
     };
 
