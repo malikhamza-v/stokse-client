@@ -151,6 +151,7 @@ const configuration: webpack.Configuration = {
 
     new webpack.DefinePlugin({
       'process.type': '"renderer"',
+      'process.env.API_URL': JSON.stringify(process.env.API_URL),
     }),
   ],
 };

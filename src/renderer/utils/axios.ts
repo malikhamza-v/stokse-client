@@ -1,9 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  // baseURL: 'https://cryptokuff.com/api',
-  // baseURL: 'http://localhost:8000/api',
-  baseURL: 'https://api.stokse.com/api',
+  baseURL: process.env.API_URL,
 });
 
 // eslint-disable-next-line func-names

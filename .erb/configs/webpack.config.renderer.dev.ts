@@ -173,6 +173,7 @@ const configuration: webpack.Configuration = {
      */
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
+      API_URL: process.env.API_URL,
     }),
 
     new webpack.LoaderOptionsPlugin({
